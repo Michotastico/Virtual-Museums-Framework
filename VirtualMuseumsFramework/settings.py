@@ -51,7 +51,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'DjangoTest.urls'
+ROOT_URLCONF = 'VirtualMuseumsFramework.urls'
 
 TEMPLATES = [
     {
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DjangoTest.wsgi.application'
+WSGI_APPLICATION = 'VirtualMuseumsFramework.wsgi.application'
 
 
 # Database
