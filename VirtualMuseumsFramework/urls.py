@@ -17,11 +17,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from Apps.Curator import views
+from Apps.CommonWeb import views as CommonViews
 
 urlpatterns = [
-    url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^$', CommonViews.IndexView.as_view(), name='index'),
     url(r'^curator/', include('Apps.Curator.urls')),
+    url(r'^visitor/', include('Apps.Visitor.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/museum.ico', permanent=True)),
 
