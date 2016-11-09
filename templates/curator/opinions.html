@@ -9,8 +9,37 @@
 
 
 {% block body %}
-<body>
-  {% include "curator/navbar.html" %}
-  Opinions
-</body>
+    <body>
+    {% include "curator/navbar.html" %}
+    <div class="container">
+        <h2>People's Opinion</h2>
+        <form class="form-inline ng-pristine ng-valid">
+            <label >Select Room: </label>
+            <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                <option value="" disabled="" class="" selected="selected">Select a Room from the list:</option>
+                <option label="Master room" value="master-room">Master room</option>
+                <option label="Front yard" value="front-yard">Front yard</option>
+            </select>
+            <label class="checkbox-inline"><input type="checkbox" value="approved">Approved</label>
+            <label class="checkbox-inline"><input type="checkbox" value="pending">Pending</label>
+        </form>
+        <br>
+        <div>
+            <div class="jumbotron">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="#" class="thumbnail">
+                            <img src="..." alt="...">
+                        </a>
+                        <p class="text-center">John</p>
+                    </div>
+                    <div class="col-md-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque vel quam interdum consectetur id sit amet metus. Aenean id pharetra metus. Phasellus vulputate lorem justo, ac cursus eros consequat a. Ut congue, ante sit amet volutpat cursus, risus urna ornare dui, tincidunt malesuada massa sapien in ante. Curabitur tincidunt magna vitae massa maximus vehicula. Nullam vulputate, neque lacinia vulputate ullamcorper, orci enim mollis nibh, id mattis quam turpis sed elit. Nulla vitae feugiat orci.</div>
+                    <div class="col-md-2">Botones</div>
+                </div>
+            </div>
+            <div class="jumbotron">
+            </div>
+        </div>
+    </div>
+    </body>
 {% endblock body %}
