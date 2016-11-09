@@ -6,17 +6,17 @@
 a,
 a:focus,
 a:hover {
-  color: #fff;
+  color: #000;/*#fff;*/
 }
 
 /* Custom default button */
 .btn-default,
 .btn-default:hover,
 .btn-default:focus {
-  color: #333;
+  color: #FFF;/*#333;*/
   text-shadow: none; /* Prevent inheritance from `body` */
-  background-color: #fff;
-  border: 1px solid #fff;
+  background-color: #000;/*#fff;*/
+  border: 1px solid #000;/*#fff;*/
 }
 
 
@@ -27,10 +27,10 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: #333;
+  background-color: #fff;/*#333;*/
 }
 body {
-  color: #fff;
+  color: #000;/*#fff;*/
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
 }
@@ -79,7 +79,7 @@ body {
   font-size: 16px;
   font-weight: bold;
   color: #fff; /* IE8 proofing */
-  color: rgba(255,255,255,.75);
+  color: rgba(0,0,0,.75);/*rgba(255,255,255,.75);*/
   border-bottom: 2px solid transparent;
 }
 .masthead-nav > li > a:hover,
@@ -91,8 +91,8 @@ body {
 .masthead-nav > .active > a,
 .masthead-nav > .active > a:hover,
 .masthead-nav > .active > a:focus {
-  color: #fff;
-  border-bottom-color: #fff;
+  color: #000;/*#fff;*/
+  border-bottom-color: #000;/*#fff;*/
 }
 
 @media (min-width: 768px) {
@@ -124,7 +124,7 @@ body {
 
 .mastfoot {
   color: #999; /* IE8 proofing */
-  color: rgba(255,255,255,.5);
+  color: rgba(0,0,0,.5);/*rgba(255,255,255,.5);*/
 }
 
 
