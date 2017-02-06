@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% if message %}
+        <div class='imp_message'>{{ message }}</div>
+        <br>
+    {% endif %}
+    <h1>Login Form</h1>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="username">
+        <input type="password" name="password" placeholder="password">
+
+        <input type="submit" value="login">
+    </form>
+</body>
+</html>
