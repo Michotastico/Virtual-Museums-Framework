@@ -18,20 +18,32 @@ class LoginView(TemplateView):
     def get(self, request, *a, **ka):
         if request.user.is_authenticated():
             return redirect('/curator')
-        return render(request, self.template_name)
+        next_url = request.GET.get('next', None)
+        if next_url:
+            next_dict = {'next': next_url}
+        else:
+            next_dict = {}
+        return render(request, self.template_name, next_dict)
 
     def post(self, request):
+
         user = authenticate(
             username=request.POST.get('username'),
             password=request.POST.get('password')
         )
+
+        next_url = request.POST.get('next_url', None)
 
         if user is None:
             return render(request, self.template_name, {'message': 'Incorrect credentials'})
 
         else:
             login(request, user)
-            return redirect('/curator')
+            if next_url:
+                url = next_url
+            else:
+                url = '/curator'
+            return redirect(url)
 
 
 class LogoutView(TemplateView):
