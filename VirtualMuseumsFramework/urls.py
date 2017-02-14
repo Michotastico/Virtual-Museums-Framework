@@ -17,10 +17,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from Apps.CommonWeb import views as CommonViews
+from Apps.CommonWeb.views import IndexView
+from Apps.CommonWeb.views import LoginView
+from Apps.CommonWeb.views import LogoutView
 
 urlpatterns = [
-    url(r'^$', CommonViews.IndexView.as_view(), name='index'),
+    url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^auth/login', LoginView.as_view(), name='login'),
+    url(r'^auth/logout', LogoutView.as_view(), name='logout'),
     url(r'^curator/', include('Apps.Curator.urls')),
     url(r'^visitor/', include('Apps.Visitor.urls')),
     url(r'^admin/', admin.site.urls),
