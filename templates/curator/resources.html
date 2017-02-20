@@ -16,56 +16,87 @@
         <form class="form-inline ng-pristine ng-valid">
             <label >Type: </label>
             <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                <option value="" disabled="" class="" selected="selected">Objects, Music, Models, etc:</option>
+                <option value="" disabled="" class="" selected="selected">Objects, Music, Images, etc:</option>
                 <option label="objects" value="master-room">Objects</option>
                 <option label="music" value="front-yard">Music</option>
-                <option label="models" value="front-yard">Models</option>
+                <option label="models" value="front-yard">Images</option>
             </select>
             <button class= "btn btn-sm btn-success" type="button">Add new resource</button>
         </form>
         <br>
-        <div>
-            <div class="panel panel-default">
-                <div class="panel-heading">Music</div>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Music file</th>
-                        <th>Used in</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Horse</td>
-                        <td><audio controls>
-                            <source src="/static/external-content/music/horse.mp3" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio></td>
-                        <td><select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                            <option value="" disabled="" class="" selected="selected">Rooms</option>
-                            <option label="Master room" value="master-room">Master room</option>
-                            <option label="Front yard" value="front-yard">Front yard</option>
-                        </select></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Horse2</td>
-                        <td><audio controls>
-                            <source src="/static/external-content/music/horse.mp3" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio></td>
-                        <td><select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                            <option value="" disabled="" class="" selected="selected">Rooms</option>
-                            <option label="Master room" value="master-room">Master room</option>
-                            <option label="Front yard" value="front-yard">Front yard</option>
-                        </select></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Music</div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Music file</th>
+                    <th>Used in</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Horse</td>
+                    <td><audio controls>
+                        <source src="/static/external-content/music/horse.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio></td>
+                    <td><select class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                        <option value="" disabled="" class="" selected="selected">Rooms</option>
+                        <option label="Master room" value="master-room">Master room</option>
+                        <option label="Front yard" value="front-yard">Front yard</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Horse2</td>
+                    <td><audio controls>
+                        <source src="/static/external-content/music/horse.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio></td>
+                    <td><select class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                        <option value="" disabled="" class="" selected="selected">Rooms</option>
+                        <option label="Master room" value="master-room">Master room</option>
+                        <option label="Front yard" value="front-yard">Front yard</option>
+                    </select></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Images</div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Image</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Image</td>
+                    <td>
+                        <a  class="thumbnail">
+                            <img src="/static/images/user_default.png" alt="...">
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Image2</td>
+                    <td>
+                        <a  class="thumbnail">
+                            <img src="/static/images/user_default.png" alt="...">
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     </body>
