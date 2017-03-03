@@ -1,6 +1,6 @@
 import copy
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.utils.decorators import method_decorator
@@ -81,9 +81,18 @@ class ResourcesView(TemplateView):
                 specific_selector['options'][2]['selected'] = 'selected'
 
         if new in ['1']:
-            # TODO redirect to upload page
-            print new
+            url = '/curator/new-resources'
+            return redirect(url)
+
         return render(request, specific_template, specific_selector)
+
+
+class NewResourcesView(TemplateView):
+    template_name = 'curator/new-resource.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name)
 
 
 class SchedulingView(TemplateView):
