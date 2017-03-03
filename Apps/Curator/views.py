@@ -51,10 +51,20 @@ class ResourcesView(TemplateView):
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
+        return render(request, self.template_name)
 
-        specific_resource = request.GET.get('resource', None)
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+
+        specific_resource = request.POST.get('resource', None)
+        new = request.POST.get('new-resource', None)
+
         if specific_resource:
-            pass
+            # TODO redirect to specific resource webpage
+            print specific_resource
+        if new in ['1']:
+            # TODO redirect to upload page
+            print new
         return render(request, self.template_name)
 
 
