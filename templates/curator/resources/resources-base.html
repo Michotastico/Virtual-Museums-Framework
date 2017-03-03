@@ -3,10 +3,12 @@
     {% csrf_token %}
     <label >Type: </label>
     <select name="resource" class="form-control ng-pristine ng-valid ng-empty ng-touched" onChange="form.submit();">
-        <option value="" disabled="" class="" selected="selected">Objects, Music, Images, etc:</option>
-        <option label="objects" value="objects">Objects</option>
-        <option label="music" value="music">Music</option>
-        <option label="models" value="models">Images</option>
+        <option value="" disabled="" class="" {{ header.selected }}>{{ header.display }}</option>
+        {% for element in options %}
+            <option label="{{ element.value }}" value="{{ element.value }}" {{ element.selected }}>
+                {{ element.display }}
+            </option>
+        {% endfor %}
     </select>
     <input type="hidden" id="new-resource" name="new-resource" value="0" />
     <button class= "btn btn-sm btn-success" type="button" onclick="document.getElementById('new-resource').value = '1';
