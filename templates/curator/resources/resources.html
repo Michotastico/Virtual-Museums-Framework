@@ -12,18 +12,7 @@
     <body>
     {% include "curator/navbar.html" %}
     <div class="container">
-        <h2>Resources</h2>
-        <form class="form-inline ng-pristine ng-valid">
-            <label >Type: </label>
-            <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                <option value="" disabled="" class="" selected="selected">Objects, Music, Images, etc:</option>
-                <option label="objects" value="master-room">Objects</option>
-                <option label="music" value="front-yard">Music</option>
-                <option label="models" value="front-yard">Images</option>
-            </select>
-            <button class= "btn btn-sm btn-success" type="button">Add new resource</button>
-        </form>
-        <br>
+        {% include "curator/resources/resources-base.html" %}
         <div class="panel panel-default">
             <div class="panel-heading">Music</div>
             <table class="table">

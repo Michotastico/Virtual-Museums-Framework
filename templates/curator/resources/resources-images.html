@@ -1,0 +1,51 @@
+{% extends "base/base.html" %}
+
+{% block css %}
+{% endblock css %}
+
+
+{% block js %}
+{% endblock js %}
+
+
+{% block body %}
+    <body>
+    {% include "curator/navbar.html" %}
+    <div class="container">
+        {% include "curator/resources/resources-base.html" %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Images</div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Image</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Image</td>
+                    <td>
+                        <a  class="thumbnail">
+                            <img src="/static/images/user_default.png" alt="...">
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Image2</td>
+                    <td>
+                        <a  class="thumbnail">
+                            <img src="/static/images/user_default.png" alt="...">
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </body>
+{% endblock body %}

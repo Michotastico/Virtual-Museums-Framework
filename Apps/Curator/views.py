@@ -47,10 +47,14 @@ class RoomsView(TemplateView):
 
 
 class ResourcesView(TemplateView):
-    template_name = 'curator/resources.html'
+    template_name = 'curator/resources/resources.html'
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
+
+        specific_resource = request.GET.get('resource', None)
+        if specific_resource:
+            pass
         return render(request, self.template_name)
 
 
