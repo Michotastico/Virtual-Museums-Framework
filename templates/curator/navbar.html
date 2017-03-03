@@ -1,37 +1,41 @@
 <nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/">Virtual Museums</a>
-    </div>
+    <div class="container-fluid">
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="/curator/opinions">Opinions</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Rooms <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/curator/rooms">Existing Rooms</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/curator/new-rooms">New Room</a></li>
-          </ul>
-        </li>
-        <li><a href="/curator/resources">Resources</a></li>
-        <li><a href="/curator/scheduling">Scheduling</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/curator/">Tools</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Account</a></li>
-            <li><a href="/auth/logout">Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Virtual Museums</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li{% if request.resolver_match.url_name == 'opinions' %} class="active"{% endif %}><a href="/curator/opinions">Opinions</a></li>
+                {% with 'rooms new-rooms' as list%}
+                    <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Rooms <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li{% if request.resolver_match.url_name == 'rooms' %} class="active"{% endif %}><a href="/curator/rooms">Existing Rooms</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li{% if request.resolver_match.url_name == 'new-rooms' %} class="active"{% endif %}><a href="/curator/new-rooms">New Room</a></li>
+                        </ul>
+                    </li>
+                {% endwith %}
+                <li{% if request.resolver_match.url_name == 'resources' %} class="active"{% endif %}><a href="/curator/resources">Resources</a></li>
+                <li{% if request.resolver_match.url_name == 'scheduling' %} class="active"{% endif %}><a href="/curator/scheduling">Scheduling</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% with 'home tools account' as list%}
+                    <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}><a href="/">Home</a></li>
+                            <li{% if request.resolver_match.url_name == 'tools' %} class="active"{% endif %}><a href="/curator/">Tools</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li{% if request.resolver_match.url_name == 'account' %} class="active"{% endif %}><a href="#">Account</a></li>
+                            <li><a href="/auth/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                {% endwith %}
+            </ul>
+        </div>
+    </div>
 </nav>
