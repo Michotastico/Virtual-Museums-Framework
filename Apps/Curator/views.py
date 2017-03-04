@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from Apps.Curator.forms import ImageForm
+
 
 class IndexView(TemplateView):
     template_name = 'curator/index.html'
@@ -89,10 +91,18 @@ class ResourcesView(TemplateView):
 
 class NewResourcesView(TemplateView):
     template_name = 'curator/new-resource.html'
+    form = ImageForm()
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        return render(request, self.template_name, {'form': self.form})
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        request_form = ImageForm(request.POST, request.FILES)
+        if request_form.is_valid():
+            request_form.save()
+            return redirect('/curator/resources')
 
 
 class SchedulingView(TemplateView):
