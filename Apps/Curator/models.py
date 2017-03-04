@@ -12,5 +12,17 @@ class ExternalFile(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
+class ExternalTemplate(ExternalFile):
+    document = models.FileField(upload_to=BASE_DIR+'/static/external-content/template')
+
+
 class ExternalImage(ExternalFile):
     document = models.FileField(upload_to=BASE_DIR+'/static/external-content/images')
+
+
+class ExternalMusic(ExternalFile):
+    document = models.FileField(upload_to=BASE_DIR+'/static/external-content/music')
+
+
+class ExternalModel(ExternalFile):
+    document = models.FileField(upload_to=BASE_DIR+'/static/external-content/models')

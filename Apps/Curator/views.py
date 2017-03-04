@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
-from Apps.Curator.forms import ImageForm
+from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
+from Apps.Curator.models import ExternalMusic, ExternalImage, ExternalModel, ExternalTemplate
 
 
 class IndexView(TemplateView):
@@ -51,11 +52,11 @@ class RoomsView(TemplateView):
 
 class ResourcesView(TemplateView):
     template_name = 'curator/resources/resources.html'
-    selector = {'header': {'display': 'Objects, Music, Images, etc:',
+    selector = {'header': {'display': 'Models, Music, Images, etc:',
                            'selected': 'selected'},
                 'options': [{'value': 'music', 'display': 'Music', 'selected': ''},
                             {'value': 'images', 'display': 'Images', 'selected': ''},
-                            {'value': 'objects', 'display': 'Objects', 'selected': ''}]}
+                            {'value': 'models', 'display': 'Models', 'selected': ''}]}
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
@@ -78,12 +79,12 @@ class ResourcesView(TemplateView):
             elif specific_resource == 'images':
                 specific_template = 'curator/resources/resources-images.html'
                 specific_selector['options'][1]['selected'] = 'selected'
-            elif specific_resource == 'objects':
-                specific_template = 'curator/resources/resources-objects.html'
+            elif specific_resource == 'models':
+                specific_template = 'curator/resources/resources-models.html'
                 specific_selector['options'][2]['selected'] = 'selected'
-
+        print specific_resource
         if new in ['1']:
-            url = '/curator/new-resources'
+            url = '/curator/new-resources?resource='+specific_resource
             return redirect(url)
 
         return render(request, specific_template, specific_selector)
@@ -91,11 +92,24 @@ class ResourcesView(TemplateView):
 
 class NewResourcesView(TemplateView):
     template_name = 'curator/new-resource.html'
-    form = ImageForm()
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name, {'form': self.form})
+        parameters = {}
+        form_type = request.GET.get('resource', None)
+        if form_type:
+            if form_type == 'music':
+                form = MusicForm()
+            elif form_type == 'images':
+                form = ImageForm()
+            elif form_type == 'models':
+                form = ModelForm()
+            else:
+                form = TemplateForm()
+
+            parameters = {'form': form}
+
+        return render(request, self.template_name, parameters)
 
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):

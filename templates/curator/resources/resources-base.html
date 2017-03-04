@@ -11,7 +11,8 @@
         {% endfor %}
     </select>
     <input type="hidden" id="new-resource" name="new-resource" value="0" />
-    <button class= "btn btn-sm btn-success" type="button" onclick="document.getElementById('new-resource').value = '1';
-    form.submit();">Add new resource</button>
+    <button class= "btn btn-sm btn-success" type="button"
+            {% if header.selected %} disabled="disabled"{% endif %}
+            onclick="document.getElementById('new-resource').value = '1'; form.submit();">Add new resource</button>
 </form>
 <br>
