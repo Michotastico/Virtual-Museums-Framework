@@ -82,7 +82,7 @@ class ResourcesView(TemplateView):
             elif specific_resource == 'models':
                 specific_template = 'curator/resources/resources-models.html'
                 specific_selector['options'][2]['selected'] = 'selected'
-        print specific_resource
+
         if new in ['1']:
             url = '/curator/new-resources?resource='+specific_resource
             return redirect(url)
@@ -106,7 +106,6 @@ class NewResourcesView(TemplateView):
                 form = ModelForm()
             else:
                 form = TemplateForm()
-
             parameters = {'form': form}
 
         return render(request, self.template_name, parameters)
@@ -116,7 +115,8 @@ class NewResourcesView(TemplateView):
         request_form = ImageForm(request.POST, request.FILES)
         if request_form.is_valid():
             request_form.save()
-            return redirect('/curator/resources')
+        return redirect('/curator/resources')
+
 
 
 class SchedulingView(TemplateView):
