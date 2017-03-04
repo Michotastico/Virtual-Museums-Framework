@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import hashlib
+
 from django.db import models
 import os
 from django.core.exceptions import ValidationError
@@ -24,6 +26,15 @@ def file_extension_validation(external_file, allowed_extensions):
         raise ValidationError(u'Unsupported file extension.')
 
 
+def file_rename(instance, filename):
+    split_name = filename.split('.')
+    name = hashlib.sha1(split_name[0]).hexdigest()
+    ext = split_name[-1]
+
+    filename = "%s.%s" % (name, ext)
+    return os.path.join(BASE_DIR+'/static/external-content/images', filename)
+
+
 def validator_template(external_file): file_extension_validation(external_file, ['.txt'])
 
 
@@ -35,7 +46,7 @@ def validator_image(external_file): file_extension_validation(external_file, ['.
 
 
 class ExternalImage(ExternalFile):
-    document = models.FileField(upload_to=BASE_DIR+'/static/external-content/images', validators=[validator_image])
+    document = models.FileField(upload_to=file_rename, validators=[validator_image])
 
 
 def validator_music(external_file): file_extension_validation(external_file, ['.mp3'])

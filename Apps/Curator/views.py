@@ -118,7 +118,6 @@ class NewResourcesView(TemplateView):
         return redirect('/curator/resources')
 
 
-
 class SchedulingView(TemplateView):
     template_name = 'curator/scheduling.html'
 
