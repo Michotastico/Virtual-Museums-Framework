@@ -113,6 +113,7 @@ class NewResourcesView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         request_form = TemplateForm(request.POST, request.FILES)
+        args = {}
 
         form_type = request.GET.get('resource', None)
         if form_type:
@@ -125,7 +126,11 @@ class NewResourcesView(TemplateView):
 
         if request_form.is_valid():
             request_form.save()
-        return redirect('/curator/resources')
+            return redirect('/curator/resources')
+
+        args['form'] = request_form
+
+        return render(request, self.template_name, args)
 
 
 class SchedulingView(TemplateView):
