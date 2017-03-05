@@ -113,6 +113,7 @@ class NewResourcesView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         request_form = ImageForm(request.POST, request.FILES)
+        # TODO Set correct form
         if request_form.is_valid():
             request_form.save()
         return redirect('/curator/resources')
