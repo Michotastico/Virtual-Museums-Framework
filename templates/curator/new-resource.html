@@ -9,12 +9,13 @@
 
 
 {% block body %}
-<body>
-  {% include "curator/navbar.html" %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-  </form>
-</body>
+    <body>
+    {% include "curator/navbar.html" %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" id="resource" name="resource" value="{{ resource }}" />
+        <button type="submit">Upload</button>
+    </form>
+    </body>
 {% endblock body %}

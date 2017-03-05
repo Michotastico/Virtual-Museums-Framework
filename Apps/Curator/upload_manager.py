@@ -14,17 +14,12 @@ __email__ = "mllorens@dcc.uchile.cl"
 
 
 def file_extension_validation(external_file, allowed_extensions):
-    print allowed_extensions
     split_name = os.path.splitext(external_file.name)
     if len(split_name) > 2:
-        print "Error lenght"
-        print split_name
         raise ValidationError(u'Unsupported file extension.')
 
     ext = split_name[1]
     if not ext.lower() in allowed_extensions:
-        print "Error extension"
-        print ext.lower()
         raise ValidationError(u'Unsupported file extension.')
 
 

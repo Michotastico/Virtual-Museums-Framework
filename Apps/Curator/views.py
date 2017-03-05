@@ -106,14 +106,23 @@ class NewResourcesView(TemplateView):
                 form = ModelForm()
             else:
                 form = TemplateForm()
-            parameters = {'form': form}
+            parameters = {'form': form, 'resource': form_type}
 
         return render(request, self.template_name, parameters)
 
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
-        request_form = ImageForm(request.POST, request.FILES)
-        # TODO Set correct form
+        request_form = TemplateForm(request.POST, request.FILES)
+
+        form_type = request.GET.get('resource', None)
+        if form_type:
+            if form_type == 'music':
+                request_form = MusicForm(request.POST, request.FILES)
+            elif form_type == 'images':
+                request_form = ImageForm(request.POST, request.FILES)
+            elif form_type == 'models':
+                request_form = ModelForm(request.POST, request.FILES)
+
         if request_form.is_valid():
             request_form.save()
         return redirect('/curator/resources')
