@@ -7,19 +7,10 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
-from Apps.Curator.models import ExternalMusic, ExternalImage, ExternalModel, ExternalTemplate
 
 
 class IndexView(TemplateView):
     template_name = 'curator/index.html'
-
-    @method_decorator(login_required(login_url='/auth/login'))
-    def get(self, request, *a, **ka):
-        return render(request, self.template_name)
-
-
-class OpinionsView(TemplateView):
-    template_name = 'curator/opinions.html'
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
@@ -54,9 +45,9 @@ class ResourcesView(TemplateView):
     template_name = 'curator/resources/resources.html'
     selector = {'header': {'display': 'Models, Music, Images, etc:',
                            'selected': 'selected'},
-                'options': [{'value': 'music', 'display': 'Music', 'selected': ''},
-                            {'value': 'images', 'display': 'Images', 'selected': ''},
-                            {'value': 'models', 'display': 'Models', 'selected': ''}]}
+                'options': [{'value': 'Music', 'display': 'Music', 'selected': ''},
+                            {'value': 'Image', 'display': 'Images', 'selected': ''},
+                            {'value': 'Model', 'display': 'Models', 'selected': ''}]}
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
@@ -73,13 +64,13 @@ class ResourcesView(TemplateView):
 
         if specific_resource:
             specific_selector['header']['selected'] = ''
-            if specific_resource == 'music':
+            if specific_resource == 'Music':
                 specific_template = 'curator/resources/resources-music.html'
                 specific_selector['options'][0]['selected'] = 'selected'
-            elif specific_resource == 'images':
+            elif specific_resource == 'Image':
                 specific_template = 'curator/resources/resources-images.html'
                 specific_selector['options'][1]['selected'] = 'selected'
-            elif specific_resource == 'models':
+            elif specific_resource == 'Model':
                 specific_template = 'curator/resources/resources-models.html'
                 specific_selector['options'][2]['selected'] = 'selected'
 
@@ -98,11 +89,11 @@ class NewResourcesView(TemplateView):
         parameters = {}
         form_type = request.GET.get('resource', None)
         if form_type:
-            if form_type == 'music':
+            if form_type == 'Music':
                 form = MusicForm()
-            elif form_type == 'images':
+            elif form_type == 'Image':
                 form = ImageForm()
-            elif form_type == 'models':
+            elif form_type == 'Model':
                 form = ModelForm()
             else:
                 form = TemplateForm()
@@ -117,11 +108,11 @@ class NewResourcesView(TemplateView):
 
         form_type = request.GET.get('resource', None)
         if form_type:
-            if form_type == 'music':
+            if form_type == 'Music':
                 request_form = MusicForm(request.POST, request.FILES)
-            elif form_type == 'images':
+            elif form_type == 'Image':
                 request_form = ImageForm(request.POST, request.FILES)
-            elif form_type == 'models':
+            elif form_type == 'Model':
                 request_form = ModelForm(request.POST, request.FILES)
 
         if request_form.is_valid():

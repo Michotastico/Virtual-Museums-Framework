@@ -7,22 +7,22 @@ from Apps.Curator.upload_manager import validator_template, rename_template, val
 
 
 class ExternalFile(models.Model):
-    title = models.CharField(max_length=10, blank=False)
-    description = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=30, blank=False)
+    description = models.CharField(max_length=255, blank=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
 class ExternalTemplate(ExternalFile):
-    document = models.FileField(upload_to=rename_template, validators=[validator_template])
+    file = models.FileField(upload_to=rename_template, validators=[validator_template])
 
 
 class ExternalImage(ExternalFile):
-    document = models.FileField(upload_to=rename_image, validators=[validator_image])
+    file = models.FileField(upload_to=rename_image, validators=[validator_image])
 
 
 class ExternalMusic(ExternalFile):
-    document = models.FileField(upload_to=rename_music, validators=[validator_music])
+    file = models.FileField(upload_to=rename_music, validators=[validator_music])
 
 
 class ExternalModel(ExternalFile):
-    document = models.FileField(upload_to=rename_model, validators=[validator_model])
+    file = models.FileField(upload_to=rename_model, validators=[validator_model])
