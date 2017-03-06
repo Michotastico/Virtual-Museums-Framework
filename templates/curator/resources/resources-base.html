@@ -1,4 +1,9 @@
 <h2>Resources</h2>
+{% if success %}
+    <div class="alert alert-success">
+        <strong>Success!</strong> The new resource was correctly added.
+    </div>
+{% endif %}
 <form method="POST" action="/curator/resources" class="form-inline ng-pristine ng-valid">
     {% csrf_token %}
     <label >Type: </label>

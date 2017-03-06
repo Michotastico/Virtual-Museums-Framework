@@ -65,17 +65,10 @@ class ResourcesView(TemplateView):
                       'selected': ''}
         selector['options'].append(local_dict)
 
-    @method_decorator(login_required(login_url='/auth/login'))
-    def get(self, request, *a, **ka):
-        return render(request, self.template_name, self.selector)
+    def selector_current(self, specific_resource):
 
-    @method_decorator(login_required(login_url='/auth/login'))
-    def post(self, request, *a, **ka):
-
-        specific_resource = request.POST.get('resource', None)
-        new = request.POST.get('new-resource', None)
-        specific_template = self.template_name
         specific_selector = copy.deepcopy(self.selector)
+        specific_template = self.template_name
 
         if specific_resource:
             specific_selector['header']['selected'] = ''
@@ -86,6 +79,25 @@ class ResourcesView(TemplateView):
                 for option in specific_selector['options']:
                     if option['value'] == specific_resource:
                         option['selected'] = 'selected'
+        return specific_selector, specific_template
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        specific_resource = request.GET.get('resource', None)
+        specific_selector, specific_template = self.selector_current(specific_resource)
+
+        success = request.GET.get('success', None)
+        if success is not None and success == 'true':
+            specific_selector['success'] = True
+
+        return render(request, specific_template, specific_selector)
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+
+        specific_resource = request.POST.get('resource', None)
+        new = request.POST.get('new-resource', None)
+        specific_selector, specific_template = self.selector_current(specific_resource)
 
         if new in ['1']:
             url = '/curator/new-resources?resource='+specific_resource
@@ -128,7 +140,7 @@ class NewResourcesView(TemplateView):
 
         if request_form.is_valid():
             request_form.save()
-            return redirect('/curator/resources')
+            return redirect('/curator/resources?success=true&resource='+args['resource'])
 
         args['form'] = request_form
 
