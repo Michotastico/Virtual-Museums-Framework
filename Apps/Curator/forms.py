@@ -23,14 +23,14 @@ class TemplateForm(forms.ModelForm):
         model = ExternalTemplate
 
 
-class ImageForm(forms.ModelForm):
-    class Meta(CommonMeta):
-        model = ExternalImage
-
-
 class MusicForm(forms.ModelForm):
     class Meta(CommonMeta):
         model = ExternalMusic
+
+
+class ImageForm(forms.ModelForm):
+    class Meta(CommonMeta):
+        model = ExternalImage
 
 
 class ModelForm(forms.ModelForm):

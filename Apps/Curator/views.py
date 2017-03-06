@@ -9,6 +9,19 @@ from django.views.generic import TemplateView
 from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
 
 
+POSSIBLE_RESOURCE = {
+    'Music': {
+        'name': 'Music', 'form': MusicForm, 'template': 'curator/resources/resources-music.html'
+    },
+    'Image': {
+        'name': 'Image', 'form': ImageForm, 'template': 'curator/resources/resources-images.html'
+    },
+    'Model': {
+        'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html'
+    },
+}
+
+
 class IndexView(TemplateView):
     template_name = 'curator/index.html'
 
@@ -44,10 +57,13 @@ class RoomsView(TemplateView):
 class ResourcesView(TemplateView):
     template_name = 'curator/resources/resources.html'
     selector = {'header': {'display': 'Models, Music, Images, etc:',
-                           'selected': 'selected'},
-                'options': [{'value': 'Music', 'display': 'Music', 'selected': ''},
-                            {'value': 'Image', 'display': 'Images', 'selected': ''},
-                            {'value': 'Model', 'display': 'Models', 'selected': ''}]}
+                           'selected': 'selected'}, 'options': []}
+    for resource in POSSIBLE_RESOURCE:
+        resource = POSSIBLE_RESOURCE[resource]
+        local_dict = {'value': resource['name'],
+                      'display': resource['name'],
+                      'selected': ''}
+        selector['options'].append(local_dict)
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
@@ -58,21 +74,18 @@ class ResourcesView(TemplateView):
 
         specific_resource = request.POST.get('resource', None)
         new = request.POST.get('new-resource', None)
-
         specific_template = self.template_name
         specific_selector = copy.deepcopy(self.selector)
 
         if specific_resource:
             specific_selector['header']['selected'] = ''
-            if specific_resource == 'Music':
-                specific_template = 'curator/resources/resources-music.html'
-                specific_selector['options'][0]['selected'] = 'selected'
-            elif specific_resource == 'Image':
-                specific_template = 'curator/resources/resources-images.html'
-                specific_selector['options'][1]['selected'] = 'selected'
-            elif specific_resource == 'Model':
-                specific_template = 'curator/resources/resources-models.html'
-                specific_selector['options'][2]['selected'] = 'selected'
+            specific_template = POSSIBLE_RESOURCE.get(specific_resource, None)
+
+            if specific_template is not None:
+                specific_template = specific_template['template']
+                for option in specific_selector['options']:
+                    if option['value'] == specific_resource:
+                        option['selected'] = 'selected'
 
         if new in ['1']:
             url = '/curator/new-resources?resource='+specific_resource
@@ -89,14 +102,13 @@ class NewResourcesView(TemplateView):
         parameters = {}
         form_type = request.GET.get('resource', None)
         if form_type:
-            if form_type == 'Music':
-                form = MusicForm()
-            elif form_type == 'Image':
-                form = ImageForm()
-            elif form_type == 'Model':
-                form = ModelForm()
+            form = POSSIBLE_RESOURCE.get(form_type, None)
+
+            if form is not None:
+                form = form['form']()
             else:
                 form = TemplateForm()
+
             parameters = {'form': form, 'resource': form_type}
 
         return render(request, self.template_name, parameters)
@@ -108,12 +120,11 @@ class NewResourcesView(TemplateView):
 
         form_type = request.GET.get('resource', None)
         if form_type:
-            if form_type == 'Music':
-                request_form = MusicForm(request.POST, request.FILES)
-            elif form_type == 'Image':
-                request_form = ImageForm(request.POST, request.FILES)
-            elif form_type == 'Model':
-                request_form = ModelForm(request.POST, request.FILES)
+            args['resource'] = form_type
+            form_type = POSSIBLE_RESOURCE.get(form_type, None)
+
+            if form_type is not None:
+                request_form = form_type['form'](request.POST, request.FILES)
 
         if request_form.is_valid():
             request_form.save()

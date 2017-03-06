@@ -16,12 +16,12 @@ class ExternalTemplate(ExternalFile):
     file = models.FileField(upload_to=rename_template, validators=[validator_template])
 
 
-class ExternalImage(ExternalFile):
-    file = models.FileField(upload_to=rename_image, validators=[validator_image])
-
-
 class ExternalMusic(ExternalFile):
     file = models.FileField(upload_to=rename_music, validators=[validator_music])
+
+
+class ExternalImage(ExternalFile):
+    file = models.FileField(upload_to=rename_image, validators=[validator_image])
 
 
 class ExternalModel(ExternalFile):
