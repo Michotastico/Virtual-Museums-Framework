@@ -1,5 +1,8 @@
 import copy
+
+import re
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -7,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
-
+from Apps.Curator.models import ExternalMusic
 
 POSSIBLE_RESOURCE = {
     'Music': {
@@ -20,6 +23,24 @@ POSSIBLE_RESOURCE = {
         'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html'
     },
 }
+
+
+def parse_inner_url(url):
+    return re.sub(r'.*/static', '/static', url)
+
+
+@transaction.atomic
+def query_music():
+    music_list = list()
+    musics = ExternalMusic.objects.all()
+    for music in musics:
+        music_template = dict()
+        music_template['title'] = music.title
+        music_template['description'] = music.description
+        music_template['href'] = parse_inner_url(music.file.url)
+        music_list.append(music_template)
+    print music_list
+
 
 
 class IndexView(TemplateView):
@@ -98,7 +119,8 @@ class ResourcesView(TemplateView):
         specific_resource = request.POST.get('resource', None)
         new = request.POST.get('new-resource', None)
         specific_selector, specific_template = self.selector_current(specific_resource)
-
+        # TODO Do this on specific cases!
+        query_music()
         if new in ['1']:
             url = '/curator/new-resources?resource='+specific_resource
             return redirect(url)
