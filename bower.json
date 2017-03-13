@@ -1,0 +1,20 @@
+{
+  "name": "virtual-museums-framework",
+  "homepage": "https://github.com/Michotastico/Memoria",
+  "authors": [
+    "Michel Llorens <mllorens@dcc.uchile.cl>"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "roboto-fontface": "^0.4.5",
+    "jquery": "^3.1.1"
+  }
+}
