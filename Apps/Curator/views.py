@@ -109,6 +109,12 @@ class ResourcesView(TemplateView):
         specific_resource = request.GET.get('resource', None)
         specific_selector, specific_template = self.selector_current(specific_resource)
 
+        resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
+
+        if resource_list is not None:
+            resource_list = resource_list['elements']()
+            specific_selector['elements'] = resource_list
+
         success = request.GET.get('success', None)
         if success is not None and success == 'true':
             specific_selector['success'] = True
