@@ -1,4 +1,5 @@
 import copy
+import os
 
 import re
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
-from Apps.Curator.models import ExternalMusic
+from Apps.Curator.models import ExternalMusic, ExternalImage, ExternalModel
 
 
 def parse_inner_url(url):
@@ -29,6 +30,35 @@ def query_music():
         music_list.append(music_template)
     return music_list
 
+
+@transaction.atomic
+def query_image():
+    image_list = list()
+    images = ExternalImage.objects.all()
+    for image in images:
+        image_template = dict()
+        image_template['title'] = image.title
+        image_template['description'] = image.description
+        image_template['href'] = parse_inner_url(image.file.url)
+        image_list.append(image_template)
+    return image_list
+
+
+@transaction.atomic
+def query_model():
+    model_list = list()
+    models = ExternalModel.objects.all()
+    for model in models:
+        model_template = dict()
+        model_template['title'] = model.title
+        model_template['description'] = model.description
+        model_template['href'] = parse_inner_url(model.file.url)
+        split_name = os.path.splitext(model_template['href'])
+        ext = split_name[1]
+        model_template['extension'] = ext
+        model_list.append(model_template)
+    return model_list
+
 POSSIBLE_RESOURCE = {
     'Music': {
         'name': 'Music', 'form': MusicForm, 'template': 'curator/resources/resources-music.html',
@@ -36,11 +66,11 @@ POSSIBLE_RESOURCE = {
     },
     'Image': {
         'name': 'Image', 'form': ImageForm, 'template': 'curator/resources/resources-images.html',
-        'elements': query_music
+        'elements': query_image
     },
     'Model': {
         'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html',
-        'elements': query_music
+        'elements': query_model
     },
 }
 

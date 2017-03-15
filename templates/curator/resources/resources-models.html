@@ -13,6 +13,29 @@
     {% include "curator/navbar.html" %}
     <div class="container">
         {% include "curator/resources/resources-base.html" %}
+        <div class="panel panel-default">
+            <div class="panel-heading">Music</div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Model file</th>
+                </tr>
+                </thead>
+                <tbody>
+                {%  for element in elements%}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ element.title }}</td>
+                        <td>{{ element.description }}</td>
+                        <td><a download="{{ element.title }}{{ element.extension }}" href="{{ element.href }}">Click</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     </body>
 {% endblock body %}

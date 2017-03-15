@@ -22,7 +22,6 @@
                     <th>Title</th>
                     <th>Description</th>
                     <th>Music file</th>
-                    <th>Used in</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -35,12 +34,6 @@
                             <source src="{{ element.href }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio></td>
-                        <!--TODO need to implement new model for this select -->
-                        <td><select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                            <option value="" disabled="" class="" selected="selected">Rooms</option>
-                            <option label="Master room" value="master-room">Master room</option>
-                            <option label="Front yard" value="front-yard">Front yard</option>
-                        </select></td>
                     </tr>
                 {% endfor %}
                 </tbody>

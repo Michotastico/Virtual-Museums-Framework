@@ -50,7 +50,7 @@ def validator_music(external_file): file_extension_validation(external_file, ['.
 def rename_music(instance, filename): return file_rename(filename, '/static/external-content/music')
 
 
-def validator_model(external_file): file_extension_validation(external_file, ['.off'])
+def validator_model(external_file): file_extension_validation(external_file, ['.off', '.obj'])
 
 
 def rename_model(instance, filename): return file_rename(filename, '/static/external-content/models')
