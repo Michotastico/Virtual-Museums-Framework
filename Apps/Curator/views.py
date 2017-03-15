@@ -12,18 +12,6 @@ from django.views.generic import TemplateView
 from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
 from Apps.Curator.models import ExternalMusic
 
-POSSIBLE_RESOURCE = {
-    'Music': {
-        'name': 'Music', 'form': MusicForm, 'template': 'curator/resources/resources-music.html'
-    },
-    'Image': {
-        'name': 'Image', 'form': ImageForm, 'template': 'curator/resources/resources-images.html'
-    },
-    'Model': {
-        'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html'
-    },
-}
-
 
 def parse_inner_url(url):
     return re.sub(r'.*/static', '/static', url)
@@ -39,8 +27,22 @@ def query_music():
         music_template['description'] = music.description
         music_template['href'] = parse_inner_url(music.file.url)
         music_list.append(music_template)
-    print music_list
+    return music_list
 
+POSSIBLE_RESOURCE = {
+    'Music': {
+        'name': 'Music', 'form': MusicForm, 'template': 'curator/resources/resources-music.html',
+        'elements': query_music
+    },
+    'Image': {
+        'name': 'Image', 'form': ImageForm, 'template': 'curator/resources/resources-images.html',
+        'elements': query_music
+    },
+    'Model': {
+        'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html',
+        'elements': query_music
+    },
+}
 
 
 class IndexView(TemplateView):
@@ -119,8 +121,13 @@ class ResourcesView(TemplateView):
         specific_resource = request.POST.get('resource', None)
         new = request.POST.get('new-resource', None)
         specific_selector, specific_template = self.selector_current(specific_resource)
-        # TODO Do this on specific cases!
-        query_music()
+
+        resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
+
+        if resource_list is not None:
+            resource_list = resource_list['elements']()
+            specific_selector['elements'] = resource_list
+
         if new in ['1']:
             url = '/curator/new-resources?resource='+specific_resource
             return redirect(url)
