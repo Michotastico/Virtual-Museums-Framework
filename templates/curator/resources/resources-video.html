@@ -15,13 +15,13 @@
         {% include "curator/resources/resources-base.html" %}
 
         <div class="panel panel-default">
-            <div class="panel-heading">Images</div>
+            <div class="panel-heading">Video</div>
             <table class="table">
                 <thead>
                 <tr>
                     <th>#</th>
                     <th>Title</th>
-                    <th>Image</th>
+                    <th>Video</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,11 +29,10 @@
                     <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ element.title }}</td>
-                    <td>
-                    <a  class="thumbnail">
-                        <img src="{{ element.href }}" alt="{{ element.description }}">
-                    </a>}
-                    </td>
+                    <td><video controls>
+                            <source src="{{ element.href }}" type="video/mp4">
+                            Your browser does not support the audio element.
+                        </video></td>
                     </tr>
                 {% endfor %}
                 </tbody>

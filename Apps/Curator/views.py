@@ -10,8 +10,8 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
-from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
-from Apps.Curator.models import ExternalMusic, ExternalImage, ExternalModel
+from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm, VideoForm
+from Apps.Curator.models import ExternalMusic, ExternalImage, ExternalModel, ExternalVideo
 
 
 def parse_inner_url(url):
@@ -29,6 +29,19 @@ def query_music():
         music_template['href'] = parse_inner_url(music.file.url)
         music_list.append(music_template)
     return music_list
+
+
+@transaction.atomic
+def query_video():
+    video_list = list()
+    videos = ExternalVideo.objects.all()
+    for video in videos:
+        video_template = dict()
+        video_template['title'] = video.title
+        video_template['description'] = video.description
+        video_template['href'] = parse_inner_url(video.file.url)
+        video_list.append(video_template)
+    return video_list
 
 
 @transaction.atomic
@@ -71,6 +84,10 @@ POSSIBLE_RESOURCE = {
     'Model': {
         'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html',
         'elements': query_model
+    },
+    'Video': {
+        'name': 'Video', 'form': VideoForm, 'template': 'curator/resources/resources-video.html',
+        'elements': query_video
     },
 }
 

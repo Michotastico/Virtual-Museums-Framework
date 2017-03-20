@@ -54,3 +54,9 @@ def validator_model(external_file): file_extension_validation(external_file, ['.
 
 
 def rename_model(instance, filename): return file_rename(filename, '/static/external-content/models')
+
+
+def validator_video(external_file): file_extension_validation(external_file, ['.mp4'])
+
+
+def rename_video(instance, filename): return file_rename(filename, '/static/external-content/video')
