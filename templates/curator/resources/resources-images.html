@@ -25,24 +25,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Image</td>
+                {%  for element in elements%}
+                    <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ element.title }}</td>
                     <td>
-                        <a  class="thumbnail">
-                            <img src="/static/images/user_default.png" alt="...">
-                        </a>
+                    <a  class="thumbnail">
+                        <img src="{{ element.href }}" alt="{{ element.description }}">
+                    </a>}
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Image2</td>
-                    <td>
-                        <a  class="thumbnail">
-                            <img src="/static/images/user_default.png" alt="...">
-                        </a>
-                    </td>
-                </tr>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

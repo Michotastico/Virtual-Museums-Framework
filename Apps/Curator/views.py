@@ -1,23 +1,93 @@
 import copy
+import os
+
+import re
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
-from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm
+from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm, VideoForm
+from Apps.Curator.models import ExternalMusic, ExternalImage, ExternalModel, ExternalVideo
 
+
+def parse_inner_url(url):
+    return re.sub(r'.*/static', '/static', url)
+
+
+@transaction.atomic
+def query_music():
+    music_list = list()
+    musics = ExternalMusic.objects.all()
+    for music in musics:
+        music_template = dict()
+        music_template['title'] = music.title
+        music_template['description'] = music.description
+        music_template['href'] = parse_inner_url(music.file.url)
+        music_list.append(music_template)
+    return music_list
+
+
+@transaction.atomic
+def query_video():
+    video_list = list()
+    videos = ExternalVideo.objects.all()
+    for video in videos:
+        video_template = dict()
+        video_template['title'] = video.title
+        video_template['description'] = video.description
+        video_template['href'] = parse_inner_url(video.file.url)
+        video_list.append(video_template)
+    return video_list
+
+
+@transaction.atomic
+def query_image():
+    image_list = list()
+    images = ExternalImage.objects.all()
+    for image in images:
+        image_template = dict()
+        image_template['title'] = image.title
+        image_template['description'] = image.description
+        image_template['href'] = parse_inner_url(image.file.url)
+        image_list.append(image_template)
+    return image_list
+
+
+@transaction.atomic
+def query_model():
+    model_list = list()
+    models = ExternalModel.objects.all()
+    for model in models:
+        model_template = dict()
+        model_template['title'] = model.title
+        model_template['description'] = model.description
+        model_template['href'] = parse_inner_url(model.file.url)
+        split_name = os.path.splitext(model_template['href'])
+        ext = split_name[1]
+        model_template['extension'] = ext
+        model_list.append(model_template)
+    return model_list
 
 POSSIBLE_RESOURCE = {
     'Music': {
-        'name': 'Music', 'form': MusicForm, 'template': 'curator/resources/resources-music.html'
+        'name': 'Music', 'form': MusicForm, 'template': 'curator/resources/resources-music.html',
+        'elements': query_music
     },
     'Image': {
-        'name': 'Image', 'form': ImageForm, 'template': 'curator/resources/resources-images.html'
+        'name': 'Image', 'form': ImageForm, 'template': 'curator/resources/resources-images.html',
+        'elements': query_image
     },
     'Model': {
-        'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html'
+        'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html',
+        'elements': query_model
+    },
+    'Video': {
+        'name': 'Video', 'form': VideoForm, 'template': 'curator/resources/resources-video.html',
+        'elements': query_video
     },
 }
 
@@ -86,6 +156,12 @@ class ResourcesView(TemplateView):
         specific_resource = request.GET.get('resource', None)
         specific_selector, specific_template = self.selector_current(specific_resource)
 
+        resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
+
+        if resource_list is not None:
+            resource_list = resource_list['elements']()
+            specific_selector['elements'] = resource_list
+
         success = request.GET.get('success', None)
         if success is not None and success == 'true':
             specific_selector['success'] = True
@@ -98,6 +174,12 @@ class ResourcesView(TemplateView):
         specific_resource = request.POST.get('resource', None)
         new = request.POST.get('new-resource', None)
         specific_selector, specific_template = self.selector_current(specific_resource)
+
+        resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
+
+        if resource_list is not None:
+            resource_list = resource_list['elements']()
+            specific_selector['elements'] = resource_list
 
         if new in ['1']:
             url = '/curator/new-resources?resource='+specific_resource
