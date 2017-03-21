@@ -11,7 +11,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm, VideoForm
-from Apps.Curator.models import ExternalMusic, ExternalImage, ExternalModel, ExternalVideo
+from Apps.Curator.models.resources import ExternalMusic, ExternalImage, ExternalModel, ExternalVideo
+from Apps.Curator.models.rooms import Room
 
 
 def parse_inner_url(url):
