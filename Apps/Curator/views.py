@@ -13,6 +13,7 @@ from django.views.generic import TemplateView
 from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm, VideoForm
 from Apps.Curator.models.resources import ExternalMusic, ExternalImage, ExternalModel, ExternalVideo
 from Apps.Curator.models.rooms import Room
+from Apps.Curator.models.opinions import Opinion
 
 
 def parse_inner_url(url):
