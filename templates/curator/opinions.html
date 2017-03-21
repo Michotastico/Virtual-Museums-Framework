@@ -13,15 +13,24 @@
     {% include "curator/navbar.html" %}
     <div class="container">
         <h2>People's Opinion</h2>
-        <form class="form-inline ng-pristine ng-valid">
+        {% if success %}
+            <div class="alert alert-success">
+                <strong>Success!</strong> Your action was performed correctly.
+            </div>
+        {% endif %}
+        <form method="POST" action="/curator/opinions" class="form-inline ng-pristine ng-valid">
+            {% csrf_token %}
             <label >Select Room: </label>
-            <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                <option value="" disabled="" class="" selected="selected">Select a Room from the list:</option>
-                <option label="Master room" value="master-room">Master room</option>
-                <option label="Front yard" value="front-yard">Front yard</option>
+            <select name="room" class="form-control ng-pristine ng-valid ng-empty ng-touched" onChange="form.submit();">
+                <option value="" disabled="" class="" {{ header.selected }}>{{ header.display }}</option>
+                {% for element in options %}
+                    <option label="{{ element.value }}" value="{{ element.value }}" {{ element.selected }}>
+                        {{ element.display }}
+                    </option>
+                {% endfor %}
             </select>
-            <label class="checkbox-inline"><input type="checkbox" value="approved">Approved</label>
-            <label class="checkbox-inline"><input type="checkbox" value="pending">Pending</label>
+            <label class="checkbox-inline"><input type="checkbox" name="approved" {{ approved }}>Approved</label>
+            <label class="checkbox-inline"><input type="checkbox" name="pending" {{ pending }}>Pending</label>
         </form>
         <br>
         <div>

@@ -104,10 +104,31 @@ class IndexView(TemplateView):
 
 class OpinionsView(TemplateView):
     template_name = 'curator/opinions.html'
+    selector = {'header': {'display': 'Select a Room from the list:',
+                           'selected': 'selected'},
+                'options': [{'value': 'Master room', 'display': 'Master room', 'selected': ''},
+                            {'value': 'Front yard', 'display': 'Front yard', 'selected': ''}],
+                'approved': '',
+                'pending': ''}
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        return render(request, self.template_name, self.selector)
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        current_selector = copy.deepcopy(self.selector)
+
+        print request.POST.get('room', 'Banana')
+        checkbox_approved = request.POST.get('approved', None)
+        checkbox_pending = request.POST.get('pending', None)
+
+        if checkbox_approved is not None:
+            current_selector['approved'] = 'checked'
+        if checkbox_pending is not None:
+            current_selector['pending'] = 'checked'
+
+        return render(request, self.template_name, current_selector)
 
 
 class NewRoomsView(TemplateView):
