@@ -119,7 +119,7 @@ class OpinionsView(TemplateView):
     def post(self, request, *a, **ka):
         current_selector = copy.deepcopy(self.selector)
 
-        print request.POST.get('room', 'Banana')
+        current_room = request.POST.get('room', None)
         checkbox_approved = request.POST.get('approved', None)
         checkbox_pending = request.POST.get('pending', None)
 
@@ -127,6 +127,13 @@ class OpinionsView(TemplateView):
             current_selector['approved'] = 'checked'
         if checkbox_pending is not None:
             current_selector['pending'] = 'checked'
+
+        if current_room is not None:
+            current_selector['header']['selected'] = ''
+            for option in current_selector['options']:
+                if option['value'] is current_room:
+                    option['selected'] = 'selected'
+                    break
 
         return render(request, self.template_name, current_selector)
 
