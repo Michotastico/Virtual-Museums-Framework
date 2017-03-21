@@ -29,8 +29,10 @@
                     </option>
                 {% endfor %}
             </select>
-            <label class="checkbox-inline"><input type="checkbox" name="approved" {{ approved }}>Approved</label>
-            <label class="checkbox-inline"><input type="checkbox" name="pending" {{ pending }}>Pending</label>
+            <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-primary {% if approved %} active {% endif %}"><input type="checkbox" name="approved" {{ approved }}>Approved</label>
+            <label class="btn btn-primary {% if pending %} active {% endif %}"><input type="checkbox" name="pending" {{ pending }}>Pending</label>
+            </div>
         </form>
         <br>
         <div>
