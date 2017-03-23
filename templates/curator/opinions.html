@@ -42,6 +42,8 @@
                     <form method="POST" action="/curator/opinions">
                         {% csrf_token %}
                         <input type="hidden" id="id_opinion" name="id_opinion" value="{{ opinion.id }}" />
+                        <input type="hidden" id="delete" name="delete" value="0" />
+                        <input type="hidden" id="reverse" name="reverse" value="0" />
                         <input type="hidden" id="room" name="room" value="{{ current_room }}" />
                         {% if approved %}<input type="hidden" id="approved" name="approved" value="1" />{% endif %}
                         {% if pending %}<input type="hidden" id="pending" name="pending" value="1" />{% endif %}
@@ -54,8 +56,12 @@
                             </div>
                             <div class="col-md-8">{{ opinion.opinion }}</div>
                             <div class="col-md-2">
-                                <button class= "btn btn-sm btn-warning btn-block" type="button" onclick="form.submit();">{% if opinion.status == False %}Approve {% else %} Disapprove {% endif %}</button>
-                                <button class= "btn btn-sm btn-danger btn-block" type="button">Delete</button>
+                                <button class= "btn btn-sm btn-warning btn-block" type="button"
+                                        onclick="document.getElementById('reverse').value = '1'; form.submit();">
+                                    {% if opinion.status == False %}Approve {% else %} Disapprove {% endif %}</button>
+                                <button class= "btn btn-sm btn-danger btn-block" type="button"
+                                        onclick="document.getElementById('delete').value = '1'; form.submit();">
+                                    Delete</button>
                                 <button class="btn btn-sm btn-info btn-block" type="button">Send message</button>
                             </div>
                         </div>

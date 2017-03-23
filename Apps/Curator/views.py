@@ -25,6 +25,12 @@ class IndexView(TemplateView):
 
 
 @transaction.atomic
+def delete_opinion(opinion_id):
+    opinion = Opinion.objects.get(id=opinion_id)
+    opinion.delete()
+
+
+@transaction.atomic
 def reverse_opinion_status(opinion_id):
     opinion = Opinion.objects.get(id=opinion_id)
     opinion.status = not opinion.status
@@ -79,8 +85,14 @@ class OpinionsView(TemplateView):
         checkbox_pending = request.POST.get('pending', None)
         opinion_id = request.POST.get('id_opinion', None)
 
-        if opinion_id is not None:
+        reverse_option = request.POST.get('reverse', None)
+        delete_option = request.POST.get('delete', None)
+
+        if reverse_option is not None and reverse_option in ['1']:
             reverse_opinion_status(opinion_id)
+
+        elif delete_option is not None and delete_option in ['1']:
+            delete_opinion(opinion_id)
 
         approved = False
         pending = False
