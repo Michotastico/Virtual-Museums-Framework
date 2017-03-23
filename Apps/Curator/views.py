@@ -16,6 +16,104 @@ from Apps.Curator.models.rooms import Room
 from Apps.Curator.models.opinions import Opinion
 
 
+class IndexView(TemplateView):
+    template_name = 'curator/index.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name)
+
+
+@transaction.atomic
+def query_opinion(room_name, approved, pending):
+    opinion_list = list()
+
+    if not approved and not pending:
+        return opinion_list
+
+    selected_room = Room.objects.get(name=room_name)
+    opinions = Opinion.objects.filter(validated=True).filter(room=selected_room)
+    if approved and not pending:
+        opinions = opinions.exclude(status=False)
+    elif pending and not approved:
+        opinions = opinions.exclude(status=True)
+
+    for opinion in opinions:
+        opinion_template = dict()
+        opinion_template['id'] = opinion.id
+        opinion_template['name'] = opinion.person_name
+        opinion_template['opinion'] = opinion.opinion
+        opinion_template['avatar'] = opinion.avatar
+        opinion_template['status'] = opinion.status
+
+        opinion_list.append(opinion_template)
+    return opinion_list
+
+
+class OpinionsView(TemplateView):
+    template_name = 'curator/opinions.html'
+    selector = {'header': {'display': 'Select a Room from the list:',
+                           'selected': 'selected'},
+                'options': [{'value': 'Master room', 'display': 'Master room', 'selected': ''},
+                            {'value': 'Front yard', 'display': 'Front yard', 'selected': ''}],
+                'approved': '',
+                'pending': ''}
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name, self.selector)
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        current_selector = copy.deepcopy(self.selector)
+
+        current_room = request.POST.get('room', None)
+        checkbox_approved = request.POST.get('approved', None)
+        checkbox_pending = request.POST.get('pending', None)
+        opinion_id = request.POST.get('id_opinion', 'Hallo!')
+
+        print opinion_id
+
+        approved = False
+        pending = False
+
+        if checkbox_approved is not None:
+            current_selector['approved'] = 'checked'
+            approved = True
+        if checkbox_pending is not None:
+            current_selector['pending'] = 'checked'
+            pending = True
+
+        if current_room is not None:
+            current_selector['current_room'] = current_room
+            current_selector['header']['selected'] = ''
+            for option in current_selector['options']:
+                if option['value'] == current_room:
+                    option['selected'] = 'selected'
+                    break
+
+            opinions = query_opinion(current_room, approved, pending)
+            current_selector['opinions'] = opinions
+
+        return render(request, self.template_name, current_selector)
+
+
+class NewRoomsView(TemplateView):
+    template_name = 'curator/new-rooms.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name)
+
+
+class RoomsView(TemplateView):
+    template_name = 'curator/rooms.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name)
+
+
 def parse_inner_url(url):
     return re.sub(r'.*/static', '/static', url)
 
@@ -92,66 +190,6 @@ POSSIBLE_RESOURCE = {
         'elements': query_video
     },
 }
-
-
-class IndexView(TemplateView):
-    template_name = 'curator/index.html'
-
-    @method_decorator(login_required(login_url='/auth/login'))
-    def get(self, request, *a, **ka):
-        return render(request, self.template_name)
-
-
-class OpinionsView(TemplateView):
-    template_name = 'curator/opinions.html'
-    selector = {'header': {'display': 'Select a Room from the list:',
-                           'selected': 'selected'},
-                'options': [{'value': 'Master room', 'display': 'Master room', 'selected': ''},
-                            {'value': 'Front yard', 'display': 'Front yard', 'selected': ''}],
-                'approved': '',
-                'pending': ''}
-
-    @method_decorator(login_required(login_url='/auth/login'))
-    def get(self, request, *a, **ka):
-        return render(request, self.template_name, self.selector)
-
-    @method_decorator(login_required(login_url='/auth/login'))
-    def post(self, request, *a, **ka):
-        current_selector = copy.deepcopy(self.selector)
-
-        current_room = request.POST.get('room', None)
-        checkbox_approved = request.POST.get('approved', None)
-        checkbox_pending = request.POST.get('pending', None)
-
-        if checkbox_approved is not None:
-            current_selector['approved'] = 'checked'
-        if checkbox_pending is not None:
-            current_selector['pending'] = 'checked'
-
-        if current_room is not None:
-            current_selector['header']['selected'] = ''
-            for option in current_selector['options']:
-                if option['value'] == current_room:
-                    option['selected'] = 'selected'
-                    break
-
-        return render(request, self.template_name, current_selector)
-
-
-class NewRoomsView(TemplateView):
-    template_name = 'curator/new-rooms.html'
-
-    @method_decorator(login_required(login_url='/auth/login'))
-    def get(self, request, *a, **ka):
-        return render(request, self.template_name)
-
-
-class RoomsView(TemplateView):
-    template_name = 'curator/rooms.html'
-
-    @method_decorator(login_required(login_url='/auth/login'))
-    def get(self, request, *a, **ka):
-        return render(request, self.template_name)
 
 
 class ResourcesView(TemplateView):

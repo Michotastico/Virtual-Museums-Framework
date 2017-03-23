@@ -30,28 +30,40 @@
                 {% endfor %}
             </select>
             <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-primary {% if approved %} active {% endif %}"><input type="checkbox" name="approved" {{ approved }}>Approved</label>
-            <label class="btn btn-primary {% if pending %} active {% endif %}"><input type="checkbox" name="pending" {{ pending }}>Pending</label>
+                <label class="btn btn-primary {% if approved %} active {% endif %}"><input type="checkbox" name="approved" {{ approved }} onChange="form.submit();">Approved</label>
+                <label class="btn btn-primary {% if pending %} active {% endif %}"><input type="checkbox" name="pending" {{ pending }} onChange="form.submit();">Pending</label>
             </div>
         </form>
         <br>
         <div>
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-md-2">
-                        <a href="#" class="thumbnail">
-                            <img src="https://api.adorable.io/avatars/180/dummy%40virtual.museum" alt="...">
-                        </a>
-                        <p class="text-center">John</p>
-                    </div>
-                    <div class="col-md-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque vel quam interdum consectetur id sit amet metus. Aenean id pharetra metus. Phasellus vulputate lorem justo, ac cursus eros consequat a. Ut congue, ante sit amet volutpat cursus, risus urna ornare dui, tincidunt malesuada massa sapien in ante. Curabitur tincidunt magna vitae massa maximus vehicula. Nullam vulputate, neque lacinia vulputate ullamcorper, orci enim mollis nibh, id mattis quam turpis sed elit. Nulla vitae feugiat orci.</div>
-                    <div class="col-md-2">
-                        <button class= "btn btn-sm btn-warning btn-block" type="button">Approve</button>
-                        <button class= "btn btn-sm btn-danger btn-block" type="button">Delete</button>
-                        <button class="btn btn-sm btn-info btn-block" type="button">Send message</button>
-                    </div>
+            {% for opinion in opinions %}
+
+                <div class="jumbotron">
+                    <form method="POST" action="/curator/opinions">
+                        {% csrf_token %}
+                        <input type="hidden" id="id_opinion" name="id_opinion" value="{{ opinion.id }}" />
+                        <input type="hidden" id="room" name="room" value="{{ current_room }}" />
+                        {% if approved %}<input type="hidden" id="approved" name="approved" value="1" />{% endif %}
+                        {% if pending %}<input type="hidden" id="pending" name="pending" value="1" />{% endif %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <a class="thumbnail">
+                                    <img src="{{ opinion.avatar }}" alt="User avatar">
+                                </a>
+                                <p class="text-center">{{ opinion.name }}</p>
+                            </div>
+                            <div class="col-md-8">{{ opinion.opinion }}</div>
+                            <div class="col-md-2">
+                                <button class= "btn btn-sm btn-warning btn-block" type="button" onclick="form.submit();">{% if opinion.status == False %}Approve {% else %} Disapprove {% endif %}</button>
+                                <button class= "btn btn-sm btn-danger btn-block" type="button">Delete</button>
+                                <button class="btn btn-sm btn-info btn-block" type="button">Send message</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </div>
+
+
+            {% endfor %}
         </div>
     </div>
     </body>
