@@ -64,7 +64,7 @@
                                         onclick="if (confirm('You really want to delete this opinion') == true) {
                                                 document.getElementById('delete_{{ opinion.id }}').value = '1'; form.submit();}">
                                     Delete</button>
-                                <button class="btn btn-sm btn-info btn-block" type="button">Send message</button>
+                                <a class="btn btn-sm btn-info btn-block" type="button" href="mailto:{{ opinion.email }}">Send email</a>
                             </div>
                         </div>
                     </form>

@@ -58,6 +58,7 @@ def query_opinion(room_name, approved, pending):
         opinion_template['opinion'] = opinion.opinion
         opinion_template['avatar'] = opinion.avatar
         opinion_template['status'] = opinion.status
+        opinion_template['email'] = opinion.email
 
         opinion_list.append(opinion_template)
     return opinion_list
