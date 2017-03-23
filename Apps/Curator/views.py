@@ -25,6 +25,15 @@ class IndexView(TemplateView):
 
 
 @transaction.atomic
+def get_rooms_names():
+    room_list = list()
+    rooms = Room.objects.all()
+    for room in rooms:
+        room_list.append(room.name)
+    return room_list
+
+
+@transaction.atomic
 def delete_opinion(opinion_id):
     opinion = Opinion.objects.get(id=opinion_id)
     opinion.delete()
@@ -68,18 +77,26 @@ class OpinionsView(TemplateView):
     template_name = 'curator/opinions.html'
     selector = {'header': {'display': 'Select a Room from the list:',
                            'selected': 'selected'},
-                'options': [{'value': 'Master room', 'display': 'Master room', 'selected': ''},
-                            {'value': 'Front yard', 'display': 'Front yard', 'selected': ''}],
+                'options': [],
                 'approved': '',
                 'pending': ''}
 
+    def get_current_selector(self):
+        current_selector = copy.deepcopy(self.selector)
+        rooms = get_rooms_names()
+        for room in rooms:
+            room_template = {'value': room, 'display': room, 'selected': ''}
+            current_selector['options'].append(room_template)
+        return current_selector
+
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name, self.selector)
+        current_selector = self.get_current_selector()
+        return render(request, self.template_name, current_selector)
 
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
-        current_selector = copy.deepcopy(self.selector)
+        current_selector = self.get_current_selector()
 
         current_room = request.POST.get('room', None)
         checkbox_approved = request.POST.get('approved', None)
