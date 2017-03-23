@@ -27,8 +27,7 @@
                     <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}><a href="/">Home</a></li>
-                            <li{% if request.resolver_match.url_name == 'tools' %} class="active"{% endif %}><a href="/curator/">Tools</a></li>
+                            <li{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}><a href="/curator/">Home</a></li>
                             <li role="separator" class="divider"></li>
                             <li{% if request.resolver_match.url_name == 'account' %} class="active"{% endif %}><a href="#">Account</a></li>
                             <li><a href="/auth/logout">Logout</a></li>
