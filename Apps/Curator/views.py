@@ -25,6 +25,32 @@ class IndexView(TemplateView):
 
 
 @transaction.atomic
+def confirm_opinion(key):
+    opinion = Opinion.objects.get(hash_key=key)
+    if opinion.validated:
+        return False
+    opinion.validated = True
+    opinion.save()
+    return True
+
+
+class OpinionHashView(TemplateView):
+    template_name = 'common-web/opinion_confirmation.html'
+
+    def get(self, request, *a, **ka):
+        hash_value = request.GET.get('key', None)
+        results = {'title': 'Confirmation Error',
+                   'body': 'The opinion you are trying to confirm is invalid or the code has expired.'}
+
+        if hash_value is not None:
+            if confirm_opinion(hash_value):
+                results = {'title': 'Confirmation Successful!',
+                           'body': 'Thanks for submitting your opinion!'}
+
+        return render(request, self.template_name, results)
+
+
+@transaction.atomic
 def get_rooms_names():
     room_list = list()
     rooms = Room.objects.all()
