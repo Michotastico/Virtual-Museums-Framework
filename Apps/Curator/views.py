@@ -361,9 +361,29 @@ class NewResourcesView(TemplateView):
         return render(request, self.template_name, args)
 
 
+@transaction.atomic
+def get_expositions():
+    expositions = dict()
+    exposition_list = list()
+
+    exposition = dict()
+    exposition['id'] = 1
+    exposition['name'] = 'Demo exposition'
+    exposition['status'] = 'Active'
+    exposition['start_time'] = 'May 10th'
+    exposition['end_time'] = 'May 20th'
+    exposition['main_room'] = 'Master Room'
+
+    exposition_list.append(exposition)
+
+    expositions['expositions'] = exposition_list
+    return expositions
+
+
 class SchedulingView(TemplateView):
     template_name = 'curator/scheduling.html'
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        expositions = get_expositions()
+        return render(request, self.template_name, expositions)
