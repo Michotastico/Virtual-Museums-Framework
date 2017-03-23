@@ -25,6 +25,13 @@ class IndexView(TemplateView):
 
 
 @transaction.atomic
+def reverse_opinion_status(opinion_id):
+    opinion = Opinion.objects.get(id=opinion_id)
+    opinion.status = not opinion.status
+    opinion.save()
+
+
+@transaction.atomic
 def query_opinion(room_name, approved, pending):
     opinion_list = list()
 
@@ -70,9 +77,10 @@ class OpinionsView(TemplateView):
         current_room = request.POST.get('room', None)
         checkbox_approved = request.POST.get('approved', None)
         checkbox_pending = request.POST.get('pending', None)
-        opinion_id = request.POST.get('id_opinion', 'Hallo!')
+        opinion_id = request.POST.get('id_opinion', None)
 
-        print opinion_id
+        if opinion_id is not None:
+            reverse_opinion_status(opinion_id)
 
         approved = False
         pending = False
