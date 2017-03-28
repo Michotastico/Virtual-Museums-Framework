@@ -13,6 +13,16 @@
     {% include "curator/navbar.html" %}
     <div class="container">
         <h2>New Room</h2>
+        {% if success %}
+            <div class="alert alert-success">
+                <strong>Success!</strong> The new room was correctly added.
+            </div>
+        {% endif %}
+        {% if failure %}
+            <div class="alert alert-danger">
+                <strong>Error!</strong> The new room form has an error or it cannot be saved.
+            </div>
+        {% endif %}
         <br>
         <div>
             <div class="jumbotron">

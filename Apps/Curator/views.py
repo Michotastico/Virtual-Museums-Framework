@@ -180,6 +180,25 @@ class NewRoomsView(TemplateView):
         selector['music_options'] = get_music_names_id()
         return render(request, self.template_name, selector)
 
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        selector = dict()
+        selector['music_options'] = get_music_names_id()
+
+        room_name = request.POST.get('roomname', None)
+        music_id = request.POST.get('music', None)
+
+        if room_name is not None and music_id is not None:
+            room = Room()
+            room.name = room_name
+            room.background_music = ExternalMusic.objects.get(id=music_id)
+            room.save()
+            selector['success'] = True
+        else:
+            selector['failure'] = True
+
+        return render(request, self.template_name, selector)
+
 
 class RoomsView(TemplateView):
     template_name = 'curator/rooms.html'
