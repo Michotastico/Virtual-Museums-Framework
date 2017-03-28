@@ -162,12 +162,23 @@ class OpinionsView(TemplateView):
         return render(request, self.template_name, current_selector)
 
 
+@transaction.atomic
+def get_music_names_id():
+    music_list = list()
+    all_music = ExternalMusic.objects.all()
+    for music in all_music:
+        music_list.append({'name': music.title, 'id': music.id})
+    return music_list
+
+
 class NewRoomsView(TemplateView):
     template_name = 'curator/new-rooms.html'
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        selector = dict()
+        selector['music_options'] = get_music_names_id()
+        return render(request, self.template_name, selector)
 
 
 class RoomsView(TemplateView):

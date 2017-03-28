@@ -30,14 +30,13 @@
                             <h4>Background music:</h4>
                             <select name="music" class="form-control ng-pristine ng-valid ng-empty ng-touched">
                                 <option value="" disabled="" class="" selected>Select from resources</option>
-                                <option label="Vivaldi - Spring" value="id"></option>
                                 {% for element in music_options %}
                                     <option label="{{ element.name }}" value="{{ element.id }}"></option>
                                 {% endfor %}
                             </select>
                             <br>
                             <button class= "btn btn-sm btn-success btn-block" type="button">Save Room</button>
-                            <button class="btn btn-sm btn-danger btn-block" type="button">Discard changes</button>
+                            <a href="/curator/rooms" class="btn btn-sm btn-danger btn-block">Discard Changes</a>
                         </div>
                     </div>
                 </form>
