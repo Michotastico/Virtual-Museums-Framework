@@ -247,6 +247,7 @@ class RoomsView(TemplateView):
 
         current_room = request.GET.get('roomname', None)
         change_publish_status = request.GET.get('change_publish_status', None)
+        edit_room = request.GET.get('edit', None)
         north_room = request.GET.get('north', u'None')
         south_room = request.GET.get('south', u'None')
         west_room = request.GET.get('west', u'None')
@@ -259,6 +260,10 @@ class RoomsView(TemplateView):
                 if option['value'] == current_room:
                     option['selected'] = 'selected'
                     break
+
+            if edit_room in ['1']:
+                url = '/curator/new-rooms?roomname='+current_room
+                return redirect(url)
 
             current_room = Room.objects.get(name=current_room)
 
