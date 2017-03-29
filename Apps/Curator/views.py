@@ -219,6 +219,12 @@ class RoomsView(TemplateView):
 
         current_room = request.GET.get('roomname', None)
         if current_room is not None:
+            current_selector['header']['selected'] = ''
+            for option in current_selector['options']:
+                if option['value'] == current_room:
+                    option['selected'] = 'selected'
+                    break
+
             current_room = Room.objects.get(name=current_room)
             room_data = dict()
             room_data['id'] = current_room.id

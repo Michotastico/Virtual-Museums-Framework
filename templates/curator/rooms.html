@@ -26,106 +26,109 @@
         <div>
             {% if current_room %}
                 <div class="jumbotron">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <a href="#" class="thumbnail">
-                                <img src="https://api.adorable.io/avatars/400/cuarto-maqueta" alt="...">
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="hidden" id="published" name="published" value="0" />
-                            <button class= "btn btn-sm btn-warning btn-block" type="button"
-                                    onclick="if (confirm('You really want to change status of this room') == true) {
+                    <form class="form-inline ng-pristine ng-valid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="#" class="thumbnail">
+                                    <img src="https://api.adorable.io/avatars/400/cuarto-maqueta" alt="...">
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>Connected to Room:</h4>
+                                <div class="form-group row">
+                                    <label for="north" class="col-sm-2 col-form-label">North:</label>
+                                    <div class="col-sm-10">
+                                        <select name="north" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            {% for element in options %}
+                                                <option label="{{ element.value }}" value="{{ element.value }}"
+                                                        {% if element.value == current_room.connection_north.name %}
+                                                        selected
+                                                        {% endif %}>
+                                                </option>
+                                            {% endfor %}
+                                            <option label="None" value="None"
+                                                    {% if not current_room.connection_north %}selected{% endif %}>
+                                                None
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="south" class="col-sm-2 col-form-label">South:</label>
+                                    <div class="col-sm-10">
+                                        <select name="south" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            {% for element in options %}
+                                                <option label="{{ element.value }}" value="{{ element.value }}"
+                                                        {% if element.value == current_room.connection_south.name %}
+                                                        selected
+                                                        {% endif %}>
+                                                </option>
+                                            {% endfor %}
+                                            <option label="None" value="None"
+                                                    {% if not current_room.connection_south %}selected{% endif %}>
+                                                None
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="west" class="col-sm-2 col-form-label">West:</label>
+                                    <div class="col-sm-10">
+                                        <select name="west" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            {% for element in options %}
+                                                <option label="{{ element.value }}" value="{{ element.value }}"
+                                                        {% if element.value == current_room.connection_west.name %}
+                                                        selected
+                                                        {% endif %}>
+                                                </option>
+                                            {% endfor %}
+                                            <option label="None" value="None"
+                                                    {% if not current_room.connection_west %}selected{% endif %}>
+                                                None
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="east" class="col-sm-2 col-form-label">East:</label>
+                                    <div class="col-sm-10">
+                                        <select name="east" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            {% for element in options %}
+                                                <option label="{{ element.value }}" value="{{ element.value }}"
+                                                        {% if element.value == current_room.connection_east.name %}
+                                                        selected
+                                                        {% endif %}>
+                                                </option>
+                                            {% endfor %}
+                                            <option label="None" value="None"
+                                                    {% if not current_room.connection_east %}selected{% endif %}>
+                                                None
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <button class="btn btn-sm btn-info btn-block" type="button">Save changes</button>
+                                <h4>Popularity rating:</h4>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                         style="width: {{ current_room.popularity }}%;" aria-valuenow="{{ current_room.popularity }}" aria-valuemin="0"
+                                         aria-valuemax="100">{{ current_room.popularity }}%</div>
+                                </div>
+                                <input type="hidden" id="published" name="published" value="0" />
+                                <button class= "btn btn-sm btn-success btn-block" type="button">Edit room</button>
+                                <button class= "btn btn-sm btn-warning btn-block" type="button"
+                                        onclick="if (confirm('You really want to change status of this room') == true) {
                                             document.getElementById('published').value = '1'; form.submit();}">
-                                {% if current_room.published == False %}Publish Room
-                                {% else %} Unpublish Room {% endif %}</button>
-                            <h4>Connected to Room:</h4>
-                            <div class="form-group row">
-                                <label for="north" class="col-sm-2 col-form-label">North:</label>
-                                <div class="col-sm-10">
-                                    <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                        <option value="" disabled="" class="">Select a Room from the list:</option>
-                                        {% for element in options %}
-                                            <option label="{{ element.value }}" value="{{ element.value }}"
-                                                    {% if element.value == current_room.connection_north.name %}
-                                                    selected
-                                                    {% endif %}>
-                                            </option>
-                                        {% endfor %}
-                                        <option label="None" value="None"
-                                                {% if not current_room.connection_north %}selected{% endif %}>
-                                            None
-                                        </option>
-                                    </select>
-                                </div>
+                                    {% if current_room.published == False %}Publish Room
+                                    {% else %} Unpublish Room {% endif %}</button>
                             </div>
-                            <div class="form-group row">
-                                <label for="south" class="col-sm-2 col-form-label">South:</label>
-                                <div class="col-sm-10">
-                                    <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                        <option value="" disabled="" class="">Select a Room from the list:</option>
-                                        {% for element in options %}
-                                            <option label="{{ element.value }}" value="{{ element.value }}"
-                                                    {% if element.value == current_room.connection_south.name %}
-                                                    selected
-                                                    {% endif %}>
-                                            </option>
-                                        {% endfor %}
-                                        <option label="None" value="None"
-                                                {% if not current_room.connection_south %}selected{% endif %}>
-                                            None
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="west" class="col-sm-2 col-form-label">West:</label>
-                                <div class="col-sm-10">
-                                    <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                        <option value="" disabled="" class="">Select a Room from the list:</option>
-                                        {% for element in options %}
-                                            <option label="{{ element.value }}" value="{{ element.value }}"
-                                                    {% if element.value == current_room.connection_west.name %}
-                                                    selected
-                                                    {% endif %}>
-                                            </option>
-                                        {% endfor %}
-                                        <option label="None" value="None"
-                                                {% if not current_room.connection_west %}selected{% endif %}>
-                                            None
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="east" class="col-sm-2 col-form-label">East:</label>
-                                <div class="col-sm-10">
-                                    <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                        <option value="" disabled="" class="">Select a Room from the list:</option>
-                                        {% for element in options %}
-                                            <option label="{{ element.value }}" value="{{ element.value }}"
-                                                    {% if element.value == current_room.connection_east.name %}
-                                                    selected
-                                                    {% endif %}>
-                                            </option>
-                                        {% endfor %}
-                                        <option label="None" value="None"
-                                                {% if not current_room.connection_east %}selected{% endif %}>
-                                            None
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <h4>Popularity rating:</h4>
-                            <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar"
-                                     style="width: {{ current_room.popularity }}%;" aria-valuenow="{{ current_room.popularity }}" aria-valuemin="0"
-                                     aria-valuemax="100">{{ current_room.popularity }}%</div>
-                            </div>
-                            <button class= "btn btn-sm btn-success btn-block" type="button">Edit room</button>
-                            <button class="btn btn-sm btn-info btn-block" type="button">Save changes</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             {% endif %}
 
