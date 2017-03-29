@@ -202,10 +202,39 @@ class NewRoomsView(TemplateView):
 
 class RoomsView(TemplateView):
     template_name = 'curator/rooms.html'
+    selector = {'header': {'display': 'Select a Room from the list:',
+                           'selected': 'selected'}, 'options': []}
+
+    def get_current_selector(self):
+        current_selector = copy.deepcopy(self.selector)
+        rooms = get_rooms_names()
+        for room in rooms:
+            room_template = {'value': room, 'display': room, 'selected': ''}
+            current_selector['options'].append(room_template)
+        return current_selector
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        current_selector = self.get_current_selector()
+
+        current_room = request.GET.get('roomname', None)
+        if current_room is not None:
+            current_room = Room.objects.get(name=current_room)
+            room_data = dict()
+            room_data['id'] = current_room.id
+            room_data['published'] = current_room.published
+            room_data['popularity'] = current_room.popularity
+            if current_room.north_room is not None:
+                room_data['connection_north'] = {'name': current_room.north_room.name}
+            if current_room.south_room is not None:
+                room_data['connection_south'] = {'name': current_room.south_room.name}
+            if current_room.west_room is not None:
+                room_data['connection_west'] = {'name': current_room.west_room.name}
+            if current_room.east_room is not None:
+                room_data['connection_east'] = {'name': current_room.east_room.name}
+            current_selector['current_room'] = room_data
+
+        return render(request, self.template_name, current_selector)
 
 
 def parse_inner_url(url):
