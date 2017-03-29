@@ -3,6 +3,7 @@ import os
 
 import re
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.db import transaction
 from django.shortcuts import render, redirect
 
@@ -192,8 +193,11 @@ class NewRoomsView(TemplateView):
             room = Room()
             room.name = room_name
             room.background_music = ExternalMusic.objects.get(id=music_id)
-            room.save()
-            selector['success'] = True
+            try:
+                room.save()
+                selector['success'] = True
+            except IntegrityError:
+                selector['failure'] = True
         else:
             selector['failure'] = True
 
