@@ -16,7 +16,7 @@
         <form class="form-inline ng-pristine ng-valid">
             <label >Select Room: </label>
             <select name="roomname" class="form-control ng-pristine ng-valid ng-empty ng-touched" onChange="form.submit();">
-                <option value="" disabled="" class="" {{ header.selected }}>Select a Room from the list:</option>
+                <option value="" disabled class="" {{ header.selected }}>Select a Room from the list:</option>
                 {% for element in options %}
                     <option label="{{ element.value }}" value="{{ element.value }}" {{ element.selected }}></option>
                 {% endfor %}
@@ -45,11 +45,13 @@
                                     <label for="north" class="col-sm-2 col-form-label">North:</label>
                                     <div class="col-sm-10">
                                         <select name="north" class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            <option value="" disabled class="">Select a Room from the list:</option>
                                             {% for element in options %}
                                                 <option label="{{ element.value }}" value="{{ element.value }}"
                                                         {% if element.value == current_room.connection_north.name %}
                                                         selected
+                                                        {% elif element.value == current_room.name %}
+                                                        disabled
                                                         {% endif %}>
                                                 </option>
                                             {% endfor %}
@@ -64,11 +66,13 @@
                                     <label for="south" class="col-sm-2 col-form-label">South:</label>
                                     <div class="col-sm-10">
                                         <select name="south" class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            <option value="" disabled class="">Select a Room from the list:</option>
                                             {% for element in options %}
                                                 <option label="{{ element.value }}" value="{{ element.value }}"
                                                         {% if element.value == current_room.connection_south.name %}
                                                         selected
+                                                        {% elif element.value == current_room.name %}
+                                                        disabled
                                                         {% endif %}>
                                                 </option>
                                             {% endfor %}
@@ -83,11 +87,13 @@
                                     <label for="west" class="col-sm-2 col-form-label">West:</label>
                                     <div class="col-sm-10">
                                         <select name="west" class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            <option value="" disabled class="">Select a Room from the list:</option>
                                             {% for element in options %}
                                                 <option label="{{ element.value }}" value="{{ element.value }}"
                                                         {% if element.value == current_room.connection_west.name %}
                                                         selected
+                                                        {% elif element.value == current_room.name %}
+                                                        disabled
                                                         {% endif %}>
                                                 </option>
                                             {% endfor %}
@@ -102,11 +108,13 @@
                                     <label for="east" class="col-sm-2 col-form-label">East:</label>
                                     <div class="col-sm-10">
                                         <select name="east" class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                                            <option value="" disabled="" class="">Select a Room from the list:</option>
+                                            <option value="" disabled class="">Select a Room from the list:</option>
                                             {% for element in options %}
                                                 <option label="{{ element.value }}" value="{{ element.value }}"
                                                         {% if element.value == current_room.connection_east.name %}
                                                         selected
+                                                        {% elif element.value == current_room.name %}
+                                                        disabled
                                                         {% endif %}>
                                                 </option>
                                             {% endfor %}
@@ -121,7 +129,7 @@
                                 <input type="hidden" id="roomname" name="roomname" value="{{ current_room.name }}" />
                                 <input type="hidden" id="change_publish_status" name="change_publish_status" value="0" />
                                 <br><br>
-                                <button class="btn btn-sm btn-info btn-block" type="button">Save connections</button>
+                                <button class="btn btn-sm btn-info btn-block" type="submit">Save connections</button>
                                 <button class= "btn btn-sm btn-success btn-block" type="button">Edit room</button>
                                 <button class= "btn btn-sm btn-warning btn-block" type="button"
                                         onclick="if (confirm('You really want to change status of this room') == true) {

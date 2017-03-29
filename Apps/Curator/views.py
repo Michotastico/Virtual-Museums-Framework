@@ -223,13 +223,13 @@ class RoomsView(TemplateView):
 
         current_room = request.GET.get('roomname', None)
         change_publish_status = request.GET.get('change_publish_status', None)
-
-        if change_publish_status in ['1'] and current_room is not None:
-            room = Room.objects.get(name=current_room)
-            room.published = not room.published
-            room.save()
+        north_room = request.GET.get('north', u'None')
+        south_room = request.GET.get('south', u'None')
+        west_room = request.GET.get('west', u'None')
+        east_room = request.GET.get('east', u'None')
 
         if current_room is not None:
+
             current_selector['header']['selected'] = ''
             for option in current_selector['options']:
                 if option['value'] == current_room:
@@ -237,6 +237,30 @@ class RoomsView(TemplateView):
                     break
 
             current_room = Room.objects.get(name=current_room)
+
+            if change_publish_status in ['1']:
+                current_room.published = not current_room.published
+                current_room.save()
+
+            else:
+
+                if north_room not in [u'None']:
+                    connected_room = Room.objects.get(name=north_room)
+                    current_room.north_room = connected_room
+
+                if south_room not in [u'None']:
+                    connected_room = Room.objects.get(name=south_room)
+                    current_room.south_room = connected_room
+
+                if west_room not in [u'None']:
+                    connected_room = Room.objects.get(name=west_room)
+                    current_room.west_room = connected_room
+
+                if east_room not in [u'None']:
+                    connected_room = Room.objects.get(name=east_room)
+                    current_room.east_room = connected_room
+                current_room.save()
+
             room_data = dict()
             room_data['name'] = current_room.name
             room_data['published'] = current_room.published
