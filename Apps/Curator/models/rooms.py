@@ -8,7 +8,7 @@ from Apps.Curator.models.resources import ExternalMusic
 
 
 class Room(models.Model):
-    name = models.CharField(max_length=30, blank=False)
+    name = models.CharField(max_length=30, blank=False, primary_key=True)
     resources = models.TextField(default='{}')
     background_music = models.ForeignKey(ExternalMusic, null=True)
     published = models.BooleanField(default=False)

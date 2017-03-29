@@ -34,6 +34,12 @@
                                 </a>
                             </div>
                             <div class="col-md-6">
+                                <h4>Popularity rating:</h4>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                         style="width: {{ current_room.popularity }}%;" aria-valuenow="{{ current_room.popularity }}" aria-valuemin="0"
+                                         aria-valuemax="100">{{ current_room.popularity }}%</div>
+                                </div>
                                 <h4>Connected to Room:</h4>
                                 <div class="form-group row">
                                     <label for="north" class="col-sm-2 col-form-label">North:</label>
@@ -111,19 +117,15 @@
                                         </select>
                                     </div>
                                 </div>
+
+                                <input type="hidden" id="roomname" name="roomname" value="{{ current_room.name }}" />
+                                <input type="hidden" id="change_publish_status" name="change_publish_status" value="0" />
                                 <br><br>
-                                <button class="btn btn-sm btn-info btn-block" type="button">Save changes</button>
-                                <h4>Popularity rating:</h4>
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar"
-                                         style="width: {{ current_room.popularity }}%;" aria-valuenow="{{ current_room.popularity }}" aria-valuemin="0"
-                                         aria-valuemax="100">{{ current_room.popularity }}%</div>
-                                </div>
-                                <input type="hidden" id="published" name="published" value="0" />
+                                <button class="btn btn-sm btn-info btn-block" type="button">Save connections</button>
                                 <button class= "btn btn-sm btn-success btn-block" type="button">Edit room</button>
                                 <button class= "btn btn-sm btn-warning btn-block" type="button"
                                         onclick="if (confirm('You really want to change status of this room') == true) {
-                                            document.getElementById('published').value = '1'; form.submit();}">
+                                            document.getElementById('change_publish_status').value = '1'; form.submit();}">
                                     {% if current_room.published == False %}Publish Room
                                     {% else %} Unpublish Room {% endif %}</button>
                             </div>

@@ -218,6 +218,13 @@ class RoomsView(TemplateView):
         current_selector = self.get_current_selector()
 
         current_room = request.GET.get('roomname', None)
+        change_publish_status = request.GET.get('change_publish_status', None)
+
+        if change_publish_status in ['1'] and current_room is not None:
+            room = Room.objects.get(name=current_room)
+            room.published = not room.published
+            room.save()
+
         if current_room is not None:
             current_selector['header']['selected'] = ''
             for option in current_selector['options']:
@@ -227,7 +234,7 @@ class RoomsView(TemplateView):
 
             current_room = Room.objects.get(name=current_room)
             room_data = dict()
-            room_data['id'] = current_room.id
+            room_data['name'] = current_room.name
             room_data['published'] = current_room.published
             room_data['popularity'] = current_room.popularity
             if current_room.north_room is not None:
