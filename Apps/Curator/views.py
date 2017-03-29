@@ -179,6 +179,12 @@ class NewRoomsView(TemplateView):
     def get(self, request, *a, **ka):
         selector = dict()
         selector['music_options'] = get_music_names_id()
+
+        edit_room = request.GET.get('roomname', None)
+        if edit_room is not None:
+            room = Room.objects.get(name=edit_room)
+            selector['current_name'] = edit_room
+            selector['current_music'] = room.background_music.id
         return render(request, self.template_name, selector)
 
     @method_decorator(login_required(login_url='/auth/login'))
@@ -188,18 +194,36 @@ class NewRoomsView(TemplateView):
 
         room_name = request.POST.get('roomname', None)
         music_id = request.POST.get('music', None)
+        edit = request.POST.get('edit', None)
 
-        if room_name is not None and music_id is not None:
-            room = Room()
-            room.name = room_name
-            room.background_music = ExternalMusic.objects.get(id=music_id)
-            try:
-                room.save()
-                selector['success'] = True
-            except IntegrityError:
+        if edit in ['1']:
+            previous_room_name = request.POST.get('previousName', None)
+            if previous_room_name is not None:
+                room = Room.objects.get(name=previous_room_name)
+                if room_name is not None:
+                    room.name = room_name
+                if music_id is not None:
+                    room.background_music = ExternalMusic.objects.get(id=music_id)
+                try:
+                    room.save()
+                    selector['success'] = True
+                except IntegrityError:
+                    selector['failure'] = True
+            else:
                 selector['failure'] = True
         else:
-            selector['failure'] = True
+
+            if room_name is not None and music_id is not None:
+                room = Room()
+                room.name = room_name
+                room.background_music = ExternalMusic.objects.get(id=music_id)
+                try:
+                    room.save()
+                    selector['success'] = True
+                except IntegrityError:
+                    selector['failure'] = True
+            else:
+                selector['failure'] = True
 
         return render(request, self.template_name, selector)
 
