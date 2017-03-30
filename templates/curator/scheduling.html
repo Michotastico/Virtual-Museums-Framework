@@ -23,22 +23,34 @@
                 <th>Initial Date</th>
                 <th>End Date</th>
                 <th>Main Room</th>
-                <th></th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             {% for exposition in expositions %}
                 <tr>
-                    <form method="POST" action="/curator/opinions">
+                    <form method="POST" action="/curator/scheduling">
                         {% csrf_token %}
                         <input type="hidden" id="id_exposition" name="id_exposition" value="{{ exposition.id }}" />
+                        <input type="hidden" id="editing" name="editing" value="0" />
+                        <input type="hidden" id="changing_status" name="changing_status" value="0" />
                         <th scope="row">{{ forloop.counter }}</th>
                         <td>{{ exposition.name }}</td>
                         <td>{{ exposition.status }}</td>
                         <td>{{ exposition.start_time }}</td>
                         <td>{{ exposition.end_time }}</td>
                         <td>{{ exposition.main_room }}</td>
-                        <td><button class= "btn btn-sm btn-success" type="button" onclick="">Edit</button></td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" type="button"
+                                    onclick="document.getElementById('changing_status').value='1';form.submit();">
+                                {% if exposition.status == 'Active' %}
+                                    Desactive
+                                {% else %}
+                                    Active
+                                {% endif %}
+                            </button>
+                            <button class= "btn btn-sm btn-success" type="button" onclick="">Edit</button>
+                        </td>
                     </form>
                 </tr>
             {% endfor %}

@@ -522,3 +522,8 @@ class SchedulingView(TemplateView):
     def get(self, request, *a, **ka):
         expositions = get_expositions()
         return render(request, self.template_name, expositions)
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        expositions = get_expositions()
+        return render(request, self.template_name, expositions)
