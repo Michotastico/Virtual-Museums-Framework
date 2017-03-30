@@ -29,7 +29,7 @@
                         <ul class="dropdown-menu">
                             <li{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}><a href="/curator/">Home</a></li>
                             <li role="separator" class="divider"></li>
-                            <li{% if request.resolver_match.url_name == 'account' %} class="active"{% endif %}><a href="#">Account</a></li>
+                            <li{% if request.resolver_match.url_name == 'account' %} class="active"{% endif %}><a href="/curator/account">Account</a></li>
                             <li><a href="/auth/logout">Logout</a></li>
                         </ul>
                     </li>

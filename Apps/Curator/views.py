@@ -620,3 +620,11 @@ class SchedulingExpositionView(TemplateView):
         else:
             selector['failure'] = True
         return render(request, self.template_name, selector)
+
+
+class CuratorAccount(TemplateView):
+    template_name = 'curator/curator-account.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name)
