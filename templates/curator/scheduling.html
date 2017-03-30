@@ -54,7 +54,8 @@
                                         Active
                                     {% endif %}
                                 </button>
-                                <button class= "btn btn-sm btn-success" type="button" onclick="">Edit</button>
+                                <button class= "btn btn-sm btn-success" type="button"
+                                        onclick="document.getElementById('editing_{{ exposition.id }}').value='1';form.submit();">Edit</button>
                             </td>
                         </form>
                     </tr>

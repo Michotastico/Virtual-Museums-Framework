@@ -535,6 +535,10 @@ class SchedulingView(TemplateView):
     def post(self, request, *a, **ka):
         change_status = request.POST.get('changing_status', None)
         exposition_id = request.POST.get('id_exposition', None)
+        editing = request.POST.get('editing', None)
+
+        if editing in ['1'] and exposition_id is not None:
+            return redirect('/curator/scheduling-exposition?id=' + exposition_id)
 
         if change_status in ['1'] and exposition_id is not None:
             exposition = Exposition.objects.get(id=exposition_id)
@@ -561,6 +565,15 @@ class SchedulingExpositionView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         selector = self.get_current_selector()
+        editing_id = request.GET.get('id', None)
+
+        if editing_id is not None:
+            exposition = Exposition.objects.get(id=editing_id)
+            selector['current_exposition'] = {'id': editing_id,
+                                              'name': exposition.name,
+                                              'room': exposition.main_room.name,
+                                              'initial': exposition.start_date,
+                                              'end': exposition.end_date}
         return render(request, self.template_name, selector)
 
     @method_decorator(login_required(login_url='/auth/login'))
@@ -571,6 +584,8 @@ class SchedulingExpositionView(TemplateView):
         room = request.POST.get('room', None)
         start_date = request.POST.get('initial', None)
         end_date = request.POST.get('end', None)
+
+        id_editing = request.POST.get('id_exposition', None)
 
         try:
             if start_date is not None:
@@ -586,7 +601,10 @@ class SchedulingExpositionView(TemplateView):
                 and room is not None \
                 and start_date is not None \
                 and end_date is not None:
-            exposition = Exposition()
+            if id_editing is not None:
+                exposition = Exposition.objects.get(id=id_editing)
+            else:
+                exposition = Exposition()
             exposition.name = name
             exposition.start_date = start_date
             exposition.end_date = end_date
