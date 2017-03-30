@@ -628,3 +628,32 @@ class CuratorAccount(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         return render(request, self.template_name)
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        modifications = {'error': [], 'success': []}
+        user = request.user
+
+        fullname = request.POST.get('name', None)
+        email = request.POST.get('email', None)
+
+        new_password = request.POST.get('new-password', None)
+        confirm_password = request.POST.get('confirm-password', None)
+
+        password = request.POST.get('password', None)
+
+        if new_password is not None:
+            if confirm_password is not None and new_password == confirm_password:
+                if password is not None and user.check_password(password):
+                    user.set_password(new_password)
+                    modifications['success'].append('Successful password change')
+                else:
+                    modifications['error'].append('Incorrect password')
+            else:
+                modifications['error'].append('Passwords mismatch')
+
+        if len(modifications['error']) != 0:
+            modifications['success'] = []
+        else:
+            user.save()
+        return render(request, self.template_name)
