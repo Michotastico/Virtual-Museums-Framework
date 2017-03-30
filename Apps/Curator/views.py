@@ -2,6 +2,8 @@ import copy
 import os
 
 import re
+
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db import transaction
@@ -15,6 +17,7 @@ from Apps.Curator.forms import ImageForm, TemplateForm, ModelForm, MusicForm, Vi
 from Apps.Curator.models.resources import ExternalMusic, ExternalImage, ExternalModel, ExternalVideo
 from Apps.Curator.models.rooms import Room
 from Apps.Curator.models.opinions import Opinion
+from Apps.Curator.models.scheduling import Exposition
 
 
 class IndexView(TemplateView):
@@ -549,4 +552,39 @@ class SchedulingExpositionView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         selector = self.get_current_selector()
+
+        name = request.POST.get('name', None)
+        room = request.POST.get('room', None)
+        start_date = request.POST.get('initial', None)
+        end_date = request.POST.get('end', None)
+
+        try:
+            if start_date is not None:
+                start_date = datetime.strptime(start_date, "%d/%m/%Y")
+            if end_date is not None:
+                end_date = datetime.strptime(end_date, "%d/%m/%Y")
+        except ValueError as err:
+            print err
+            selector['failure'] = True
+            return render(request, self.template_name, selector)
+
+        if name is not None \
+                and room is not None \
+                and start_date is not None \
+                and end_date is not None:
+            exposition = Exposition()
+            exposition.name = name
+            exposition.start_date = start_date
+            exposition.end_date = end_date
+
+            room = Room.objects.get(name=room)
+            exposition.main_room = room
+
+            try:
+                exposition.save()
+                selector['success'] = True
+            except IntegrityError:
+                selector['failure'] = True
+        else:
+            selector['failure'] = True
         return render(request, self.template_name, selector)

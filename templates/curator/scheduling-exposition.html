@@ -9,8 +9,12 @@
     <script src="/static/bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script>
         $( function() {
-            $( "#datepicker_initial" ).datepicker();
-            $( "#datepicker_end" ).datepicker();
+            $( "#datepicker_initial" ).datepicker({
+                dateFormat: "dd/mm/yy"
+            });
+            $( "#datepicker_end" ).datepicker({
+                dateFormat: "dd/mm/yy"
+            });
         } );
     </script>
 {% endblock js %}
@@ -21,13 +25,23 @@
     {% include "curator/navbar.html" %}
     <div class="container">
         <h2>Scheduling</h2>
+        {% if success %}
+            <div class="alert alert-success">
+                <strong>Success!</strong> The new exposition was added.
+            </div>
+        {% endif %}
+        {% if failure %}
+            <div class="alert alert-danger">
+                <strong>Error!</strong> The new exposition form has an error or it cannot be saved.
+            </div>
+        {% endif %}
         <a href="/curator/scheduling" class="btn btn-sm btn-info">Back to scheduling</a>
         <br><br>
         <div class="jumbotron">
             <form method="POST" action="/curator/scheduling-exposition">
                 {% csrf_token %}
                 <h4>Exposition name:</h4>
-                <input type="text" name="name" placeholder="Ex: Grand opening" class="form-control">
+                <input type="text" name="name" placeholder="Ex: Grand opening" class="form-control" maxlength="30">
                 <h4>Main room:</h4>
                 <select name="room" class="form-control ng-pristine ng-valid ng-empty ng-touched">
                     <option value="" disabled="" class="" selected>{{ header }}</option>
@@ -45,7 +59,7 @@
                         <input type="text" class="form-control" name="end" id="datepicker_end">
                     </div>
                 </div>
-            <br>
+                <br>
                 <button class= "btn btn-sm btn-success btn-block" type="submit">Save exposition</button>
             </form>
         </div>
