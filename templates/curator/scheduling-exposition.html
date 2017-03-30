@@ -1,10 +1,18 @@
 {% extends "base/base.html" %}
 
 {% block css %}
+    <link href="/static/bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css" rel="stylesheet">
 {% endblock css %}
 
 
 {% block js %}
+    <script src="/static/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+        $( function() {
+            $( "#datepicker_initial" ).datepicker();
+            $( "#datepicker_end" ).datepicker();
+        } );
+    </script>
 {% endblock js %}
 
 
@@ -15,7 +23,31 @@
         <h2>Scheduling</h2>
         <a href="/curator/scheduling-exposition" class="btn btn-sm btn-success">Add new exposition</a>
         <a href="/curator/scheduling" class="btn btn-sm btn-info">Back to scheduling</a>
-        <br>
+        <br><br>
+        <div class="jumbotron">
+            <form method="POST" action="/curator/scheduling-exposition">
+                {% csrf_token %}
+                <h4>Exposition name:</h4>
+                <input type="text" name="name" placeholder="Ex: Grand opening" class="form-control">
+                <h4>Main room:</h4>
+                <select name="room" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                    <option value="" disabled="" class="" selected>{{ header }}</option>
+                    {% for element in options %}
+                        <option label="{{ element.display }}" value="{{ element.value }}"></option>
+                    {% endfor %}
+                </select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Initial date:</h4>
+                        <input type="text" class="form-control" name="initial" id="datepicker_initial">
+                    </div>
+                    <div class="col-md-6">
+                        <h4>End date:</h4>
+                        <input type="text" class="form-control" name="end" id="datepicker_end">
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
     </body>
 {% endblock body %}

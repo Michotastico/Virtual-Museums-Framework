@@ -531,11 +531,22 @@ class SchedulingView(TemplateView):
 
 class SchedulingExpositionView(TemplateView):
     template_name = 'curator/scheduling-exposition.html'
+    default_selector = {'header': 'Select a Room:', 'options': []}
+
+    def get_current_selector(self):
+        current_selector = copy.deepcopy(self.default_selector)
+        rooms = get_rooms_names()
+        for room in rooms:
+            room_template = {'value': room, 'display': room}
+            current_selector['options'].append(room_template)
+        return current_selector
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        selector = self.get_current_selector()
+        return render(request, self.template_name, selector)
 
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
-        return render(request, self.template_name)
+        selector = self.get_current_selector()
+        return render(request, self.template_name, selector)
