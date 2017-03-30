@@ -15,48 +15,51 @@
         <h2>Scheduling</h2>
         <a href="/curator/scheduling-exposition" class="btn btn-sm btn-success">Add new exposition</a>
         <br>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Initial Date</th>
-                <th>End Date</th>
-                <th>Main Room</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for exposition in expositions %}
+        <br>
+        <div class="jumbotron">
+            <table class="table">
+                <thead>
                 <tr>
-                    <form method="POST" action="/curator/scheduling">
-                        {% csrf_token %}
-                        <input type="hidden" id="id_exposition" name="id_exposition" value="{{ exposition.id }}" />
-                        <input type="hidden" id="editing" name="editing" value="0" />
-                        <input type="hidden" id="changing_status" name="changing_status" value="0" />
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ exposition.name }}</td>
-                        <td>{{ exposition.status }}</td>
-                        <td>{{ exposition.start_time }}</td>
-                        <td>{{ exposition.end_time }}</td>
-                        <td>{{ exposition.main_room }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning" type="button"
-                                    onclick="document.getElementById('changing_status').value='1';form.submit();">
-                                {% if exposition.status == 'Active' %}
-                                    Desactive
-                                {% else %}
-                                    Active
-                                {% endif %}
-                            </button>
-                            <button class= "btn btn-sm btn-success" type="button" onclick="">Edit</button>
-                        </td>
-                    </form>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Initial Date</th>
+                    <th>End Date</th>
+                    <th>Main Room</th>
+                    <th>Actions</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for exposition in expositions %}
+                    <tr>
+                        <form method="POST" action="/curator/scheduling">
+                            {% csrf_token %}
+                            <input type="hidden" id="id_exposition" name="id_exposition" value="{{ exposition.id }}" />
+                            <input type="hidden" id="editing" name="editing" value="0" />
+                            <input type="hidden" id="changing_status" name="changing_status" value="0" />
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ exposition.name }}</td>
+                            <td>{{ exposition.status }}</td>
+                            <td>{{ exposition.start_time }}</td>
+                            <td>{{ exposition.end_time }}</td>
+                            <td>{{ exposition.main_room }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning" type="button"
+                                        onclick="document.getElementById('changing_status').value='1';form.submit();">
+                                    {% if exposition.status == 'Active' %}
+                                        Desactive
+                                    {% else %}
+                                        Active
+                                    {% endif %}
+                                </button>
+                                <button class= "btn btn-sm btn-success" type="button" onclick="">Edit</button>
+                            </td>
+                        </form>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     </body>
 {% endblock body %}
