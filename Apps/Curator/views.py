@@ -245,13 +245,19 @@ class RoomsView(TemplateView):
     def get(self, request, *a, **ka):
         current_selector = self.get_current_selector()
 
-        current_room = request.GET.get('roomname', None)
-        change_publish_status = request.GET.get('change_publish_status', None)
-        edit_room = request.GET.get('edit', None)
-        north_room = request.GET.get('north', u'None')
-        south_room = request.GET.get('south', u'None')
-        west_room = request.GET.get('west', u'None')
-        east_room = request.GET.get('east', u'None')
+        return render(request, self.template_name, current_selector)
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        current_selector = self.get_current_selector()
+
+        current_room = request.POST.get('roomname', None)
+        change_publish_status = request.POST.get('change_publish_status', None)
+        edit_room = request.POST.get('edit', None)
+        north_room = request.POST.get('north', u'None')
+        south_room = request.POST.get('south', u'None')
+        west_room = request.POST.get('west', u'None')
+        east_room = request.POST.get('east', u'None')
 
         if current_room is not None:
 
@@ -262,7 +268,7 @@ class RoomsView(TemplateView):
                     break
 
             if edit_room in ['1']:
-                url = '/curator/new-rooms?roomname='+current_room
+                url = '/curator/new-rooms?roomname=' + current_room
                 return redirect(url)
 
             current_room = Room.objects.get(name=current_room)

@@ -13,7 +13,8 @@
     {% include "curator/navbar.html" %}
     <div class="container">
         <h2>Rooms</h2>
-        <form class="form-inline ng-pristine ng-valid">
+        <form class="form-inline ng-pristine ng-valid" method="post">
+            {% csrf_token %}
             <label >Select Room: </label>
             <select name="roomname" class="form-control ng-pristine ng-valid ng-empty ng-touched" onChange="form.submit();">
                 <option value="" disabled class="" {{ header.selected }}>Select a Room from the list:</option>
@@ -26,7 +27,8 @@
         <div>
             {% if current_room %}
                 <div class="jumbotron">
-                    <form class="form-inline ng-pristine ng-valid">
+                    <form class="form-inline ng-pristine ng-valid" method="post">
+                        {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6">
                                 <a href="#" class="thumbnail">
