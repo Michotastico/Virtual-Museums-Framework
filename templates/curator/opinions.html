@@ -52,9 +52,9 @@
                                 <a class="thumbnail">
                                     <img src="{{ opinion.avatar }}" alt="User avatar">
                                 </a>
-                                <p class="text-center">{{ opinion.name }}</p>
+                                <p class="text-center">{{ opinion.name|escapejs }}</p>
                             </div>
-                            <div class="col-md-8">{{ opinion.opinion }}</div>
+                            <div class="col-md-8">{{ opinion.opinion|escapejs }}</div>
                             <div class="col-md-2">
                                 <button class= "btn btn-sm btn-warning btn-block" type="button"
                                         onclick="if (confirm('You really want to change status of this opinion') == true) {
