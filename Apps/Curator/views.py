@@ -527,3 +527,15 @@ class SchedulingView(TemplateView):
     def post(self, request, *a, **ka):
         expositions = get_expositions()
         return render(request, self.template_name, expositions)
+
+
+class SchedulingExpositionView(TemplateView):
+    template_name = 'curator/scheduling-exposition.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name)
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def post(self, request, *a, **ka):
+        return render(request, self.template_name)

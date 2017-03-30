@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^rooms$', views.RoomsView.as_view(), name='rooms'),
     url(r'^new-rooms$', views.NewRoomsView.as_view(), name='new-rooms'),
     url(r'^scheduling$', views.SchedulingView.as_view(), name='scheduling'),
+    url(r'^scheduling-exposition$', views.SchedulingExpositionView.as_view(), name='scheduling'),
 ]
