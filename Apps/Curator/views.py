@@ -501,21 +501,26 @@ class NewResourcesView(TemplateView):
 
 @transaction.atomic
 def get_expositions():
-    expositions = dict()
+    data = dict()
     exposition_list = list()
+    expositions = Exposition.objects.all()
 
-    exposition = dict()
-    exposition['id'] = 1
-    exposition['name'] = 'Demo exposition'
-    exposition['status'] = 'Active'
-    exposition['start_time'] = 'May 10th'
-    exposition['end_time'] = 'May 20th'
-    exposition['main_room'] = 'Master Room'
+    for exposition in expositions:
+        exposition_template = dict()
+        exposition_template['id'] = exposition.id
+        exposition_template['name'] = exposition.name
+        if exposition.status:
+            exposition_template['status'] = 'Active'
+        else:
+            exposition_template['status'] = 'Inactive'
+        exposition_template['start_time'] = exposition.start_date
+        exposition_template['end_time'] = exposition.end_date
+        exposition_template['main_room'] = exposition.main_room.name
 
-    exposition_list.append(exposition)
+        exposition_list.append(exposition_template)
 
-    expositions['expositions'] = exposition_list
-    return expositions
+        data['expositions'] = exposition_list
+    return data
 
 
 class SchedulingView(TemplateView):
@@ -528,7 +533,16 @@ class SchedulingView(TemplateView):
 
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
+        change_status = request.POST.get('changing_status', None)
+        exposition_id = request.POST.get('id_exposition', None)
+
+        if change_status in ['1'] and exposition_id is not None:
+            exposition = Exposition.objects.get(id=exposition_id)
+            exposition.status = not exposition.status
+            exposition.save()
+
         expositions = get_expositions()
+
         return render(request, self.template_name, expositions)
 
 
