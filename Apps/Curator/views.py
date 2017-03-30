@@ -5,6 +5,8 @@ import re
 
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db import IntegrityError
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -642,18 +644,36 @@ class CuratorAccount(TemplateView):
 
         password = request.POST.get('password', None)
 
-        if new_password is not None:
-            if confirm_password is not None and new_password == confirm_password:
+        if new_password is not None and len(new_password) > 0:
+            if confirm_password is not None and len(confirm_password) > 0\
+                    and new_password == confirm_password:
                 if password is not None and user.check_password(password):
                     user.set_password(new_password)
-                    modifications['success'].append('Successful password change')
+                    modifications['success'].append('Successful password change.')
                 else:
-                    modifications['error'].append('Incorrect password')
+                    modifications['error'].append('Incorrect password.')
             else:
-                modifications['error'].append('Passwords mismatch')
+                modifications['error'].append('Passwords mismatch.')
+
+        if fullname is not None:
+            try:
+                first, last = fullname.split(" ", 1)
+                user.first_name = first
+                user.last_name = last
+                modifications['success'].append('Successful name change')
+            except ValueError:
+                modifications['error'].append('Name must have at least first and last name.')
+
+        if email is not None:
+            try:
+                validate_email(email)
+                user.email = email
+                modifications['success'].append('Successful email change')
+            except ValidationError:
+                modifications['error'].append('Wrong email structure.')
 
         if len(modifications['error']) != 0:
             modifications['success'] = []
         else:
             user.save()
-        return render(request, self.template_name)
+        return render(request, self.template_name, modifications)

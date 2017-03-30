@@ -9,43 +9,53 @@
 
 
 {% block body %}
-    <body>
-    {% include "curator/navbar.html" %}
-    <div class="container">
-        <h2>Account</h2>
-        <br>
-        <div class="jumbotron">
-            {% if user.is_authenticated %}
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-4">
-                            <a class="thumbnail">
-                                <img src="https://api.adorable.io/avatars/200/{{ user.get_full_name }}" alt="...">
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <h4>Name:</h4>
-                            <input type="text" name="name" class="form-control"
-                                   value="{{ user.get_full_name }}">
-                            <h4>Email:</h4>
-                            <input type="email" name="email" placeholder="your@email.com" class="form-control"
-                                   value="{{ user.email }}">
-                        </div>
-                        <div class="col-md-4">
-                            <h4>New password:</h4>
-                            <input type="password" name="new-password" class="form-control">
-                            <h4>Confirm new password:</h4>
-                            <input type="password" name="confirm-password" class="form-control">
-                            <h4>Current password:</h4>
-                            <input type="password" name="password" class="form-control">
-                            <br><br>
-                            <button class="btn btn-sm btn-success btn-block" type="submit">Save changes</button>
-                        </div>
-                    </div>
-                </form>
-            {% endif %}
+<body>
+{% include "curator/navbar.html" %}
+<div class="container">
+    <h2>Account</h2>
+    {% for failure in error %}
+        <div class="alert alert-danger">
+            <strong>Error!</strong> {{ failure }}
         </div>
+    {% endfor %}
+    {% for hit in success%}
+    <div class="alert alert-success">
+        <strong>Success!</strong> {{ hit }}
     </div>
-    </body>
+    {% endfor %}
+    <br>
+    <div class="jumbotron">
+        {% if user.is_authenticated %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <a class="thumbnail">
+                            <img src="https://api.adorable.io/avatars/200/{{ user.get_full_name }}" alt="...">
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Name:</h4>
+                        <input type="text" name="name" class="form-control"
+                               value="{{ user.get_full_name }}">
+                        <h4>Email:</h4>
+                        <input type="email" name="email" placeholder="your@email.com" class="form-control"
+                               value="{{ user.email }}">
+                    </div>
+                    <div class="col-md-4">
+                        <h4>New password:</h4>
+                        <input type="password" name="new-password" class="form-control">
+                        <h4>Confirm new password:</h4>
+                        <input type="password" name="confirm-password" class="form-control">
+                        <h4>Current password:</h4>
+                        <input type="password" name="password" class="form-control">
+                        <br><br>
+                        <button class="btn btn-sm btn-success btn-block" type="submit">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+</body>
 {% endblock body %}
