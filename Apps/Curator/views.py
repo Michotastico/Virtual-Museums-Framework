@@ -636,18 +636,18 @@ class CuratorAccount(TemplateView):
         modifications = {'error': [], 'success': []}
         user = request.user
 
-        fullname = request.POST.get('name', None)
-        email = request.POST.get('email', None)
+        fullname = request.POST.get('name', '')
+        email = request.POST.get('email', '')
 
-        new_password = request.POST.get('new-password', None)
-        confirm_password = request.POST.get('confirm-password', None)
+        new_password = request.POST.get('new-password', '')
+        confirm_password = request.POST.get('confirm-password', '')
 
-        password = request.POST.get('password', None)
+        password = request.POST.get('password', '')
 
-        if new_password is not None and len(new_password) > 0:
-            if confirm_password is not None and len(confirm_password) > 0\
+        if len(new_password) > 0:
+            if len(confirm_password) > 0\
                     and new_password == confirm_password:
-                if password is not None and user.check_password(password):
+                if len(password) > 0 and user.check_password(password):
                     user.set_password(new_password)
                     modifications['success'].append('Successful password change.')
                 else:
@@ -655,7 +655,7 @@ class CuratorAccount(TemplateView):
             else:
                 modifications['error'].append('Passwords mismatch.')
 
-        if fullname is not None:
+        if len(fullname) > 0:
             try:
                 first, last = fullname.split(" ", 1)
                 user.first_name = first
@@ -664,7 +664,7 @@ class CuratorAccount(TemplateView):
             except ValueError:
                 modifications['error'].append('Name must have at least first and last name.')
 
-        if email is not None:
+        if len(email) > 0:
             try:
                 validate_email(email)
                 user.email = email
@@ -674,6 +674,8 @@ class CuratorAccount(TemplateView):
 
         if len(modifications['error']) != 0:
             modifications['success'] = []
+        elif len(modifications['success']) < 1:
+            modifications['error'].append('No changes was applied')
         else:
             user.save()
         return render(request, self.template_name, modifications)
