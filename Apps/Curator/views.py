@@ -23,11 +23,11 @@ from Apps.Curator.models.scheduling import Exposition
 
 
 class IndexView(TemplateView):
-    template_name = 'curator/index.html'
+    main_url = '/curator/scheduling'
 
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        return redirect(self.main_url)
 
 
 @transaction.atomic
