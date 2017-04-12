@@ -3,9 +3,20 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from Apps.Curator.models.museums import Museum
+
 
 def get_museums():
-    return {'museums': []}
+    museums_dict = {'museums': []}
+
+    museums = Museum.objects.all()
+
+    for museum in museums:
+        museums_dict['museums'].append({'id': museum.id,
+                                        'name': museum.name,
+                                        'published': museum.published,
+                                        'visitors': museum.visitors})
+    return museums_dict
 
 
 class MuseumsView(TemplateView):
