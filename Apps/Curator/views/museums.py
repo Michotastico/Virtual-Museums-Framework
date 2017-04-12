@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from Apps.Curator.forms import UnityMuseumForm
 from Apps.Curator.models.museums import Museum
 from Apps.Curator.models.scheduling import Exposition
 
@@ -41,3 +42,14 @@ class MuseumsView(TemplateView):
         expositions = get_museums()
 
         return render(request, self.template_name, expositions)
+
+
+class AddUnityView(TemplateView):
+    template_name = 'curator/unity-museum.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        form = UnityMuseumForm()
+        parameters = {'form': form}
+
+        return render(request, self.template_name, parameters)

@@ -20,10 +20,17 @@ class CommonMeta:
 
 
 class MuseumMeta:
-    fields = {'name', 'data', 'javascript', 'memory'}
+    fields = {'name', 'memory_to_allocate', 'data', 'javascript', 'memory'}
+    labels = {'name': 'Name of museum',
+              'memory_to_allocate': 'Unity TOTAL_MEMORY',
+              'data': 'File museum.data(gz)',
+              'javascript': 'File museum.js(gz)',
+              'memory': 'File museum.mem(gz)'}
 
 
 class UnityMuseumForm(forms.ModelForm):
+    field_order = ['name', 'memory_to_allocate', 'data', 'javascript', 'memory']
+
     class Meta(MuseumMeta):
         model = UnityMuseum
 
