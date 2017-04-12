@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 
 from Apps.Curator.models.museums import Room
 from Apps.Curator.models.resources import ExternalMusic
-from Apps.Curator.views.opinions import get_rooms_data
+from Apps.Curator.views.opinions import get_museums_data
 
 
 @transaction.atomic
@@ -82,7 +82,7 @@ class RoomsView(TemplateView):
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.selector)
-        rooms = get_rooms_data()
+        rooms = get_museums_data()
         for room in rooms:
             room_template = {'value': room['name'], 'display': room['name'], 'selected': ''}
             current_selector['options'].append(room_template)

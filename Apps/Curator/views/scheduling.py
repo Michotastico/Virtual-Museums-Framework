@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 
 from Apps.Curator.models.museums import Room
 from Apps.Curator.models.scheduling import Exposition
-from Apps.Curator.views.opinions import get_rooms_data
+from Apps.Curator.views.opinions import get_museums_data
 
 
 @transaction.atomic
@@ -28,7 +28,7 @@ def get_expositions():
             exposition_template['status'] = 'Inactive'
         exposition_template['start_time'] = exposition.start_date
         exposition_template['end_time'] = exposition.end_date
-        exposition_template['main_room'] = exposition.main_room.name
+        exposition_template['museum'] = exposition.museum.name
 
         exposition_list.append(exposition_template)
 
@@ -69,7 +69,7 @@ class SchedulingExpositionView(TemplateView):
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.default_selector)
-        rooms = get_rooms_data()
+        rooms = get_museums_data()
         for room in rooms:
             room_template = {'value': room['id'], 'display': room['name']}
             current_selector['options'].append(room_template)
@@ -84,7 +84,7 @@ class SchedulingExpositionView(TemplateView):
             exposition = Exposition.objects.get(id=editing_id)
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'museum': exposition.main_room.id,
+                                              'museum': exposition.museum.id,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
         return render(request, self.template_name, selector)
@@ -123,7 +123,7 @@ class SchedulingExpositionView(TemplateView):
             exposition.end_date = end_date
 
             museum = Room.objects.get(id=museum)
-            exposition.main_room = museum
+            exposition.museum = museum
 
             try:
                 exposition.save()

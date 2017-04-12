@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
-from Apps.Curator.models.museums import Room
+from Apps.Curator.models.museums import Room, Museum
 from Apps.Curator.models.opinions import Opinion
 
 
@@ -36,12 +36,12 @@ class OpinionHashView(TemplateView):
 
 
 @transaction.atomic
-def get_rooms_data():
-    room_list = list()
-    rooms = Room.objects.all()
-    for room in rooms:
-        room_list.append({'name': room.name, 'id': room.id})
-    return room_list
+def get_museums_data():
+    museums_list = list()
+    museums = Museum.objects.all()
+    for museum in museums:
+        museums_list.append({'name': museum.name, 'id': museum.id})
+    return museums_list
 
 
 @transaction.atomic
@@ -94,7 +94,7 @@ class OpinionsView(TemplateView):
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.selector)
-        rooms = get_rooms_data()
+        rooms = get_museums_data()
         for room in rooms:
             room_template = {'value': room['name'], 'display': room['name'], 'selected': ''}
             current_selector['options'].append(room_template)
