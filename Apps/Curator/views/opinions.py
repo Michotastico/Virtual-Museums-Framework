@@ -36,11 +36,11 @@ class OpinionHashView(TemplateView):
 
 
 @transaction.atomic
-def get_rooms_names():
+def get_rooms_data():
     room_list = list()
     rooms = Room.objects.all()
     for room in rooms:
-        room_list.append(room.name)
+        room_list.append({'name': room.name, 'id': room.id})
     return room_list
 
 
@@ -94,9 +94,9 @@ class OpinionsView(TemplateView):
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.selector)
-        rooms = get_rooms_names()
+        rooms = get_rooms_data()
         for room in rooms:
-            room_template = {'value': room, 'display': room, 'selected': ''}
+            room_template = {'value': room['name'], 'display': room['name'], 'selected': ''}
             current_selector['options'].append(room_template)
         return current_selector
 

@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 
 from Apps.Curator.models.museums import Room
 from Apps.Curator.models.scheduling import Exposition
-from Apps.Curator.views.opinions import get_rooms_names
+from Apps.Curator.views.opinions import get_rooms_data
 
 
 @transaction.atomic
@@ -69,9 +69,9 @@ class SchedulingExpositionView(TemplateView):
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.default_selector)
-        rooms = get_rooms_names()
+        rooms = get_rooms_data()
         for room in rooms:
-            room_template = {'value': room, 'display': room}
+            room_template = {'value': room['id'], 'display': room['name']}
             current_selector['options'].append(room_template)
         return current_selector
 
@@ -84,7 +84,7 @@ class SchedulingExpositionView(TemplateView):
             exposition = Exposition.objects.get(id=editing_id)
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'room': exposition.main_room.name,
+                                              'museum': exposition.main_room.id,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
         return render(request, self.template_name, selector)
@@ -94,7 +94,7 @@ class SchedulingExpositionView(TemplateView):
         selector = self.get_current_selector()
 
         name = request.POST.get('name', None)
-        room = request.POST.get('room', None)
+        museum = request.POST.get('museum', None)
         start_date = request.POST.get('initial', None)
         end_date = request.POST.get('end', None)
 
@@ -111,7 +111,7 @@ class SchedulingExpositionView(TemplateView):
             return render(request, self.template_name, selector)
 
         if name is not None \
-                and room is not None \
+                and museum is not None \
                 and start_date is not None \
                 and end_date is not None:
             if id_editing is not None:
@@ -122,8 +122,8 @@ class SchedulingExpositionView(TemplateView):
             exposition.start_date = start_date
             exposition.end_date = end_date
 
-            room = Room.objects.get(name=room)
-            exposition.main_room = room
+            museum = Room.objects.get(id=museum)
+            exposition.main_room = museum
 
             try:
                 exposition.save()
