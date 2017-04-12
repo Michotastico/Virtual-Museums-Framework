@@ -10,7 +10,6 @@ from Apps.Curator.upload_manager import file_extension_validation, file_rename
 
 class Museum(models.Model):
     name = models.CharField(max_length=30, blank=False, unique=True)
-    published = models.BooleanField(default=False)
     visitors = models.IntegerField(default=0)
 
 

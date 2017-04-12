@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.models.museums import Museum
+from Apps.Curator.models.scheduling import Exposition
 
 
 def get_museums():
@@ -12,9 +13,11 @@ def get_museums():
     museums = Museum.objects.all()
 
     for museum in museums:
+        expositions = Exposition.objects.filter(museum=museum).filter(status=True)
+        published = True if len(expositions) > 0 else False
         museums_dict['museums'].append({'id': museum.id,
                                         'name': museum.name,
-                                        'published': museum.published,
+                                        'published': published,
                                         'visitors': museum.visitors})
     return museums_dict
 
