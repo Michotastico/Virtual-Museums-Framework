@@ -3,6 +3,7 @@
 from django import forms
 from django.forms import Textarea
 
+from Apps.Curator.models.museums import UnityMuseum
 from Apps.Curator.models.resources import ExternalImage, ExternalTemplate, ExternalMusic, ExternalModel, ExternalVideo
 
 __author__ = "Michel Llorens"
@@ -16,6 +17,15 @@ class CommonMeta:
     widgets = {
         'description': Textarea(attrs={'cols': 30, 'rows': 5}),
     }
+
+
+class MuseumMeta:
+    fields = {'name', 'data', 'javascript', 'memory'}
+
+
+class UnityMuseumForm(forms.ModelForm):
+    class Meta(MuseumMeta):
+        model = UnityMuseum
 
 
 class TemplateForm(forms.ModelForm):

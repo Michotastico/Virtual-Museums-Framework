@@ -5,6 +5,31 @@ import json
 from django.db import models
 
 from Apps.Curator.models.resources import ExternalMusic
+from Apps.Curator.upload_manager import file_extension_validation, file_rename
+
+
+class Museum(models.Model):
+    name = models.CharField(max_length=30, blank=False, unique=True)
+    published = models.BooleanField(default=False)
+    visitants = models.IntegerField(default=0)
+
+
+def rename_unity_files(instance, filename): return file_rename(filename, '/static/external-content/unity-files')
+
+
+def validator_data(external_file): file_extension_validation(external_file, ['.data', '.datagz'])
+
+
+def validator_javascript(external_file): file_extension_validation(external_file, ['.js', '.jsgz'])
+
+
+def validator_memory(external_file): file_extension_validation(external_file, ['.mem', '.memgz'])
+
+
+class UnityMuseum(Museum):
+    data = models.FileField(upload_to=rename_unity_files, validators=[validator_data])
+    javascript = models.FileField(upload_to=rename_unity_files, validators=[validator_javascript])
+    memory = models.FileField(upload_to=rename_unity_files, validators=[validator_memory])
 
 
 class Room(models.Model):
