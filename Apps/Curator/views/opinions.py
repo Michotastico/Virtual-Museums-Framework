@@ -58,14 +58,14 @@ def reverse_opinion_status(opinion_id):
 
 
 @transaction.atomic
-def query_opinion(room_name, approved, pending):
+def query_opinion(museum_id, approved, pending):
     opinion_list = list()
 
     if not approved and not pending:
         return opinion_list
 
-    selected_room = Room.objects.get(name=room_name)
-    opinions = Opinion.objects.filter(validated=True).filter(room=selected_room)
+    selected_museum = Museum.objects.get(id=museum_id)
+    opinions = Opinion.objects.filter(validated=True).filter(museum=selected_museum)
     if approved and not pending:
         opinions = opinions.exclude(status=False)
     elif pending and not approved:
@@ -86,7 +86,7 @@ def query_opinion(room_name, approved, pending):
 
 class OpinionsView(TemplateView):
     template_name = 'curator/opinions.html'
-    selector = {'header': {'display': 'Select a Room from the list:',
+    selector = {'header': {'display': 'Select a Museum from the list:',
                            'selected': 'selected'},
                 'options': [],
                 'approved': '',
@@ -94,10 +94,10 @@ class OpinionsView(TemplateView):
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.selector)
-        rooms = get_museums_data()
-        for room in rooms:
-            room_template = {'value': room['name'], 'display': room['name'], 'selected': ''}
-            current_selector['options'].append(room_template)
+        museums = get_museums_data()
+        for museum in museums:
+            museum_template = {'id': museum['id'], 'display': museum['name'], 'selected': ''}
+            current_selector['options'].append(museum_template)
         return current_selector
 
     @method_decorator(login_required(login_url='/auth/login'))
@@ -109,7 +109,7 @@ class OpinionsView(TemplateView):
     def post(self, request, *a, **ka):
         current_selector = self.get_current_selector()
 
-        current_room = request.POST.get('room', None)
+        current_museum = request.POST.get('museum', None)
         checkbox_approved = request.POST.get('approved', None)
         checkbox_pending = request.POST.get('pending', None)
         opinion_id = request.POST.get('id_opinion', None)
@@ -133,15 +133,15 @@ class OpinionsView(TemplateView):
             current_selector['pending'] = 'checked'
             pending = True
 
-        if current_room is not None:
-            current_selector['current_room'] = current_room
+        if current_museum is not None:
+            current_selector['current_museum'] = current_museum
             current_selector['header']['selected'] = ''
             for option in current_selector['options']:
-                if option['value'] == current_room:
+                if option['id'] == current_museum:
                     option['selected'] = 'selected'
                     break
 
-            opinions = query_opinion(current_room, approved, pending)
+            opinions = query_opinion(current_museum, approved, pending)
             current_selector['opinions'] = opinions
 
         return render(request, self.template_name, current_selector)

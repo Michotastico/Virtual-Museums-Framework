@@ -11,7 +11,7 @@ class Opinion(models.Model):
     hash_key = models.TextField()
     validated = models.BooleanField(default=False)
 
-    room = models.ForeignKey("Room")
+    museum = models.ForeignKey("Museum")
 
     @property
     def avatar(self):
