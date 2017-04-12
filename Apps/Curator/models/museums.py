@@ -26,6 +26,7 @@ def validator_memory(external_file): file_extension_validation(external_file, ['
 
 
 class UnityMuseum(Museum):
+    memory_to_allocate = models.IntegerField(default=0)
     data = models.FileField(upload_to=rename_unity_files, validators=[validator_data])
     javascript = models.FileField(upload_to=rename_unity_files, validators=[validator_javascript])
     memory = models.FileField(upload_to=rename_unity_files, validators=[validator_memory])
