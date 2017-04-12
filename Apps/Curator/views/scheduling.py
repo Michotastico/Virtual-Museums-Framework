@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
-from Apps.Curator.models.museums import Room
+from Apps.Curator.models.museums import Museum
 from Apps.Curator.models.scheduling import Exposition
 from Apps.Curator.views.opinions import get_museums_data
 
@@ -65,14 +65,14 @@ class SchedulingView(TemplateView):
 
 class SchedulingExpositionView(TemplateView):
     template_name = 'curator/scheduling-exposition.html'
-    default_selector = {'header': 'Select a Room:', 'options': []}
+    default_selector = {'header': 'Select a Museum:', 'options': []}
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.default_selector)
-        rooms = get_museums_data()
-        for room in rooms:
-            room_template = {'value': room['id'], 'display': room['name']}
-            current_selector['options'].append(room_template)
+        museums = get_museums_data()
+        for museum in museums:
+            museum_template = {'value': museum['id'], 'display': museum['name']}
+            current_selector['options'].append(museum_template)
         return current_selector
 
     @method_decorator(login_required(login_url='/auth/login'))
@@ -122,7 +122,7 @@ class SchedulingExpositionView(TemplateView):
             exposition.start_date = start_date
             exposition.end_date = end_date
 
-            museum = Room.objects.get(id=museum)
+            museum = Museum.objects.get(id=museum)
             exposition.museum = museum
 
             try:
