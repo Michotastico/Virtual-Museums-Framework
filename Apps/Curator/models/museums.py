@@ -11,7 +11,7 @@ from Apps.Curator.upload_manager import file_extension_validation, file_rename
 class Museum(models.Model):
     name = models.CharField(max_length=30, blank=False, unique=True)
     published = models.BooleanField(default=False)
-    visitants = models.IntegerField(default=0)
+    visitors = models.IntegerField(default=0)
 
 
 def rename_unity_files(instance, filename): return file_rename(filename, '/static/external-content/unity-files')

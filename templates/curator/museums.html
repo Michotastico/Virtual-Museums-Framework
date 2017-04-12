@@ -1,0 +1,52 @@
+{% extends "base/base.html" %}
+
+{% block css %}
+{% endblock css %}
+
+
+{% block js %}
+{% endblock js %}
+
+
+{% block body %}
+    <body>
+    {% include "curator/navbar.html" %}
+    <div class="container">
+        <h2>Museums</h2>
+        <br>
+        <div class="jumbotron">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Published</th>
+                    <th># Visitors</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for museum in museums %}
+                    <tr>
+                        <form method="POST" action="/curator/museums">
+                            {% csrf_token %}
+                            <input type="hidden" id="id_exposition_{{ museum.id }}"
+                                   name="id_museum" value="{{ museum.id }}" />
+                            <input type="hidden" id="editing_{{ museum.id }}" name="editing" value="0" />
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ museum.name }}</td>
+                            <td>{{ museum.published }}</td>
+                            <td>{{ museum.visitors }}</td>
+                            <td>
+                                <button class= "btn btn-sm btn-success" type="button"
+                                        onclick="document.getElementById('editing_{{ museum.id }}').value='1';form.submit();">Edit</button>
+                            </td>
+                        </form>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </body>
+{% endblock body %}
