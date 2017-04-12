@@ -20,11 +20,13 @@ from django.views.generic import RedirectView
 from Apps.CommonWeb.views import IndexView
 from Apps.CommonWeb.views import LoginView
 from Apps.CommonWeb.views import LogoutView
+from Apps.Curator.views import OpinionHashView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^auth/login', LoginView.as_view(), name='login'),
     url(r'^auth/logout', LogoutView.as_view(), name='logout'),
+    url(r'^confirmation/', OpinionHashView.as_view(), name='opinion_confirmation'),
     url(r'^curator/', include('Apps.Curator.urls')),
     url(r'^visitor/', include('Apps.Visitor.urls')),
     url(r'^admin/', admin.site.urls),

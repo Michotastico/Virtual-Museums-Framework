@@ -13,66 +13,65 @@
     {% include "curator/navbar.html" %}
     <div class="container">
         <h2>People's Opinion</h2>
-        <form class="form-inline ng-pristine ng-valid">
+        {% if success %}
+            <div class="alert alert-success">
+                <strong>Success!</strong> Your action was performed correctly.
+            </div>
+        {% endif %}
+        <form method="POST" action="/curator/opinions" class="form-inline ng-pristine ng-valid">
+            {% csrf_token %}
             <label >Select Room: </label>
-            <select class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                <option value="" disabled="" class="" selected="selected">Select a Room from the list:</option>
-                <option label="Master room" value="master-room">Master room</option>
-                <option label="Front yard" value="front-yard">Front yard</option>
+            <select name="room" class="form-control ng-pristine ng-valid ng-empty ng-touched" onChange="form.submit();">
+                <option value="" disabled="" class="" {{ header.selected }}>{{ header.display }}</option>
+                {% for element in options %}
+                    <option label="{{ element.value }}" value="{{ element.value }}" {{ element.selected }}>
+                        {{ element.display }}
+                    </option>
+                {% endfor %}
             </select>
-            <label class="checkbox-inline"><input type="checkbox" value="approved">Approved</label>
-            <label class="checkbox-inline"><input type="checkbox" value="pending">Pending</label>
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary {% if approved %} active {% endif %}"><input type="checkbox" name="approved" {{ approved }} onChange="form.submit();">Approved</label>
+                <label class="btn btn-primary {% if pending %} active {% endif %}"><input type="checkbox" name="pending" {{ pending }} onChange="form.submit();">Pending</label>
+            </div>
         </form>
         <br>
         <div>
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-md-2">
-                        <a href="#" class="thumbnail">
-                            <img src="/static/images/user_default.png" alt="...">
-                        </a>
-                        <p class="text-center">John</p>
-                    </div>
-                    <div class="col-md-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque vel quam interdum consectetur id sit amet metus. Aenean id pharetra metus. Phasellus vulputate lorem justo, ac cursus eros consequat a. Ut congue, ante sit amet volutpat cursus, risus urna ornare dui, tincidunt malesuada massa sapien in ante. Curabitur tincidunt magna vitae massa maximus vehicula. Nullam vulputate, neque lacinia vulputate ullamcorper, orci enim mollis nibh, id mattis quam turpis sed elit. Nulla vitae feugiat orci.</div>
-                    <div class="col-md-2">
-                        <div class="checkbox"><label><input type="checkbox" value="approve">Approve</label></div>
-                        <button class= "btn btn-sm btn-danger btn-block" type="button">Delete</button>
-                        <button class="btn btn-sm btn-info btn-block" type="button">Send message</button>
-                    </div>
+            {% for opinion in opinions %}
+
+                <div class="jumbotron">
+                    <form method="POST" action="/curator/opinions">
+                        {% csrf_token %}
+                        <input type="hidden" id="id_opinion" name="id_opinion" value="{{ opinion.id }}" />
+                        <input type="hidden" id="delete_{{ opinion.id }}" name="delete" value="0" />
+                        <input type="hidden" id="reverse_{{ opinion.id }}" name="reverse" value="0" />
+                        <input type="hidden" id="room" name="room" value="{{ current_room }}" />
+                        {% if approved %}<input type="hidden" id="approved" name="approved" value="1" />{% endif %}
+                        {% if pending %}<input type="hidden" id="pending" name="pending" value="1" />{% endif %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <a class="thumbnail">
+                                    <img src="{{ opinion.avatar }}" alt="User avatar">
+                                </a>
+                                <p class="text-center">{{ opinion.name|escapejs }}</p>
+                            </div>
+                            <div class="col-md-8">{{ opinion.opinion|escapejs }}</div>
+                            <div class="col-md-2">
+                                <button class= "btn btn-sm btn-warning btn-block" type="button"
+                                        onclick="if (confirm('You really want to change status of this opinion') == true) {
+                                                document.getElementById('reverse_{{ opinion.id }}').value = '1'; form.submit();}">
+                                    {% if opinion.status == False %}Approve {% else %} Disapprove {% endif %}</button>
+                                <button class= "btn btn-sm btn-danger btn-block" type="button"
+                                        onclick="if (confirm('You really want to delete this opinion') == true) {
+                                                document.getElementById('delete_{{ opinion.id }}').value = '1'; form.submit();}">
+                                    Delete</button>
+                                <a class="btn btn-sm btn-info btn-block" type="button" href="mailto:{{ opinion.email }}">Send email</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </div>
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-md-2">
-                        <a href="#" class="thumbnail">
-                            <img src="/static/images/user_default.png" alt="...">
-                        </a>
-                        <p class="text-center">John</p>
-                    </div>
-                    <div class="col-md-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque vel quam interdum consectetur id sit amet metus. Aenean id pharetra metus. Phasellus vulputate lorem justo, ac cursus eros consequat a. Ut congue, ante sit amet volutpat cursus, risus urna ornare dui, tincidunt malesuada massa sapien in ante. Curabitur tincidunt magna vitae massa maximus vehicula. Nullam vulputate, neque lacinia vulputate ullamcorper, orci enim mollis nibh, id mattis quam turpis sed elit. Nulla vitae feugiat orci.</div>
-                    <div class="col-md-2">
-                        <div class="checkbox"><label><input type="checkbox" value="approve">Approve</label></div>
-                        <button class="btn btn-sm btn-danger btn-block" type="button">Delete</button>
-                        <button class="btn btn-sm btn-info btn-block" type="button">Send message</button>
-                    </div>
-                </div>
-            </div>
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-md-2">
-                        <a href="#" class="thumbnail">
-                            <img src="/static/images/user_default.png" alt="...">
-                        </a>
-                        <p class="text-center">John</p>
-                    </div>
-                    <div class="col-md-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque vel quam interdum consectetur id sit amet metus. Aenean id pharetra metus. Phasellus vulputate lorem justo, ac cursus eros consequat a. Ut congue, ante sit amet volutpat cursus, risus urna ornare dui, tincidunt malesuada massa sapien in ante. Curabitur tincidunt magna vitae massa maximus vehicula. Nullam vulputate, neque lacinia vulputate ullamcorper, orci enim mollis nibh, id mattis quam turpis sed elit. Nulla vitae feugiat orci.</div>
-                    <div class="col-md-2">
-                        <div class="checkbox"><label><input type="checkbox" value="approve">Approve</label></div>
-                        <button class="btn btn-sm btn-danger btn-block" type="button">Delete</button>
-                        <button class="btn btn-sm btn-info btn-block" type="button">Send message</button>
-                    </div>
-                </div>
-            </div>
+
+
+            {% endfor %}
         </div>
     </div>
     </body>

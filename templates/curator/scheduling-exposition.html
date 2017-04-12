@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+
+{% block css %}
+    <link href="/static/bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css" rel="stylesheet">
+{% endblock css %}
+
+
+{% block js %}
+    <script src="/static/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+        $( function() {
+            $( "#datepicker_initial" ).datepicker({
+                dateFormat: "dd/mm/yy"
+            });
+            $( "#datepicker_end" ).datepicker({
+                dateFormat: "dd/mm/yy"
+            });
+        } );
+    </script>
+{% endblock js %}
+
+
+{% block body %}
+    <body>
+    {% include "curator/navbar.html" %}
+    <div class="container">
+        <h2>Scheduling</h2>
+        {% if success %}
+            <div class="alert alert-success">
+                <strong>Success!</strong> The new exposition was added.
+            </div>
+        {% endif %}
+        {% if failure %}
+            <div class="alert alert-danger">
+                <strong>Error!</strong> The new exposition form has an error or it cannot be saved.
+            </div>
+        {% endif %}
+        <a href="/curator/scheduling" class="btn btn-sm btn-info">Back to scheduling</a>
+        <br><br>
+        <div class="jumbotron">
+            <form method="POST" action="/curator/scheduling-exposition">
+                {% csrf_token %}
+                {% if  current_exposition%}
+                    <input type="hidden" name="id_exposition" value="{{ current_exposition.id }}" />
+                {% endif %}
+                <h4>Exposition name:</h4>
+                <input type="text" name="name" placeholder="Ex: Grand opening" class="form-control" maxlength="30"
+                        {% if current_exposition %} value="{{ current_exposition.name }}" {% endif %}>
+                <h4>Main room:</h4>
+                <select name="room" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                    <option value="" disabled="" class=""
+                            {% if not current_exposition %}selected{% endif %}>{{ header }}</option>
+                    {% for element in options %}
+                        <option label="{{ element.display }}" value="{{ element.value }}"
+                                {% if element.display == current_exposition.room %} selected {% endif %}></option>
+                    {% endfor %}
+                </select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Initial date:</h4>
+                        <input type="text" class="form-control" name="initial" id="datepicker_initial"
+                                {% if current_exposition %}
+                               value="{{ current_exposition.initial|date:"d/m/Y" }}"
+                                {% endif %}>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>End date:</h4>
+                        <input type="text" class="form-control" name="end" id="datepicker_end"
+                                {% if current_exposition %}
+                               value="{{ current_exposition.end|date:"d/m/Y" }}"
+                                {% endif %}>
+                    </div>
+                </div>
+                <br>
+                <button class= "btn btn-sm btn-success btn-block" type="submit">Save exposition</button>
+            </form>
+        </div>
+    </div>
+    </body>
+{% endblock body %}

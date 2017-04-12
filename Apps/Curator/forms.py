@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import Textarea
 
-from Apps.Curator.models import ExternalImage, ExternalTemplate, ExternalMusic, ExternalModel, ExternalVideo
+from Apps.Curator.models.resources import ExternalImage, ExternalTemplate, ExternalMusic, ExternalModel, ExternalVideo
 
 __author__ = "Michel Llorens"
 __license__ = "GPL"

@@ -2,3 +2,5 @@
 *.pyc
 *.sqlite3
 static/
+fixtures*.json
+migrations/
