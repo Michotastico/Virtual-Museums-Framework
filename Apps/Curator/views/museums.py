@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
@@ -23,6 +24,13 @@ def get_museums():
     return museums_dict
 
 
+@transaction.atomic
+def delete_museum(museum_id):
+    museum = Museum.objects.get(id=museum_id)
+    # TODO Delete stored files
+    museum.delete()
+
+
 class MuseumsView(TemplateView):
     template_name = 'curator/museums.html'
 
@@ -34,10 +42,10 @@ class MuseumsView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         museum_id = request.POST.get('id_museum', None)
-        editing = request.POST.get('editing', None)
+        delete = request.POST.get('delete', None)
 
-        if editing in ['1'] and museum_id is not None:
-            return redirect('/curator/add-unity-museum?id=' + museum_id)
+        if delete in ['1'] and museum_id is not None:
+            delete_museum(museum_id)
 
         expositions = get_museums()
 
