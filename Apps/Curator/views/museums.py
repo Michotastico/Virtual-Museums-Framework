@@ -9,6 +9,7 @@ from Apps.Curator.models.museums import Museum
 from Apps.Curator.models.scheduling import Exposition
 
 
+@transaction.atomic
 def get_museums():
     museums_dict = {'museums': []}
 
