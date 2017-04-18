@@ -25,9 +25,9 @@ def get_current_museum():
     arguments['title'] = museum.name
 
     museum = UnityMuseum.objects.get(id=museum.id)
-    arguments['data'] = parse_inner_url(museum.data)
-    arguments['js'] = parse_inner_url(museum.javascript)
-    arguments['mem'] = parse_inner_url(museum.memory)
+    arguments['data'] = parse_inner_url(museum.data.url)
+    arguments['js'] = parse_inner_url(museum.javascript.url)
+    arguments['mem'] = parse_inner_url(museum.memory.url)
     arguments['total_memory'] = museum.memory_to_allocate
 
     return arguments
