@@ -16,13 +16,13 @@ class Museum(models.Model):
 def rename_unity_files(instance, filename): return file_rename(filename, '/static/external-content/unity-files')
 
 
-def validator_data(external_file): file_extension_validation(external_file, ['.data', '.datagz'])
+def validator_data(external_file): file_extension_validation(external_file, ['.data'])
 
 
-def validator_javascript(external_file): file_extension_validation(external_file, ['.js', '.jsgz'])
+def validator_javascript(external_file): file_extension_validation(external_file, ['.js'])
 
 
-def validator_memory(external_file): file_extension_validation(external_file, ['.mem', '.memgz'])
+def validator_memory(external_file): file_extension_validation(external_file, ['.mem'])
 
 
 class UnityMuseum(Museum):

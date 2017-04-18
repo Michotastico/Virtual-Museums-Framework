@@ -23,9 +23,9 @@ class MuseumMeta:
     fields = {'name', 'memory_to_allocate', 'data', 'javascript', 'memory'}
     labels = {'name': 'Name of museum',
               'memory_to_allocate': 'Unity TOTAL_MEMORY',
-              'data': 'File museum.data(gz)',
-              'javascript': 'File museum.js(gz)',
-              'memory': 'File museum.mem(gz)'}
+              'data': 'File museum.data',
+              'javascript': 'File museum.js',
+              'memory': 'File museum.mem'}
 
 
 class UnityMuseumForm(forms.ModelForm):
