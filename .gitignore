@@ -1,6 +1,7 @@
 .idea/
 *.pyc
 *.sqlite3
-static/
+static/bower_components
+static/external-content
 fixtures*.json
 migrations/
