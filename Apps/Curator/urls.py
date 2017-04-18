@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from Apps.Curator.views.general import IndexView, CuratorAccount
-from Apps.Curator.views.museums import MuseumsView, AddUnityView
+from Apps.Curator.views.museums import MuseumsView, AddUnityView, PreviewMuseumView
 from Apps.Curator.views.opinions import OpinionsView
 from Apps.Curator.views.resources import ResourcesView, NewResourcesView
 from Apps.Curator.views.rooms import RoomsView, NewRoomsView
@@ -25,6 +25,7 @@ urlpatterns = [
 
     url(r'^add-unity-museum$', AddUnityView.as_view(), name='new-unity'),
     url(r'^museums$', MuseumsView.as_view(), name='museums'),
+    url(r'^museum-preview$', PreviewMuseumView.as_view(), name='museum-preview'),
 
     url(r'^new-resources$', NewResourcesView.as_view(), name='resources'),
     url(r'^rooms$', RoomsView.as_view(), name='rooms'),

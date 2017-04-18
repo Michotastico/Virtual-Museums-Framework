@@ -5,8 +5,9 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.forms import UnityMuseumForm
-from Apps.Curator.models.museums import Museum
+from Apps.Curator.models.museums import Museum, UnityMuseum
 from Apps.Curator.models.scheduling import Exposition
+from Apps.Curator.views.resources import parse_inner_url
 
 
 @transaction.atomic
@@ -44,9 +45,14 @@ class MuseumsView(TemplateView):
     def post(self, request, *a, **ka):
         museum_id = request.POST.get('id_museum', None)
         delete = request.POST.get('delete', None)
+        preview = request.POST.get('preview', None)
 
-        if delete in ['1'] and museum_id is not None:
-            delete_museum(museum_id)
+        if museum_id is not None:
+            if delete in ['1']:
+                delete_museum(museum_id)
+            elif preview in ['1']:
+                url = '/curator/museum-preview?id=' + museum_id
+                return redirect(url)
 
         expositions = get_museums()
 
@@ -74,5 +80,36 @@ class AddUnityView(TemplateView):
             request_form = UnityMuseumForm()
 
         args['form'] = request_form
+
+        return render(request, self.template_name, args)
+
+
+@transaction.atomic
+def get_museum_data(museum_id):
+    data = dict()
+    museum = Museum.objects.get(id=museum_id)
+
+    data['title'] = museum.name
+
+    museum = UnityMuseum.objects.get(id=museum.id)
+    data['data'] = parse_inner_url(museum.data.url)
+    data['js'] = parse_inner_url(museum.javascript.url)
+    data['mem'] = parse_inner_url(museum.memory.url)
+    data['total_memory'] = museum.memory_to_allocate
+
+    return data
+
+
+class PreviewMuseumView(TemplateView):
+    template_name = 'curator/preview.html'
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        museum_id = request.GET.get('id', None)
+
+        if museum_id is None:
+            return redirect('/curator')
+
+        args = get_museum_data(museum_id)
 
         return render(request, self.template_name, args)
