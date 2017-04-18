@@ -105,8 +105,9 @@ class SchedulingExpositionView(TemplateView):
                 start_date = datetime.strptime(start_date, "%d/%m/%Y")
             if end_date is not None:
                 end_date = datetime.strptime(end_date, "%d/%m/%Y")
+            if end_date < start_date:
+                raise ValueError('The end date is before the start date')
         except ValueError as err:
-            print err
             selector['failure'] = True
             return render(request, self.template_name, selector)
 
