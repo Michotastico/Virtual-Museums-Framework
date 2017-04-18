@@ -44,11 +44,30 @@ class IndexView(TemplateView):
         return render(request, self.template_name, arguments)
 
 
+@transaction.atomic
+def get_next_exposition():
+    today = datetime.today().date()
+    exposition = Exposition.objects.filter(status=True).filter(start_date__gte=today).order_by('start_date')
+
+    if len(exposition) < 1:
+        return None
+
+    exposition = exposition[0]
+    next_date = exposition.start_date
+
+    return next_date
+
+
 class NoExpositionView(TemplateView):
     template_name = 'visitor/no_expositions.html'
 
     def get(self, request, *a, **ka):
         arguments = dict()
-        arguments['title'] = 'Exposition Error'
-        arguments['body'] = 'There is no exposition active at this moment'
+        arguments['title'] = 'An error with the expositions just happened!'
+
+        next_date = get_next_exposition()
+        if next_date is None:
+            arguments['body'] = 'There is no exposition active at this moment'
+        else:
+            arguments['body'] = 'The next active exposition is on ' + next_date.strftime("%B %d, %Y")
         return render(request, self.template_name, arguments)
