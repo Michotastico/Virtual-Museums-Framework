@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import transaction
 from django.shortcuts import render, redirect
 
@@ -11,13 +12,13 @@ from Apps.Curator.views.resources import parse_inner_url
 
 @transaction.atomic
 def get_current_museum():
-    exposition = Exposition.objects.filter(status=True)
-
-    # TODO check dates
+    today = datetime.today().date()
+    exposition = Exposition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
 
     if len(exposition) < 1:
         return None
-    arguments = {}
+
+    arguments = dict()
     exposition = exposition[0]
 
     museum = exposition.museum
