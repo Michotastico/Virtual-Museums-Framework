@@ -39,3 +39,13 @@ class IndexView(TemplateView):
     def get(self, request, *a, **ka):
         arguments = get_current_museum()
         return render(request, self.template_name, arguments)
+
+
+class NoExpositionView(TemplateView):
+    template_name = 'visitor/no_expositions.html'
+
+    def get(self, request, *a, **ka):
+        arguments = dict()
+        arguments['title'] = 'Exposition Error'
+        arguments['body'] = 'There is no exposition active at this moment'
+        return render(request, self.template_name, arguments)
