@@ -13,8 +13,13 @@
     {% include "curator/navbar.html" %}
 
     <div class="container">
-        <h2>New resource: {{ resource }}</h2>
-
+        <h2>Add Unity Museum</h2>
+        {% if success %}
+            <div class="alert alert-success">
+                <strong>Success!</strong> The museum was correctly uploaded.
+            </div>
+        {% endif %}
+        <br>
         <div class="jumbotron">
             <div class="row">
                 <div class="col-md-2"></div>
@@ -41,8 +46,8 @@
                                 {% endif %}
                             </div>
                         {% endfor %}
-                        <input type="hidden" id="resource" name="resource" value="{{ resource }}" />
-                        <button class="btn btn-sm btn-info" type="submit">Upload resource</button>
+
+                        <button class="btn btn-sm btn-info" type="submit">Upload museum</button>
                     </form>
                 </div>
                 <div class="col-md-2"></div>

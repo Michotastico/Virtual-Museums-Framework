@@ -1,0 +1,59 @@
+{% extends "base/base.html" %}
+
+{% block css %}
+{% endblock css %}
+
+
+{% block js %}
+{% endblock js %}
+
+
+{% block body %}
+    <body>
+    {% include "curator/navbar.html" %}
+    <div class="container">
+        <h2>Museums</h2>
+        <br>
+        <div class="jumbotron">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>In active exposition</th>
+                    <th>Visitors</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for museum in museums %}
+                    <tr>
+                        <form method="POST" action="/curator/museums">
+                            {% csrf_token %}
+                            <input type="hidden" id="id_exposition_{{ museum.id }}"
+                                   name="id_museum" value="{{ museum.id }}" />
+                            <input type="hidden" id="delete_{{ museum.id }}" name="delete" value="0" />
+                            <input type="hidden" id="preview_{{ museum.id }}" name="preview" value="0" />
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ museum.name }}</td>
+                            <td>{{ museum.published }}</td>
+                            <td>{{ museum.visitors }}</td>
+                            <td>
+
+                                <button class= "btn btn-sm btn-info" type="button"
+                                        onclick="document.getElementById('preview_{{ museum.id }}').value='1';
+                                                form.submit();">Preview</button>
+                                <button class= "btn btn-sm btn-danger" type="button"
+                                        onclick="if (confirm('You really want to delete this museum') == true) {
+                                            document.getElementById('delete_{{ museum.id }}').value='1';
+                                                form.submit();}">Delete</button>
+                            </td>
+                        </form>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </body>
+{% endblock body %}

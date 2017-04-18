@@ -9,4 +9,4 @@ class Exposition(models.Model):
     start_date = models.DateField(blank=False)
     end_date = models.DateField(blank=False)
 
-    main_room = models.ForeignKey("Room", null=True)
+    museum = models.ForeignKey("Museum", null=True)

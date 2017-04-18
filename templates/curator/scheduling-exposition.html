@@ -46,13 +46,13 @@
                 <h4>Exposition name:</h4>
                 <input type="text" name="name" placeholder="Ex: Grand opening" class="form-control" maxlength="30"
                         {% if current_exposition %} value="{{ current_exposition.name }}" {% endif %}>
-                <h4>Main room:</h4>
-                <select name="room" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                <h4>Museum:</h4>
+                <select name="museum" class="form-control ng-pristine ng-valid ng-empty ng-touched">
                     <option value="" disabled="" class=""
                             {% if not current_exposition %}selected{% endif %}>{{ header }}</option>
                     {% for element in options %}
                         <option label="{{ element.display }}" value="{{ element.value }}"
-                                {% if element.display == current_exposition.room %} selected {% endif %}></option>
+                                {% if element.value == current_exposition.museum %} selected {% endif %}></option>
                     {% endfor %}
                 </select>
                 <div class="row">

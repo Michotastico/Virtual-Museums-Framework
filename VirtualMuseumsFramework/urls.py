@@ -20,7 +20,7 @@ from django.views.generic import RedirectView
 from Apps.CommonWeb.views import IndexView
 from Apps.CommonWeb.views import LoginView
 from Apps.CommonWeb.views import LogoutView
-from Apps.Curator.views import OpinionHashView
+from Apps.Curator.views.opinions import OpinionHashView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),

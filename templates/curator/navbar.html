@@ -10,13 +10,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <li{% if request.resolver_match.url_name == 'scheduling' %} class="active"{% endif %}><a href="/curator/scheduling">Scheduling</a></li>
                 <li{% if request.resolver_match.url_name == 'opinions' %} class="active"{% endif %}><a href="/curator/opinions">Opinions</a></li>
-                {% with 'rooms new-rooms' as list%}
+                {% with 'museums new-unity' as list%}
                     <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Rooms <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Museums <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li{% if request.resolver_match.url_name == 'rooms' %} class="active"{% endif %}><a href="/curator/rooms">Existing Rooms</a></li>
+                            <li{% if request.resolver_match.url_name == 'museums' %} class="active"{% endif %}><a href="/curator/museums">Existing Museums</a></li>
                             <li role="separator" class="divider"></li>
-                            <li{% if request.resolver_match.url_name == 'new-rooms' %} class="active"{% endif %}><a href="/curator/new-rooms">New Room</a></li>
+                            <li{% if request.resolver_match.url_name == 'new-unity' %} class="active"{% endif %}><a href="/curator/add-unity-museum">Add Unity Museum</a></li>
                         </ul>
                     </li>
                 {% endwith %}

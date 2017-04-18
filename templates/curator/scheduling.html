@@ -25,7 +25,7 @@
                     <th>Status</th>
                     <th>Initial Date</th>
                     <th>End Date</th>
-                    <th>Main Room</th>
+                    <th>Museum</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -44,7 +44,7 @@
                             <td>{{ exposition.status }}</td>
                             <td>{{ exposition.start_time }}</td>
                             <td>{{ exposition.end_time }}</td>
-                            <td>{{ exposition.main_room }}</td>
+                            <td>{{ exposition.museum }}</td>
                             <td>
                                 <button class="btn btn-sm btn-warning" type="button"
                                         onclick="document.getElementById('changing_status_{{ exposition.id }}').value='1';form.submit();">
