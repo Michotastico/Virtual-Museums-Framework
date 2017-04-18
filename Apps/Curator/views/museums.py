@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -30,7 +32,17 @@ def get_museums():
 def delete_museum(museum_id):
     museum = Museum.objects.get(id=museum_id)
     # TODO Delete stored files
+    unity_museum = UnityMuseum.objects.get(id=museum.id)
+
+    memory = unity_museum.memory.path
+    javascript = unity_museum.javascript.path
+    data = unity_museum.data.path
+
     museum.delete()
+
+    os.remove(memory)
+    os.remove(javascript)
+    os.remove(data)
 
 
 class MuseumsView(TemplateView):
