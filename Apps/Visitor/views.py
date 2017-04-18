@@ -16,7 +16,7 @@ def get_current_museum():
     # TODO check dates
 
     if len(exposition) < 1:
-        return redirect('/')
+        return None
     arguments = {}
     exposition = exposition[0]
 
@@ -38,6 +38,8 @@ class IndexView(TemplateView):
 
     def get(self, request, *a, **ka):
         arguments = get_current_museum()
+        if arguments is None:
+            return redirect('/visitor/error')
         return render(request, self.template_name, arguments)
 
 
