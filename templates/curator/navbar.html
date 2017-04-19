@@ -1,3 +1,4 @@
+{% load group_permission %}
 <nav class="navbar navbar-default">
     <div class="container-fluid">
 
@@ -9,7 +10,9 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li{% if request.resolver_match.url_name == 'scheduling' %} class="active"{% endif %}><a href="/curator/scheduling">Scheduling</a></li>
-                <li{% if request.resolver_match.url_name == 'opinions' %} class="active"{% endif %}><a href="/curator/opinions">Opinions</a></li>
+                {% if request.user|has_group:"Opinion_team" %}
+                    <li{% if request.resolver_match.url_name == 'opinions' %} class="active"{% endif %}><a href="/curator/opinions">Opinions</a></li>
+                {% endif %}
                 {% with 'museums new-unity' as list%}
                     <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Museums <span class="caret"></span></a>

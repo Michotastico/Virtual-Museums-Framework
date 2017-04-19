@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from Apps.Curator.decorators import group_required
 from Apps.Curator.models.museums import Room, Museum
 from Apps.Curator.models.opinions import Opinion
 
@@ -106,11 +107,13 @@ class OpinionsView(TemplateView):
             current_selector['options'].append(museum_template)
         return current_selector
 
+    @method_decorator(group_required('Opinion_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         current_selector = self.get_current_selector()
         return render(request, self.template_name, current_selector)
 
+    @method_decorator(group_required('Opinion_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         current_selector = self.get_current_selector()
