@@ -21,20 +21,22 @@
                     <th>Name</th>
                     <th>Initial Date</th>
                     <th>End Date</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for exposition in expositions %}
-                    <tr>
-                        <form method="POST" action="/visitor/visualization">
+                    <form method="POST" action="/visitor/visualization">
+                        <tr onclick="form.submit();">
                             {% csrf_token %}
-                            <input type="hidden" id="museum_{{ exposition.id }}"
-                                   name="museum" value="{{ exposition.id }}" />
+                            <input type="hidden" id="exposition_{{ exposition.id }}"
+                                   name="exposition" value="{{ exposition.id }}" />
                             <td>{{ exposition.name }}</td>
                             <td>{{ exposition.start_time }}</td>
                             <td>{{ exposition.end_time }}</td>
-                        </form>
-                    </tr>
+                            <td> <button class= "btn btn-sm btn-success" type="submit">Enter</button></td>
+                        </tr>
+                    </form>
                 {% endfor %}
                 </tbody>
             </table>

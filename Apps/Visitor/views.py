@@ -29,7 +29,7 @@ def get_current_expositions():
 
     for exposition in expositions:
         expo = dict()
-        expo['id'] = exposition.museum.id
+        expo['id'] = exposition.id
         expo['name'] = exposition.name
         expo['start_time'] = exposition.start_date.strftime("%B %d, %Y")
         expo['end_time'] = exposition.end_date.strftime("%B %d, %Y")
@@ -39,9 +39,9 @@ def get_current_expositions():
 
 
 @transaction.atomic
-def get_current_museum():
+def get_current_museum(exposition_id):
     today = datetime.today().date()
-    exposition = Exposition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
+    exposition = Exposition.objects.filter(id=exposition_id).filter(status=True)
 
     if len(exposition) < 1:
         return None
@@ -77,9 +77,18 @@ class VisualizationView(TemplateView):
     template_name = 'visitor/visualization.html'
 
     def get(self, request, *a, **ka):
-        arguments = get_current_museum()
+        return redirect('/visitor/error')
+
+    def post(self, request, *a, **ka):
+        exposition_id = request.POST.get('exposition', '')
+
+        if len(exposition_id) < 1:
+            return redirect('/visitor/error')
+
+        arguments = get_current_museum(exposition_id)
         if arguments is None:
             return redirect('/visitor/error')
+
         return render(request, self.template_name, arguments)
 
 
