@@ -31,7 +31,7 @@ def get_museums():
 @transaction.atomic
 def delete_museum(museum_id):
     museum = Museum.objects.get(id=museum_id)
-    # TODO Delete stored files
+
     unity_museum = UnityMuseum.objects.get(id=museum.id)
 
     memory = unity_museum.memory.path

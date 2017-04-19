@@ -21,18 +21,28 @@
                 <tr>
                     <th>#</th>
                     <th>Title</th>
+                    <th>Options</th>
                     <th>Video</th>
                 </tr>
                 </thead>
                 <tbody>
                 {%  for element in elements%}
                     <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ element.title }}</td>
-                    <td><video controls>
-                            <source src="{{ element.href }}" type="video/mp4">
-                            Your browser does not support the audio element.
-                        </video></td>
+                        <form method="POST" action="/curator/resources">
+                            {% csrf_token %}
+                            <input type="hidden" id="delete_{{ element.id }}" name="delete" value="0" />
+                            <input type="hidden"  name="resource" value="{{ current_selection }}" />
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ element.title }}</td>
+                            <td><button class= "btn btn-sm btn-danger" type="button"
+                                        onclick="if (confirm('You really want to delete this resource') == true) {
+                                                document.getElementById('delete_{{ element.id }}').value='{{ element.id }}';
+                                                form.submit();}">Delete</button></td>
+                            <td><video width="500" controls>
+                                <source src="{{ element.href }}" type="video/mp4">
+                                Your browser does not support the video element.
+                            </video></td>
+                        </form>
                     </tr>
                 {% endfor %}
                 </tbody>

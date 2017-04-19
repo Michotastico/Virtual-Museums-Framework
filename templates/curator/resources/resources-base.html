@@ -4,6 +4,16 @@
         <strong>Success!</strong> The new resource was correctly added.
     </div>
 {% endif %}
+{% if success_delete %}
+    <div class="alert alert-success">
+        <strong>Success!</strong> The resource was correctly deleted.
+    </div>
+{% endif %}
+{% if error %}
+    <div class="alert alert-danger">
+        <strong>Error!</strong> There was a problem deleting the resource.
+    </div>
+{% endif %}
 <form method="POST" action="/curator/resources" class="form-inline ng-pristine ng-valid">
     {% csrf_token %}
     <label >Type: </label>
