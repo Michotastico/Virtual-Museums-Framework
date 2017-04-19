@@ -21,6 +21,24 @@ from VirtualMuseumsFramework.settings import WEBSITE_BASE_URL, WEBSITE_AUTOMATIC
 
 
 @transaction.atomic
+def get_current_expositions():
+    today = datetime.today().date()
+    expositions = Exposition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
+
+    arguments = {'expositions': []}
+
+    for exposition in expositions:
+        expo = dict()
+        expo['id'] = exposition.museum.id
+        expo['name'] = exposition.name
+        expo['start_time'] = exposition.start_date.strftime("%B %d, %Y")
+        expo['end_time'] = exposition.end_date.strftime("%B %d, %Y")
+        arguments['expositions'].append(expo)
+
+    return arguments
+
+
+@transaction.atomic
 def get_current_museum():
     today = datetime.today().date()
     exposition = Exposition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
@@ -47,6 +65,16 @@ def get_current_museum():
 
 class IndexView(TemplateView):
     template_name = 'visitor/index.html'
+
+    def get(self, request, *a, **ka):
+        arguments = get_current_expositions()
+        if len(arguments['expositions']) < 1:
+            return redirect('/visitor/error')
+        return render(request, self.template_name, arguments)
+
+
+class VisualizationView(TemplateView):
+    template_name = 'visitor/visualization.html'
 
     def get(self, request, *a, **ka):
         arguments = get_current_museum()
