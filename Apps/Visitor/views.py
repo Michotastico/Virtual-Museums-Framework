@@ -1,7 +1,7 @@
 import hashlib
 import random
 import smtplib
-from datetime import datetime
+from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -217,6 +217,11 @@ class OpinionsView(TemplateView):
             hash_key = generate_hash_key(name, email, opinion)
             new_opinion.hash_key = hash_key
             new_opinion.museum = museum
+
+            one_day_after = datetime.today() + timedelta(days=1)
+            one_day_after = one_day_after.date()
+
+            new_opinion.timeout = one_day_after
 
             if send_email(name, museum.name, opinion, hash_key, email):
                 new_opinion.save()

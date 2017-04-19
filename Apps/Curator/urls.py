@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from Apps.Curator.views.general import IndexView, CuratorAccount
 from Apps.Curator.views.museums import MuseumsView, AddUnityView, PreviewMuseumView
-from Apps.Curator.views.opinions import OpinionsView
+from Apps.Curator.views.opinions import OpinionsView, OpinionDeleterView
 from Apps.Curator.views.resources import ResourcesView, NewResourcesView
 from Apps.Curator.views.rooms import RoomsView, NewRoomsView
 from Apps.Curator.views.scheduling import SchedulingView, SchedulingExpositionView
@@ -29,4 +29,6 @@ urlpatterns = [
 
     url(r'^new-resources$', NewResourcesView.as_view(), name='resources'),
     url(r'^rooms$', RoomsView.as_view(), name='rooms'),
+
+    url(r'^timeout_opinions_deleter$', OpinionDeleterView.as_view(), name='deleter'),
 ]
