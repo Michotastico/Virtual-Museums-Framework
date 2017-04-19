@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from Apps.Curator.decorators import group_required
 from Apps.Curator.models.museums import Museum
 from Apps.Curator.models.scheduling import Exposition
 from Apps.Curator.views.opinions import get_museums_data
@@ -44,6 +45,7 @@ class SchedulingView(TemplateView):
         expositions = get_expositions()
         return render(request, self.template_name, expositions)
 
+    @method_decorator(group_required('Scheduling_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         change_status = request.POST.get('changing_status', None)
@@ -75,6 +77,7 @@ class SchedulingExpositionView(TemplateView):
             current_selector['options'].append(museum_template)
         return current_selector
 
+    @method_decorator(group_required('Scheduling_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         selector = self.get_current_selector()
@@ -89,6 +92,7 @@ class SchedulingExpositionView(TemplateView):
                                               'end': exposition.end_date}
         return render(request, self.template_name, selector)
 
+    @method_decorator(group_required('Scheduling_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         selector = self.get_current_selector()

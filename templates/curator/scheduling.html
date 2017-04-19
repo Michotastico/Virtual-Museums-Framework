@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load group_permission %}
 
 {% block css %}
 {% endblock css %}
@@ -26,37 +27,41 @@
                     <th>Initial Date</th>
                     <th>End Date</th>
                     <th>Museum</th>
-                    <th>Actions</th>
+                    {% if request.user|has_group:"Scheduling_team" %}
+                        <th>Actions</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
                 {% for exposition in expositions %}
                     <tr>
                         <form method="POST" action="/curator/scheduling">
-                            {% csrf_token %}
-                            <input type="hidden" id="id_exposition_{{ exposition.id }}"
-                                   name="id_exposition" value="{{ exposition.id }}" />
-                            <input type="hidden" id="editing_{{ exposition.id }}" name="editing" value="0" />
-                            <input type="hidden" id="changing_status_{{ exposition.id }}"
-                                   name="changing_status" value="0" />
                             <th scope="row">{{ forloop.counter }}</th>
                             <td>{{ exposition.name }}</td>
                             <td>{{ exposition.status }}</td>
                             <td>{{ exposition.start_time }}</td>
                             <td>{{ exposition.end_time }}</td>
                             <td>{{ exposition.museum }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning" type="button"
-                                        onclick="document.getElementById('changing_status_{{ exposition.id }}').value='1';form.submit();">
-                                    {% if exposition.status == 'Active' %}
-                                        Desactive
-                                    {% else %}
-                                        Active
-                                    {% endif %}
-                                </button>
-                                <button class= "btn btn-sm btn-success" type="button"
-                                        onclick="document.getElementById('editing_{{ exposition.id }}').value='1';form.submit();">Edit</button>
-                            </td>
+                            {% if request.user|has_group:"Scheduling_team" %}
+                                {% csrf_token %}
+                                <input type="hidden" id="id_exposition_{{ exposition.id }}"
+                                       name="id_exposition" value="{{ exposition.id }}" />
+                                <input type="hidden" id="editing_{{ exposition.id }}" name="editing" value="0" />
+                                <input type="hidden" id="changing_status_{{ exposition.id }}"
+                                       name="changing_status" value="0" />
+                                <td>
+                                    <button class="btn btn-sm btn-warning" type="button"
+                                            onclick="document.getElementById('changing_status_{{ exposition.id }}').value='1';form.submit();">
+                                        {% if exposition.status == 'Active' %}
+                                            Desactive
+                                        {% else %}
+                                            Active
+                                        {% endif %}
+                                    </button>
+                                    <button class= "btn btn-sm btn-success" type="button"
+                                            onclick="document.getElementById('editing_{{ exposition.id }}').value='1';form.submit();">Edit</button>
+                                </td>
+                            {% endif %}
                         </form>
                     </tr>
                 {% endfor %}
