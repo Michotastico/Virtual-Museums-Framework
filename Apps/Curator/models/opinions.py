@@ -10,6 +10,7 @@ class Opinion(models.Model):
     email = models.EmailField(blank=False)
     hash_key = models.TextField()
     validated = models.BooleanField(default=False)
+    timeout = models.DateField(blank=False)
 
     museum = models.ForeignKey("Museum")
 
