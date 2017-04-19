@@ -1,0 +1,16 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Virtual Museums</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if id %}<li><a href="/visitor/send-opinion?id={{ id }}" target="_blank">Send Opinion</a></li>{% endif %}
+                <li><a href="/visitor">Back to museums</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

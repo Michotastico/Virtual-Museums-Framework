@@ -11,9 +11,12 @@ from Apps.Curator.models.opinions import Opinion
 
 @transaction.atomic
 def confirm_opinion(key):
-    opinion = Opinion.objects.get(hash_key=key)
-    if opinion.validated:
+    opinions = Opinion.objects.filter(hash_key=key).filter(validated=False)
+
+    if len(opinions) < 1:
         return False
+
+    opinion = opinions[0]
     opinion.validated = True
     opinion.save()
     return True
@@ -137,7 +140,7 @@ class OpinionsView(TemplateView):
             current_selector['current_museum'] = current_museum
             current_selector['header']['selected'] = ''
             for option in current_selector['options']:
-                if option['id'] == current_museum:
+                if option['id'] == int(current_museum):
                     option['selected'] = 'selected'
                     break
 

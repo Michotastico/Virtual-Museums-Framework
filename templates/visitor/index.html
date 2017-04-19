@@ -1,45 +1,46 @@
 {% extends "base/base.html" %}
 
 {% block css %}
-    <link rel="stylesheet" href="/static/common-web/unity/style.css">
 {% endblock css %}
 
 
 {% block js %}
-    <script src="/static/common-web/unity/UnityProgress.js"></script>
 {% endblock js %}
 
 
 {% block body %}
     <body>
+    {% include "visitor/navbar.html" %}
+    <br>
     <div class="container">
-        <h2>{{ title }}</h2>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="clear">
-                    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="500px" width="800px"></canvas>
-                    <br>
-                    <div class="fullscreen"><img src="/static/common-web/unity/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
-                    <div class="title btn-info" style="background-color: #1eaed3;" onclick="SetFullscreen(1);">Fullscreen mode</div>
-                </div>
-                <p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p>
-            </div>
-            <div class="col-md-4">
-            </div>
+        <h2>Current expositions</h2>
+        <div class="jumbotron">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Initial Date</th>
+                    <th>End Date</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for exposition in expositions %}
+                    <form method="POST" action="/visitor/visualization">
+                        <tr onclick="form.submit();">
+                            {% csrf_token %}
+                            <input type="hidden" id="exposition_{{ exposition.id }}"
+                                   name="exposition" value="{{ exposition.id }}" />
+                            <td>{{ exposition.name }}</td>
+                            <td>{{ exposition.start_time }}</td>
+                            <td>{{ exposition.end_time }}</td>
+                            <td> <button class= "btn btn-sm btn-success" type="submit">Enter</button></td>
+                        </tr>
+                    </form>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <script type='text/javascript'>
-        var Module = {
-            TOTAL_MEMORY: {{ total_memory }},
-            errorhandler: null,
-            compatibilitycheck: null,
-            dataUrl: "{{ data }}",
-            codeUrl: "{{ js }}",
-            memUrl: "{{ mem  }}",
-
-        };
-    </script>
-    <script src="/static/common-web/unity/UnityLoader.js"></script>
     </body>
 {% endblock body %}
