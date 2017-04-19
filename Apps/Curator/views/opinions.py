@@ -11,9 +11,12 @@ from Apps.Curator.models.opinions import Opinion
 
 @transaction.atomic
 def confirm_opinion(key):
-    opinion = Opinion.objects.get(hash_key=key)
-    if opinion.validated:
+    opinions = Opinion.objects.filter(hash_key=key).filter(validated=False)
+
+    if len(opinions) < 1:
         return False
+
+    opinion = opinions[0]
     opinion.validated = True
     opinion.save()
     return True
