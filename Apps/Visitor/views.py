@@ -27,6 +27,7 @@ def get_current_museum():
     museum = exposition.museum
 
     arguments['title'] = museum.name
+    arguments['id'] = museum.id
 
     museum = UnityMuseum.objects.get(id=museum.id)
     arguments['data'] = parse_inner_url(museum.data.url)

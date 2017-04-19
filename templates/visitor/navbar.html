@@ -8,7 +8,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Send Opinion</a></li>
+                {% if id %}<li><a href="/visitor/send-opinion?id={{ id }}" target="_blank">Send Opinion</a></li>{% endif %}
                 <li><a href="/visitor">Back to museums</a></li>
             </ul>
         </div>
