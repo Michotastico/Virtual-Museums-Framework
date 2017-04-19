@@ -25,7 +25,9 @@
                         </li>
                     {% endwith %}
                 {% endif %}
-                <li{% if request.resolver_match.url_name == 'resources' %} class="active"{% endif %}><a href="/curator/resources">Resources</a></li>
+                {% if request.user|has_group:"Resources_team" %}
+                    <li{% if request.resolver_match.url_name == 'resources' %} class="active"{% endif %}><a href="/curator/resources">Resources</a></li>
+                {% endif %}
                 {% with 'account' as list%}
                     <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>

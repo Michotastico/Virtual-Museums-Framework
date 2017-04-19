@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from Apps.Curator.decorators import group_required
 from Apps.Curator.forms import TemplateForm, VideoForm, ModelForm, ImageForm, MusicForm
 from Apps.Curator.models.resources import ExternalModel, ExternalImage, ExternalVideo, ExternalMusic
 
@@ -153,6 +154,7 @@ class ResourcesView(TemplateView):
                         option['selected'] = 'selected'
         return specific_selector, specific_template
 
+    @method_decorator(group_required('Resources_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         specific_resource = request.GET.get('resource', None)
@@ -173,6 +175,7 @@ class ResourcesView(TemplateView):
 
         return render(request, specific_template, specific_selector)
 
+    @method_decorator(group_required('Resources_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
 
@@ -208,6 +211,7 @@ class ResourcesView(TemplateView):
 class NewResourcesView(TemplateView):
     template_name = 'curator/new-resource.html'
 
+    @method_decorator(group_required('Resources_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         parameters = {}
@@ -224,6 +228,7 @@ class NewResourcesView(TemplateView):
 
         return render(request, self.template_name, parameters)
 
+    @method_decorator(group_required('Resources_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         request_form = TemplateForm(request.POST, request.FILES)
