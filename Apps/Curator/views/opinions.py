@@ -1,6 +1,9 @@
 import copy
+
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
+from django.db import transaction, IntegrityError
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
@@ -148,3 +151,32 @@ class OpinionsView(TemplateView):
             current_selector['opinions'] = opinions
 
         return render(request, self.template_name, current_selector)
+
+
+@transaction.atomic
+def delete_timeout_opinions():
+    today = datetime.today().date()
+    opinions = Opinion.objects.filter(validated=False).filter(timeout__lt=today)
+
+    sid = transaction.savepoint()
+
+    try:
+        for opinion in opinions:
+            opinion.delete()
+    except IntegrityError:
+        transaction.savepoint_rollback(sid)
+        return False
+
+    transaction.savepoint_commit(sid)
+    return True
+
+
+class OpinionDeleterView(TemplateView):
+
+    @method_decorator(login_required(login_url='/auth/login'))
+    def get(self, request, *a, **ka):
+        response = {'status': 409}
+        if delete_timeout_opinions():
+            response['status'] = 200
+
+        return JsonResponse(response)
