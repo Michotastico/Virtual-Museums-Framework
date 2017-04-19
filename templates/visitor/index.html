@@ -12,6 +12,8 @@
 
 {% block body %}
     <body>
+    {% include "visitor/navbar.html" %}
+    <br>
     <div class="container">
         <div class="template-wrap clear">
             <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="500px" width="800px"></canvas>
