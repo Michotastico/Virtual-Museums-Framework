@@ -22,6 +22,7 @@ def query_music():
     musics = ExternalMusic.objects.all()
     for music in musics:
         music_template = dict()
+        music_template['id'] = music.id
         music_template['title'] = music.title
         music_template['description'] = music.description
         music_template['href'] = parse_inner_url(music.file.url)
@@ -30,11 +31,20 @@ def query_music():
 
 
 @transaction.atomic
+def delete_music(_id):
+    music = ExternalMusic.objects.get(id=_id)
+    path = music.file.path
+    music.delete()
+    os.remove(path)
+
+
+@transaction.atomic
 def query_video():
     video_list = list()
     videos = ExternalVideo.objects.all()
     for video in videos:
         video_template = dict()
+        video_template['id'] = video.id
         video_template['title'] = video.title
         video_template['description'] = video.description
         video_template['href'] = parse_inner_url(video.file.url)
@@ -43,11 +53,20 @@ def query_video():
 
 
 @transaction.atomic
+def delete_video(_id):
+    video = ExternalVideo.objects.get(id=_id)
+    path = video.file.path
+    video.delete()
+    os.remove(path)
+
+
+@transaction.atomic
 def query_image():
     image_list = list()
     images = ExternalImage.objects.all()
     for image in images:
         image_template = dict()
+        image_template['id'] = image.id
         image_template['title'] = image.title
         image_template['description'] = image.description
         image_template['href'] = parse_inner_url(image.file.url)
@@ -56,11 +75,20 @@ def query_image():
 
 
 @transaction.atomic
+def delete_image(_id):
+    image = ExternalImage.objects.get(id=_id)
+    path = image.file.path
+    image.delete()
+    os.remove(path)
+
+
+@transaction.atomic
 def query_model():
     model_list = list()
     models = ExternalModel.objects.all()
     for model in models:
         model_template = dict()
+        model_template['id'] = model.id
         model_template['title'] = model.title
         model_template['description'] = model.description
         model_template['href'] = parse_inner_url(model.file.url)
@@ -70,22 +98,30 @@ def query_model():
         model_list.append(model_template)
     return model_list
 
+
+@transaction.atomic
+def delete_model(_id):
+    model = ExternalModel.objects.get(id=_id)
+    path = model.file.path
+    model.delete()
+    os.remove(path)
+
 POSSIBLE_RESOURCE = {
     'Music': {
         'name': 'Music', 'form': MusicForm, 'template': 'curator/resources/resources-music.html',
-        'elements': query_music
+        'elements': query_music, 'delete': delete_music
     },
     'Image': {
         'name': 'Image', 'form': ImageForm, 'template': 'curator/resources/resources-images.html',
-        'elements': query_image
+        'elements': query_image, 'delete': delete_image
     },
     'Model': {
         'name': 'Model', 'form': ModelForm, 'template': 'curator/resources/resources-models.html',
-        'elements': query_model
+        'elements': query_model, 'delete': delete_model
     },
     'Video': {
         'name': 'Video', 'form': VideoForm, 'template': 'curator/resources/resources-video.html',
-        'elements': query_video
+        'elements': query_video, 'delete': delete_video
     },
 }
 
@@ -122,6 +158,9 @@ class ResourcesView(TemplateView):
         specific_resource = request.GET.get('resource', None)
         specific_selector, specific_template = self.selector_current(specific_resource)
 
+        if specific_resource is not None:
+            specific_selector['current_selection'] = specific_resource
+
         resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
 
         if resource_list is not None:
@@ -139,9 +178,21 @@ class ResourcesView(TemplateView):
 
         specific_resource = request.POST.get('resource', None)
         new = request.POST.get('new-resource', None)
+        delete_resource = request.POST.get('delete', '0')
         specific_selector, specific_template = self.selector_current(specific_resource)
 
+        if delete_resource not in ['0']:
+            try:
+                deleter = POSSIBLE_RESOURCE[specific_resource]['delete']
+                deleter(delete_resource)
+                specific_selector['success_delete'] = True
+            except IOError:
+                specific_selector['error'] = 'True'
+
         resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
+
+        if specific_resource is not None:
+            specific_selector['current_selection'] = specific_resource
 
         if resource_list is not None:
             resource_list = resource_list['elements']()
