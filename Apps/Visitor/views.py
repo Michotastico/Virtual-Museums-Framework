@@ -78,21 +78,7 @@ class NoExpositionView(TemplateView):
 
 
 class OpinionsView(TemplateView):
-    message = {
-        'status': 409,
-        'message': ''
-    }
+    template_name = 'visitor/opinions.html'
 
-    def post(self, request, *a, **ka):
-        callback_message = copy.deepcopy(self.message)
-
-        name = escapejs(request.POST.get('name'))
-        email = escapejs(request.POST.get('email'))
-        opinion = escapejs(request.POST.get('opinion'))
-
-        print name
-        print email
-        print opinion
-        callback_message['status'] = 200
-
-        return JsonResponse(callback_message)
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name)
