@@ -137,7 +137,7 @@ class OpinionsView(TemplateView):
             current_selector['current_museum'] = current_museum
             current_selector['header']['selected'] = ''
             for option in current_selector['options']:
-                if option['id'] == current_museum:
+                if option['id'] == int(current_museum):
                     option['selected'] = 'selected'
                     break
 
