@@ -1,7 +1,8 @@
-import copy
 import hashlib
 import random
+import smtplib
 from datetime import datetime
+from email.mime.text import MIMEText
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import validate_email
@@ -16,6 +17,7 @@ from Apps.Curator.models.museums import UnityMuseum, Museum
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exposition
 from Apps.Curator.views.resources import parse_inner_url
+from VirtualMuseumsFramework.settings import WEBSITE_BASE_URL, WEBSITE_AUTOMATIC_RESPONSE_EMAIL, WEBSITE_SMTP_SERVER
 
 
 @transaction.atomic
@@ -86,8 +88,44 @@ def generate_hash_key(name, email, opinion):
     random_list = [name, email, opinion]
     random.shuffle(random_list)
     string = "".join(random_list)
-    hash = hashlib.sha512(string).hexdigest()
-    return hash
+    hash_key = hashlib.sha512(string).hexdigest()
+    return hash_key
+
+
+def send_email(name, museum_name, opinion, hash_key, email):
+
+    from_email = WEBSITE_AUTOMATIC_RESPONSE_EMAIL
+    to_email = email
+
+    message = "Good day " + name + ",\n\n" + \
+              "This is an information email to validate the opinion you had sent to our museum.\n\n" + \
+              "The specific exposition: " + museum_name + "\n" + \
+              "Your opinion: " + opinion + "\n\n" + \
+              "To validate this, please click the next url or copy-paste it into your browser. \n\n" + \
+              "<a href=http://" + WEBSITE_BASE_URL + "/confirmation?key?=" + hash_key + ">" + \
+              "http://" + WEBSITE_BASE_URL + "/confirmation?key?=" + hash_key + "</a>" + \
+              "\n\n" + "Please don't answer this email. It was automatically generate."
+
+    recipients = [to_email, from_email]
+
+    msg = MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
+    msg['Subject'] = "Virtual Museum: Opinion validation."
+    msg['From'] = from_email
+    msg['To'] = ", ".join(recipients)
+
+    try:
+        server = smtplib.SMTP(WEBSITE_SMTP_SERVER)
+        server.connect()
+    except (smtplib.SMTPException, IOError):
+        return False
+    text = msg.as_string()
+
+    try:
+        server.sendmail(from_email, recipients, text)
+    except smtplib.SMTPException:
+        return False
+
+    return True
 
 
 class OpinionsView(TemplateView):
@@ -139,11 +177,14 @@ class OpinionsView(TemplateView):
             new_opinion.person_name = name
             new_opinion.email = email
             new_opinion.opinion = opinion
-            new_opinion.hash_key = generate_hash_key(name, email, opinion)
+            hash_key = generate_hash_key(name, email, opinion)
+            new_opinion.hash_key = hash_key
             new_opinion.museum = museum
 
-            new_opinion.save()
-
-            arguments['success'].append('A confirmation email was sent to your address to validated your opinion.')
+            if send_email(name, museum.name, opinion, hash_key, email):
+                new_opinion.save()
+                arguments['success'].append('A confirmation email was sent to your address to validated your opinion.')
+            else:
+                arguments['error'].append('A problem occurred sending the verification email. Please try again later.')
 
         return render(request, self.template_name, arguments)

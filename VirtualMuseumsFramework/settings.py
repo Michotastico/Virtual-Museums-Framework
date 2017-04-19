@@ -126,3 +126,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'dj_static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+WEBSITE_BASE_URL = ''
+WEBSITE_AUTOMATIC_RESPONSE_EMAIL = ''
+WEBSITE_SMTP_SERVER = ''
