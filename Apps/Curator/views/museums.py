@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+from Apps.Curator.decorators import group_required
 from Apps.Curator.forms import UnityMuseumForm
 from Apps.Curator.models.museums import Museum, UnityMuseum
 from Apps.Curator.models.scheduling import Exposition
@@ -48,11 +49,13 @@ def delete_museum(museum_id):
 class MuseumsView(TemplateView):
     template_name = 'curator/museums.html'
 
+    @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         museums = get_museums()
         return render(request, self.template_name, museums)
 
+    @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         museum_id = request.POST.get('id_museum', None)
@@ -74,6 +77,7 @@ class MuseumsView(TemplateView):
 class AddUnityView(TemplateView):
     template_name = 'curator/unity-museum.html'
 
+    @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         form = UnityMuseumForm()
@@ -81,6 +85,7 @@ class AddUnityView(TemplateView):
 
         return render(request, self.template_name, parameters)
 
+    @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         request_form = UnityMuseumForm(request.POST, request.FILES)
@@ -115,6 +120,7 @@ def get_museum_data(museum_id):
 class PreviewMuseumView(TemplateView):
     template_name = 'curator/preview.html'
 
+    @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         museum_id = request.GET.get('id', None)

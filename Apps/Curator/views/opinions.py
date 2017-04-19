@@ -176,6 +176,7 @@ def delete_timeout_opinions():
 
 class OpinionDeleterView(TemplateView):
 
+    @method_decorator(group_required('Opinion_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         response = {'status': 409}

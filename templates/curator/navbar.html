@@ -13,16 +13,18 @@
                 {% if request.user|has_group:"Opinion_team" %}
                     <li{% if request.resolver_match.url_name == 'opinions' %} class="active"{% endif %}><a href="/curator/opinions">Opinions</a></li>
                 {% endif %}
-                {% with 'museums new-unity' as list%}
-                    <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Museums <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li{% if request.resolver_match.url_name == 'museums' %} class="active"{% endif %}><a href="/curator/museums">Existing Museums</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li{% if request.resolver_match.url_name == 'new-unity' %} class="active"{% endif %}><a href="/curator/add-unity-museum">Add Unity Museum</a></li>
-                        </ul>
-                    </li>
-                {% endwith %}
+                {% if request.user|has_group:"Museum_team" %}
+                    {% with 'museums new-unity' as list%}
+                        <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Museums <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li{% if request.resolver_match.url_name == 'museums' %} class="active"{% endif %}><a href="/curator/museums">Existing Museums</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li{% if request.resolver_match.url_name == 'new-unity' %} class="active"{% endif %}><a href="/curator/add-unity-museum">Add Unity Museum</a></li>
+                            </ul>
+                        </li>
+                    {% endwith %}
+                {% endif %}
                 <li{% if request.resolver_match.url_name == 'resources' %} class="active"{% endif %}><a href="/curator/resources">Resources</a></li>
                 {% with 'account' as list%}
                     <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
