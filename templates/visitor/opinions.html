@@ -32,12 +32,13 @@
                     </div>
                     <div class="col-md-8">
                         <h4>Name:</h4>
-                        <input type="text" name="name" placeholder="Your name" class="form-control">
+                        <input type="text" name="name" placeholder="Your name" class="form-control" maxlength="30">
                         <h4>Email:</h4>
                         <input type="email" name="email" placeholder="your@email.com" class="form-control">
                         <h4>Opinion: </h4>
                         <textarea cols="89" name="opinion" maxlength="255" rows="5"></textarea>
                         <button class="btn btn-sm btn-success btn-block" type="submit">Send your opinion</button>
+                        <input type="hidden" name="museum" value="{{ museum_id }}" />
                     </div>
                     <div class="col-md-2">
                     </div>

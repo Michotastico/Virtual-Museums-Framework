@@ -1,14 +1,17 @@
 import copy
 from datetime import datetime
+
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.validators import validate_email
 from django.db import transaction
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 
 # Create your views here.
 from django.utils.html import escapejs
 from django.views.generic import TemplateView
 
-from Apps.Curator.models.museums import UnityMuseum
+from Apps.Curator.models.museums import UnityMuseum, Museum
+from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exposition
 from Apps.Curator.views.resources import parse_inner_url
 
@@ -81,4 +84,56 @@ class OpinionsView(TemplateView):
     template_name = 'visitor/opinions.html'
 
     def get(self, request, *a, **ka):
-        return render(request, self.template_name)
+        arguments = dict()
+        museum_id = request.GET.get('id', None)
+        if museum_id is not None:
+            arguments['museum_id'] = museum_id
+        return render(request, self.template_name, arguments)
+
+    def post(self, request, *a, **ka):
+        arguments = {'error': [], 'success': []}
+
+        museum_id = request.POST.get('museum', '')
+        museum = None
+
+        try:
+            if len(museum_id) < 1:
+                raise ObjectDoesNotExist()
+            museum = Museum.objects.get(id=museum_id)
+        except ObjectDoesNotExist:
+            arguments['error'].append('Invalid form. Please send your opinion from the exposition interface.')
+
+        arguments['museum_id'] = museum_id
+
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
+        opinion = request.POST.get('opinion', '')
+
+        if len(name) < 1:
+            arguments['error'].append('Please input a non-empty name.')
+
+        try:
+            if len(email) < 1:
+                raise ValidationError('Empty email.')
+            validate_email(email)
+        except ValidationError:
+            arguments['error'].append('Please input a non-empty email.')
+
+        if len(opinion) < 1:
+            arguments['error'].append('Please input a non-empty opinion.')
+
+        opinion = escapejs(opinion)
+
+        if len(arguments['error']) < 1:
+            new_opinion = Opinion()
+            new_opinion.person_name = name
+            new_opinion.email = email
+            new_opinion.opinion = opinion
+
+            new_opinion.museum = museum
+
+            new_opinion.save()
+
+            arguments['success'].append('A confirmation email was sent to your address to validated your opinion.')
+
+        return render(request, self.template_name, arguments)
