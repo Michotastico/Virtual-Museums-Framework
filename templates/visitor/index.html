@@ -13,9 +13,9 @@
 {% block body %}
     <body>
     <div class="container">
-        <h2>{{ title }}</h2>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-9">
+                <h2>{{ title }}</h2>
                 <div class="clear">
                     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="500px" width="800px"></canvas>
                     <br>
@@ -24,7 +24,18 @@
                 </div>
                 <p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <h2>Send your opinion!</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <h4>Name:</h4>
+                    <input type="text" name="name" placeholder="Your name" class="form-control">
+                    <h4>Email:</h4>
+                    <input type="email" name="email" placeholder="your@email.com" class="form-control">
+                    <h4>Opinion:</h4>
+                    <textarea cols="32" name="opinion" maxlength="255" rows="5"></textarea>
+                    <button class="btn btn-sm btn-success btn-block" type="submit">Send!</button>
+                </form>
             </div>
         </div>
     </div>
