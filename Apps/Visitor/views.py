@@ -1,8 +1,11 @@
+import copy
 from datetime import datetime
 from django.db import transaction
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 
 # Create your views here.
+from django.utils.html import escapejs
 from django.views.generic import TemplateView
 
 from Apps.Curator.models.museums import UnityMuseum
@@ -71,3 +74,24 @@ class NoExpositionView(TemplateView):
         else:
             arguments['body'] = 'The next active exposition is on ' + next_date.strftime("%B %d, %Y")
         return render(request, self.template_name, arguments)
+
+
+class OpinionsView(TemplateView):
+    message = {
+        'status': 409,
+        'message': ''
+    }
+
+    def post(self, request, *a, **ka):
+        callback_message = copy.deepcopy(self.message)
+
+        name = escapejs(request.POST.get('name'))
+        email = escapejs(request.POST.get('email'))
+        opinion = escapejs(request.POST.get('opinion'))
+
+        print name
+        print email
+        print opinion
+        callback_message['status'] = 200
+
+        return JsonResponse(callback_message)

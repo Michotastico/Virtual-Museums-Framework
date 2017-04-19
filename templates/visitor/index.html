@@ -13,31 +13,15 @@
 {% block body %}
     <body>
     <div class="container">
-        <div class="row">
-            <div class="col-md-9">
-                <h2>{{ title }}</h2>
-                <div class="clear">
-                    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="500px" width="800px"></canvas>
-                    <br>
-                    <div class="fullscreen"><img src="/static/common-web/unity/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
-                    <div class="title btn-info" style="background-color: #1eaed3;" onclick="SetFullscreen(1);">Fullscreen mode</div>
-                </div>
-                <p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p>
-            </div>
-            <div class="col-md-3">
-                <h2>Send your opinion!</h2>
-                <form method="POST">
-                    {% csrf_token %}
-                    <h4>Name:</h4>
-                    <input type="text" name="name" placeholder="Your name" class="form-control">
-                    <h4>Email:</h4>
-                    <input type="email" name="email" placeholder="your@email.com" class="form-control">
-                    <h4>Opinion:</h4>
-                    <textarea cols="32" name="opinion" maxlength="255" rows="5"></textarea>
-                    <button class="btn btn-sm btn-success btn-block" type="submit">Send!</button>
-                </form>
-            </div>
+        <div class="template-wrap clear">
+            <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="500px" width="800px"></canvas>
+            <br>
+            <div class="fullscreen"><img src="/static/common-web/unity/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
+            <div class="title btn-info" style="background-color: #1eaed3;" onclick="SetFullscreen(1);">Fullscreen mode</div>
+            <div class="title" style="float: right;">{{ title }}</div>
         </div>
+        <p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p>
+
     </div>
 
     <script type='text/javascript'>
