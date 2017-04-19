@@ -1,4 +1,6 @@
 import copy
+import hashlib
+import random
 from datetime import datetime
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -80,6 +82,14 @@ class NoExpositionView(TemplateView):
         return render(request, self.template_name, arguments)
 
 
+def generate_hash_key(name, email, opinion):
+    random_list = [name, email, opinion]
+    random.shuffle(random_list)
+    string = "".join(random_list)
+    hash = hashlib.sha512(string).hexdigest()
+    return hash
+
+
 class OpinionsView(TemplateView):
     template_name = 'visitor/opinions.html'
 
@@ -129,7 +139,7 @@ class OpinionsView(TemplateView):
             new_opinion.person_name = name
             new_opinion.email = email
             new_opinion.opinion = opinion
-
+            new_opinion.hash_key = generate_hash_key(name, email, opinion)
             new_opinion.museum = museum
 
             new_opinion.save()
