@@ -158,6 +158,9 @@ class ResourcesView(TemplateView):
         specific_resource = request.GET.get('resource', None)
         specific_selector, specific_template = self.selector_current(specific_resource)
 
+        if specific_resource is not None:
+            specific_selector['current_selection'] = specific_resource
+
         resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
 
         if resource_list is not None:
@@ -185,7 +188,6 @@ class ResourcesView(TemplateView):
                 specific_selector['success_delete'] = True
             except IOError:
                 specific_selector['error'] = 'True'
-
 
         resource_list = POSSIBLE_RESOURCE.get(specific_resource, None)
 
