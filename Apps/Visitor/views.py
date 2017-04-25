@@ -131,8 +131,10 @@ class NoExpositionView(TemplateView):
         return render(request, self.template_name, arguments)
 
 
-def generate_hash_key(name, email, opinion):
-    random_list = [name, email, opinion]
+def generate_hash_key(email):
+    date = datetime.today()
+
+    random_list = [email, date.strftime('%d%m%Y%H%M%S%f%z')]
     random.shuffle(random_list)
     string = "".join(random_list)
     hash_key = hashlib.sha512(string).hexdigest()
@@ -140,7 +142,8 @@ def generate_hash_key(name, email, opinion):
 
 
 def send_email(name, museum_name, opinion, hash_key, email):
-
+    #TODO Remove returng after testing
+    return True
     from_email = WEBSITE_AUTOMATIC_RESPONSE_EMAIL
     to_email = email
 
@@ -203,6 +206,10 @@ class OpinionsView(TemplateView):
         name = request.POST.get('name', '')
         email = request.POST.get('email', '')
         opinion = request.POST.get('opinion', '')
+        rating = request.POST.get('rating', '')
+
+        #TODO add rating
+        print rating
 
         if len(name) < 1:
             arguments['error'].append('Please input a non-empty name.')
@@ -224,7 +231,7 @@ class OpinionsView(TemplateView):
             new_opinion.person_name = name
             new_opinion.email = email
             new_opinion.opinion = opinion
-            hash_key = generate_hash_key(name, email, opinion)
+            hash_key = generate_hash_key(email)
             new_opinion.hash_key = hash_key
             new_opinion.museum = museum
 
