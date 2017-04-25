@@ -14,9 +14,11 @@
     {% include "curator/navbar.html" %}
     <div class="container">
         <h2>Scheduling</h2>
-        <a href="/curator/scheduling-exposition" class="btn btn-sm btn-success">Add new exposition</a>
-        <br>
-        <br>
+        {% if request.user|has_group:"Scheduling_team" %}
+            <a href="/curator/scheduling-exposition" class="btn btn-sm btn-success">Add new exposition</a>
+            <br>
+            <br>
+        {% endif %}
         <div class="jumbotron">
             <table class="table">
                 <thead>
