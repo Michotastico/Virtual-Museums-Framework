@@ -1,10 +1,21 @@
 {% extends "base/base.html" %}
 
 {% block css %}
+    <link rel="stylesheet" href="/static/bower_components/jquery-bar-rating/dist/themes/bars-square.css">
 {% endblock css %}
 
 
 {% block js %}
+    <script src="/static/bower_components/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#rating').barrating({
+                theme: 'bars-square',
+                showValues:true,
+                showSelectedRating:false
+            });
+        });
+    </script>
 {% endblock js %}
 
 
@@ -35,6 +46,20 @@
                         <input type="text" name="name" placeholder="Your name" class="form-control" maxlength="30">
                         <h4>Email:</h4>
                         <input type="email" name="email" placeholder="your@email.com" class="form-control">
+                        <h4>Rating:</h4>
+                        <select id="rating">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                        <br>
                         <h4>Opinion: </h4>
                         <textarea cols="89" name="opinion" maxlength="255" rows="5"></textarea>
                         <button class="btn btn-sm btn-success btn-block" type="submit">Send your opinion</button>
