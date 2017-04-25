@@ -39,6 +39,14 @@ def get_current_expositions():
 
 
 @transaction.atomic
+def increase_visitor(exposition_id):
+    exposition = Exposition.objects.get(id=exposition_id)
+    museum = exposition.museum
+    museum.visitors += 1
+    museum.save()
+
+
+@transaction.atomic
 def get_current_museum(exposition_id):
     today = datetime.today().date()
     exposition = Exposition.objects.filter(id=exposition_id).filter(status=True)
@@ -88,6 +96,8 @@ class VisualizationView(TemplateView):
         arguments = get_current_museum(exposition_id)
         if arguments is None:
             return redirect('/visitor/error')
+
+        increase_visitor(exposition_id)
 
         return render(request, self.template_name, arguments)
 
