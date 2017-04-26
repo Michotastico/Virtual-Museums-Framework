@@ -11,6 +11,7 @@ class Opinion(models.Model):
     hash_key = models.TextField()
     validated = models.BooleanField(default=False)
     timeout = models.DateField(blank=False)
+    rating = models.IntegerField(default=0)
 
     museum = models.ForeignKey("Museum")
 

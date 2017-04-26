@@ -208,8 +208,8 @@ class OpinionsView(TemplateView):
         opinion = request.POST.get('opinion', '')
         rating = request.POST.get('rating', '')
 
-        #TODO add rating
-        print rating
+        if rating not in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']:
+            arguments['error'].append('Invalid rating value.')
 
         if len(name) < 1:
             arguments['error'].append('Please input a non-empty name.')
@@ -231,6 +231,7 @@ class OpinionsView(TemplateView):
             new_opinion.person_name = name
             new_opinion.email = email
             new_opinion.opinion = opinion
+            new_opinion.rating = int(rating)
             hash_key = generate_hash_key(email)
             new_opinion.hash_key = hash_key
             new_opinion.museum = museum
