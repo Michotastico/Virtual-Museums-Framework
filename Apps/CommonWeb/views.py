@@ -4,12 +4,24 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views.generic import TemplateView
 
+from VirtualMuseumsFramework.settings import WEBSITE_ADMINISTRATION, WEBSITE_CONTACT_EMAIL
+
 
 class IndexView(TemplateView):
     template_name = 'common-web/index.html'
 
     def get(self, request, *a, **ka):
         return render(request, self.template_name)
+
+
+class ContactView(TemplateView):
+    template_name = 'common-web/contact.html'
+
+    arguments = {'administration': WEBSITE_ADMINISTRATION,
+                 'email': WEBSITE_CONTACT_EMAIL}
+
+    def get(self, request, *a, **ka):
+        return render(request, self.template_name, self.arguments)
 
 
 class LoginView(TemplateView):

@@ -17,13 +17,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from Apps.CommonWeb.views import IndexView
+from Apps.CommonWeb.views import IndexView, ContactView
 from Apps.CommonWeb.views import LoginView
 from Apps.CommonWeb.views import LogoutView
 from Apps.Curator.views.opinions import OpinionHashView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^contact/', ContactView.as_view(), name='contact'),
     url(r'^auth/login', LoginView.as_view(), name='login'),
     url(r'^auth/logout', LogoutView.as_view(), name='logout'),
     url(r'^confirmation/', OpinionHashView.as_view(), name='opinion_confirmation'),
