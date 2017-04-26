@@ -24,7 +24,7 @@ def get_museums():
     for museum in museums:
         expositions = Exposition.objects.filter(museum=museum).filter(status=True)
         published = True if len(expositions) > 0 else False
-        rating_object = Opinion.objects.filter(museum=museum).aggregate(Avg('rating'))
+        rating_object = Opinion.objects.filter(museum=museum).filter(validated=True).aggregate(Avg('rating'))
         rating = rating_object['rating__avg']
         if rating is None:
             rating = 0
