@@ -1,10 +1,12 @@
 {% extends "base/base.html" %}
 
 {% block css %}
+    <link rel="stylesheet" href="/static/bower_components/jquery-bar-rating/dist/themes/bars-square.css">
 {% endblock css %}
 
 
 {% block js %}
+    <script src="/static/bower_components/jquery-bar-rating/dist/jquery.barrating.min.js"></script>
 {% endblock js %}
 
 
@@ -39,7 +41,21 @@
                             <td>{{ museum.name }}</td>
                             <td>{{ museum.published }}</td>
                             <td>{{ museum.visitors }}</td>
-                            <td>{{ museum.rating }}</td>
+                            <td>
+                                <select id="rating_{{ museum.id }}">
+                                    <option value=""></option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </td>
                             <td>
 
                                 <button class= "btn btn-sm btn-info" type="button"
@@ -47,10 +63,23 @@
                                                 form.submit();">Preview</button>
                                 <button class= "btn btn-sm btn-danger" type="button"
                                         onclick="if (confirm('You really want to delete this museum') == true) {
-                                            document.getElementById('delete_{{ museum.id }}').value='1';
+                                                document.getElementById('delete_{{ museum.id }}').value='1';
                                                 form.submit();}">Delete</button>
                             </td>
                         </form>
+
+                        <script type="text/javascript">
+                            $(function() {
+                                $('#rating_{{ museum.id }}').barrating({
+                                    theme: 'bars-square',
+                                    showValues:true,
+                                    readonly:true,
+                                    allowEmpty:true,
+                                    initialRating: {{ museum.rating }},
+                                    showSelectedRating:false
+                                });
+                            });
+                        </script>
                     </tr>
                 {% endfor %}
                 </tbody>

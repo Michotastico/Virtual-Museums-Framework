@@ -25,11 +25,14 @@ def get_museums():
         expositions = Exposition.objects.filter(museum=museum).filter(status=True)
         published = True if len(expositions) > 0 else False
         rating_object = Opinion.objects.filter(museum=museum).aggregate(Avg('rating'))
+        rating = rating_object['rating__avg']
+        if rating is None:
+            rating = 0
         museums_dict['museums'].append({'id': museum.id,
                                         'name': museum.name,
                                         'published': published,
                                         'visitors': museum.visitors,
-                                        'rating': rating_object['rating__avg']})
+                                        'rating': rating})
     return museums_dict
 
 
