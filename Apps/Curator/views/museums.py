@@ -2,6 +2,7 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.db.models import Avg
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
@@ -9,6 +10,7 @@ from django.views.generic import TemplateView
 from Apps.Curator.decorators import group_required
 from Apps.Curator.forms import UnityMuseumForm
 from Apps.Curator.models.museums import Museum, UnityMuseum
+from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exposition
 from Apps.Curator.views.resources import parse_inner_url
 
@@ -22,10 +24,12 @@ def get_museums():
     for museum in museums:
         expositions = Exposition.objects.filter(museum=museum).filter(status=True)
         published = True if len(expositions) > 0 else False
+        rating_object = Opinion.objects.filter(museum=museum).aggregate(Avg('rating'))
         museums_dict['museums'].append({'id': museum.id,
                                         'name': museum.name,
                                         'published': published,
-                                        'visitors': museum.visitors})
+                                        'visitors': museum.visitors,
+                                        'rating': rating_object['rating__avg']})
     return museums_dict
 
 
