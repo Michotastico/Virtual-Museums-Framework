@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.forms import UnityMuseumForm
+from Apps.Curator.forms import UnityMuseumForm, NewMuseumForm
 from Apps.Curator.models.museums import Museum, UnityMuseum
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exposition
@@ -109,32 +109,38 @@ class MuseumsView(TemplateView):
         return render(request, self.template_name, expositions)
 
 
-class AddUnityView(TemplateView):
+class AddMuseumView(TemplateView):
     template_name = 'curator/add-museum.html'
+    form = NewMuseumForm
+    museum_type = ''
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        form = UnityMuseumForm()
-        parameters = {'form': form, 'museum_type': 'Unity'}
+        form = self.form()
+        parameters = {'form': form, 'museum_type': self.museum_type}
 
         return render(request, self.template_name, parameters)
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
-        request_form = UnityMuseumForm(request.POST, request.FILES)
-        args = {'museum_type': 'Unity'}
+        request_form = self.form(request.POST, request.FILES)
+        args = {'museum_type': self.museum_type}
 
         if request_form.is_valid():
             request_form.save()
             args['success'] = 'success'
-            request_form = UnityMuseumForm()
+            request_form = self.form()
 
         args['form'] = request_form
 
         return render(request, self.template_name, args)
 
+
+class AddUnityView(AddMuseumView):
+    form = UnityMuseumForm
+    museum_type = 'Unity'
 
 @transaction.atomic
 def get_museum_data(museum_id):

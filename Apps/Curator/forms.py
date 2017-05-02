@@ -28,6 +28,10 @@ class MuseumMeta:
               'memory': 'File museum.mem'}
 
 
+class NewMuseumForm(forms.ModelForm):
+    field_order = ['name']
+
+
 class UnityMuseumForm(forms.ModelForm):
     field_order = ['name', 'memory_to_allocate', 'data', 'javascript', 'memory']
 
