@@ -45,8 +45,8 @@ def get_unity_data(museum):
 
 
 MUSEUM_TYPES = {
-    'unity': {'model': UnityMuseum, 'delete': delete_unity_files,
-              'get': get_unity_data, 'template': 'curator/preview_unity.html'}
+    'unity': {'delete': delete_unity_files, 'get': get_unity_data,
+              'template': 'curator/preview_unity.html'}
 }
 
 
