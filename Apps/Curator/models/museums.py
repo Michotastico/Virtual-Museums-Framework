@@ -36,6 +36,10 @@ class UnityMuseum(Museum):
     javascript = models.FileField(upload_to=rename_unity_files, validators=[validator_javascript])
     memory = models.FileField(upload_to=rename_unity_files, validators=[validator_memory])
 
+    def save(self, *args, **kwargs):
+        self.museum_type = MuseumType.objects.get(id=1)
+        super(UnityMuseum, self).save(*args, **kwargs)
+
 
 class Room(models.Model):
     name = models.CharField(max_length=30, blank=False, unique=True)
