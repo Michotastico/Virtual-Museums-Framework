@@ -15,6 +15,26 @@ from Apps.Curator.models.scheduling import Exposition
 from Apps.Curator.views.resources import parse_inner_url
 
 
+def delete_unity_files(museum_id):
+    unity_museum = UnityMuseum.objects.get(id=museum_id)
+
+    memory = unity_museum.memory.path
+    javascript = unity_museum.javascript.path
+    data = unity_museum.data.path
+
+    def delete():
+        os.remove(memory)
+        os.remove(javascript)
+        os.remove(data)
+
+    return delete
+
+
+MUSEUM_TYPES = {
+    'unity': {'model': UnityMuseum, 'delete':delete_unity_files}
+}
+
+
 @transaction.atomic
 def get_museums():
     museums_dict = {'museums': []}
@@ -40,17 +60,10 @@ def get_museums():
 def delete_museum(museum_id):
     museum = Museum.objects.get(id=museum_id)
 
-    unity_museum = UnityMuseum.objects.get(id=museum.id)
-
-    memory = unity_museum.memory.path
-    javascript = unity_museum.javascript.path
-    data = unity_museum.data.path
+    delete_function = MUSEUM_TYPES[museum.museum_type.museum_type]['delete'](museum_id)
 
     museum.delete()
-
-    os.remove(memory)
-    os.remove(javascript)
-    os.remove(data)
+    delete_function()
 
 
 class MuseumsView(TemplateView):
