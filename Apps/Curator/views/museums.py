@@ -30,8 +30,23 @@ def delete_unity_files(museum_id):
     return delete
 
 
+@transaction.atomic
+def get_unity_data(museum):
+    data = dict()
+
+    data['title'] = museum.name
+    museum = UnityMuseum.objects.get(id=museum.id)
+    data['data'] = parse_inner_url(museum.data.url)
+    data['js'] = parse_inner_url(museum.javascript.url)
+    data['mem'] = parse_inner_url(museum.memory.url)
+    data['total_memory'] = museum.memory_to_allocate
+
+    return data
+
+
 MUSEUM_TYPES = {
-    'unity': {'model': UnityMuseum, 'delete':delete_unity_files}
+    'unity': {'model': UnityMuseum, 'delete': delete_unity_files,
+              'get': get_unity_data, 'template': 'curator/preview_unity.html'}
 }
 
 
@@ -123,22 +138,17 @@ class AddUnityView(TemplateView):
 
 @transaction.atomic
 def get_museum_data(museum_id):
-    data = dict()
     museum = Museum.objects.get(id=museum_id)
-
-    data['title'] = museum.name
-
-    museum = UnityMuseum.objects.get(id=museum.id)
-    data['data'] = parse_inner_url(museum.data.url)
-    data['js'] = parse_inner_url(museum.javascript.url)
-    data['mem'] = parse_inner_url(museum.memory.url)
-    data['total_memory'] = museum.memory_to_allocate
-
+    data = MUSEUM_TYPES[museum.museum_type.museum_type]['get'](museum)
     return data
 
 
+@transaction.atomic
+def get_museum_model(museum_id):
+    return Museum.objects.get(id=museum_id)
+
+
 class PreviewMuseumView(TemplateView):
-    template_name = 'curator/preview.html'
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
@@ -148,6 +158,9 @@ class PreviewMuseumView(TemplateView):
         if museum_id is None:
             return redirect('/curator')
 
+        museum = get_museum_model(museum_id)
+        template = MUSEUM_TYPES[museum.museum_type.museum_type]['template']
+
         args = get_museum_data(museum_id)
 
-        return render(request, self.template_name, args)
+        return render(request, template, args)
