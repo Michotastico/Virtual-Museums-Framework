@@ -110,13 +110,13 @@ class MuseumsView(TemplateView):
 
 
 class AddUnityView(TemplateView):
-    template_name = 'curator/unity-museum.html'
+    template_name = 'curator/add-museum.html'
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         form = UnityMuseumForm()
-        parameters = {'form': form}
+        parameters = {'form': form, 'museum_type': 'Unity'}
 
         return render(request, self.template_name, parameters)
 
@@ -124,7 +124,7 @@ class AddUnityView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         request_form = UnityMuseumForm(request.POST, request.FILES)
-        args = {}
+        args = {'museum_type': 'Unity'}
 
         if request_form.is_valid():
             request_form.save()
