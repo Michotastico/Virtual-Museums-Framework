@@ -142,6 +142,7 @@ class AddUnityView(AddMuseumView):
     form = UnityMuseumForm
     museum_type = 'Unity'
 
+
 @transaction.atomic
 def get_museum_data(museum_id):
     museum = Museum.objects.get(id=museum_id)

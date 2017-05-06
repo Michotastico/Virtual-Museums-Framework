@@ -82,7 +82,7 @@ class IndexView(TemplateView):
 
 
 class VisualizationView(TemplateView):
-    template_name = 'visitor/visualization.html'
+    template_name = 'visitor/visualizations/unity-visualization.html'
 
     def get(self, request, *a, **ka):
         return redirect('/visitor/error')
