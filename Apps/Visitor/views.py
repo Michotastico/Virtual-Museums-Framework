@@ -47,17 +47,9 @@ def increase_visitor(exposition_id):
 
 
 @transaction.atomic
-def get_current_museum(exposition_id):
-    today = datetime.today().date()
-    exposition = Exposition.objects.filter(id=exposition_id).filter(status=True)
-
-    if len(exposition) < 1:
-        return None
+def get_unity_museum(museum):
 
     arguments = dict()
-    exposition = exposition[0]
-
-    museum = exposition.museum
 
     arguments['title'] = museum.name
     arguments['id'] = museum.id
@@ -81,8 +73,13 @@ class IndexView(TemplateView):
         return render(request, self.template_name, arguments)
 
 
+MUSEUM_TYPES = {
+    'unity': {'get': get_unity_museum,
+              'template': 'visitor/visualizations/unity-visualization.html'}
+}
+
+
 class VisualizationView(TemplateView):
-    template_name = 'visitor/visualizations/unity-visualization.html'
 
     def get(self, request, *a, **ka):
         return redirect('/visitor/error')
@@ -93,13 +90,23 @@ class VisualizationView(TemplateView):
         if len(exposition_id) < 1:
             return redirect('/visitor/error')
 
-        arguments = get_current_museum(exposition_id)
+        exposition = Exposition.objects.filter(id=exposition_id).filter(status=True)
+
+        if len(exposition) < 1:
+            return redirect('/visitor/error')
+
+        museum = exposition[0].museum
+        museum_type = museum.museum_type.museum_type
+
+        arguments = MUSEUM_TYPES[museum_type]['get'](museum)
+        template = MUSEUM_TYPES[museum_type]['template']
+
         if arguments is None:
             return redirect('/visitor/error')
 
         increase_visitor(exposition_id)
 
-        return render(request, self.template_name, arguments)
+        return render(request, template, arguments)
 
 
 @transaction.atomic
@@ -142,8 +149,6 @@ def generate_hash_key(email):
 
 
 def send_email(name, museum_name, opinion, hash_key, email):
-    #TODO Remove returng after testing
-    return True
     from_email = WEBSITE_AUTOMATIC_RESPONSE_EMAIL
     to_email = email
 
