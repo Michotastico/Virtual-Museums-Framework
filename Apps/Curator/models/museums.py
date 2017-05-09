@@ -8,9 +8,14 @@ from Apps.Curator.models.resources import ExternalMusic
 from Apps.Curator.upload_manager import file_extension_validation, file_rename
 
 
+class MuseumType(models.Model):
+    museum_type = models.CharField(max_length=30, blank=False, unique=True)
+
+
 class Museum(models.Model):
     name = models.CharField(max_length=30, blank=False, unique=True)
     visitors = models.PositiveIntegerField(default=0)
+    museum_type = models.ForeignKey("MuseumType", null=True)
 
 
 def rename_unity_files(instance, filename): return file_rename(filename, '/static/external-content/unity-files')
@@ -30,6 +35,10 @@ class UnityMuseum(Museum):
     data = models.FileField(upload_to=rename_unity_files, validators=[validator_data])
     javascript = models.FileField(upload_to=rename_unity_files, validators=[validator_javascript])
     memory = models.FileField(upload_to=rename_unity_files, validators=[validator_memory])
+
+    def save(self, *args, **kwargs):
+        self.museum_type = MuseumType.objects.get(id=1)
+        super(UnityMuseum, self).save(*args, **kwargs)
 
 
 class Room(models.Model):
