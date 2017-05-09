@@ -13,10 +13,10 @@
     {% include "curator/navbar.html" %}
 
     <div class="container">
-        <h2>Add {{ exhibit_type }} Museum</h2>
+        <h2>Add {{ exhibit_type }} Exhibit</h2>
         {% if success %}
             <div class="alert alert-success">
-                <strong>Success!</strong> The museum was correctly uploaded.
+                <strong>Success!</strong> The exhibit was correctly uploaded.
             </div>
         {% endif %}
         <br>
@@ -47,7 +47,7 @@
                             </div>
                         {% endfor %}
 
-                        <button class="btn btn-sm btn-info" type="submit">Upload museum</button>
+                        <button class="btn btn-sm btn-info" type="submit">Upload exhibit</button>
                     </form>
                 </div>
                 <div class="col-md-2"></div>

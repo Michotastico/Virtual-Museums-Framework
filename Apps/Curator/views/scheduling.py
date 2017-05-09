@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 from Apps.Curator.decorators import group_required
 from Apps.Curator.models.museums import Exhibit
 from Apps.Curator.models.scheduling import Exhibition
-from Apps.Curator.views.opinions import get_museums_data
+from Apps.Curator.views.opinions import get_exhibits_data
 
 
 @transaction.atomic
@@ -29,7 +29,7 @@ def get_expositions():
             exposition_template['status'] = 'Inactive'
         exposition_template['start_time'] = exposition.start_date
         exposition_template['end_time'] = exposition.end_date
-        exposition_template['museum'] = exposition.museum.name
+        exposition_template['exhibit'] = exposition.museum.name
 
         exposition_list.append(exposition_template)
 
@@ -67,14 +67,14 @@ class SchedulingView(TemplateView):
 
 class SchedulingExpositionView(TemplateView):
     template_name = 'curator/scheduling-exposition.html'
-    default_selector = {'header': 'Select a Museum:', 'options': []}
+    default_selector = {'header': 'Select a Exhibit:', 'options': []}
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.default_selector)
-        museums = get_museums_data()
-        for museum in museums:
-            museum_template = {'value': museum['id'], 'display': museum['name']}
-            current_selector['options'].append(museum_template)
+        exhibits = get_exhibits_data()
+        for exhibit in exhibits:
+            exhibit_template = {'value': exhibit['id'], 'display': exhibit['name']}
+            current_selector['options'].append(exhibit_template)
         return current_selector
 
     @method_decorator(group_required('Scheduling_team'))
@@ -87,7 +87,7 @@ class SchedulingExpositionView(TemplateView):
             exposition = Exhibition.objects.get(id=editing_id)
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'museum': exposition.museum.id,
+                                              'exhibit': exposition.museum.id,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
         return render(request, self.template_name, selector)
@@ -98,7 +98,7 @@ class SchedulingExpositionView(TemplateView):
         selector = self.get_current_selector()
 
         name = request.POST.get('name', None)
-        museum = request.POST.get('museum', None)
+        exhibit = request.POST.get('exhibit', None)
         start_date = request.POST.get('initial', None)
         end_date = request.POST.get('end', None)
 
@@ -116,7 +116,7 @@ class SchedulingExpositionView(TemplateView):
             return render(request, self.template_name, selector)
 
         if name is not None \
-                and museum is not None \
+                and exhibit is not None \
                 and start_date is not None \
                 and end_date is not None:
             if id_editing is not None:
@@ -127,8 +127,8 @@ class SchedulingExpositionView(TemplateView):
             exposition.start_date = start_date
             exposition.end_date = end_date
 
-            museum = Exhibit.objects.get(id=museum)
-            exposition.museum = museum
+            exhibit = Exhibit.objects.get(id=exhibit)
+            exposition.museum = exhibit
 
             try:
                 exposition.save()

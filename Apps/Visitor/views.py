@@ -41,24 +41,24 @@ def get_current_expositions():
 @transaction.atomic
 def increase_visitor(exposition_id):
     exposition = Exhibition.objects.get(id=exposition_id)
-    museum = exposition.museum
-    museum.visitors += 1
-    museum.save()
+    exhibit = exposition.museum
+    exhibit.visitors += 1
+    exhibit.save()
 
 
 @transaction.atomic
-def get_unity_museum(museum):
+def get_unity_exhibit(exhibit):
 
     arguments = dict()
 
-    arguments['title'] = museum.name
-    arguments['id'] = museum.id
+    arguments['title'] = exhibit.name
+    arguments['id'] = exhibit.id
 
-    museum = UnityExhibit.objects.get(id=museum.id)
-    arguments['data'] = parse_inner_url(museum.data.url)
-    arguments['js'] = parse_inner_url(museum.javascript.url)
-    arguments['mem'] = parse_inner_url(museum.memory.url)
-    arguments['total_memory'] = museum.memory_to_allocate
+    exhibit = UnityExhibit.objects.get(id=exhibit.id)
+    arguments['data'] = parse_inner_url(exhibit.data.url)
+    arguments['js'] = parse_inner_url(exhibit.javascript.url)
+    arguments['mem'] = parse_inner_url(exhibit.memory.url)
+    arguments['total_memory'] = exhibit.memory_to_allocate
 
     return arguments
 
@@ -74,7 +74,7 @@ class IndexView(TemplateView):
 
 
 MUSEUM_TYPES = {
-    'Unity': {'get': get_unity_museum,
+    'Unity': {'get': get_unity_exhibit,
               'template': 'visitor/visualizations/unity-visualization.html'}
 }
 
@@ -95,10 +95,10 @@ class VisualizationView(TemplateView):
         if len(exposition) < 1:
             return redirect('/visitor/error')
 
-        museum = exposition[0].museum
-        exhibit_type = museum.exhibit_type.name
+        exhibit = exposition[0].museum
+        exhibit_type = exhibit.exhibit_type.name
 
-        arguments = MUSEUM_TYPES[exhibit_type]['get'](museum)
+        arguments = MUSEUM_TYPES[exhibit_type]['get'](exhibit)
         template = MUSEUM_TYPES[exhibit_type]['template']
 
         if arguments is None:
@@ -148,7 +148,7 @@ def generate_hash_key(email):
     return hash_key
 
 
-def send_email(name, museum_name, opinion, hash_key, email):
+def send_email(name, exhibit_name, opinion, hash_key, email):
     # TODO develop process
     return True
     from_email = WEBSITE_AUTOMATIC_RESPONSE_EMAIL
@@ -156,7 +156,7 @@ def send_email(name, museum_name, opinion, hash_key, email):
 
     message = "Good day " + name + ",\n\n" + \
               "This is an information email to validate the opinion you had sent to our museum.\n\n" + \
-              "The specific exposition: " + museum_name + "\n" + \
+              "The specific exposition: " + exhibit_name + "\n" + \
               "Your opinion: " + opinion + "\n\n" + \
               "To validate this, please click the next url or copy-paste it into your browser. \n\n" + \
               "<a href=http://" + WEBSITE_BASE_URL + "/confirmation?key?=" + hash_key + ">" + \
@@ -190,25 +190,25 @@ class OpinionsView(TemplateView):
 
     def get(self, request, *a, **ka):
         arguments = dict()
-        museum_id = request.GET.get('id', None)
-        if museum_id is not None:
-            arguments['museum_id'] = museum_id
+        exhibit_id = request.GET.get('id', None)
+        if exhibit_id is not None:
+            arguments['exhibit_id'] = exhibit_id
         return render(request, self.template_name, arguments)
 
     def post(self, request, *a, **ka):
         arguments = {'error': [], 'success': []}
 
-        museum_id = request.POST.get('museum', '')
-        museum = None
+        exhibit_id = request.POST.get('exhibit', '')
+        exhibit = None
 
         try:
-            if len(museum_id) < 1:
+            if len(exhibit_id) < 1:
                 raise ObjectDoesNotExist()
-            museum = Exhibit.objects.get(id=museum_id)
+            exhibit = Exhibit.objects.get(id=exhibit_id)
         except ObjectDoesNotExist:
             arguments['error'].append('Invalid form. Please send your opinion from the exposition interface.')
 
-        arguments['museum_id'] = museum_id
+        arguments['exhibit_id'] = exhibit_id
 
         name = request.POST.get('name', '')
         email = request.POST.get('email', '')
@@ -241,14 +241,14 @@ class OpinionsView(TemplateView):
             new_opinion.rating = int(rating)
             hash_key = generate_hash_key(email)
             new_opinion.hash_key = hash_key
-            new_opinion.museum = museum
+            new_opinion.exhibit = exhibit
 
             one_day_after = datetime.today() + timedelta(days=1)
             one_day_after = one_day_after.date()
 
             new_opinion.timeout = one_day_after
 
-            if send_email(name, museum.name, opinion, hash_key, email):
+            if send_email(name, exhibit.name, opinion, hash_key, email):
                 new_opinion.save()
                 arguments['success'].append('A confirmation email was sent to your address to validated your opinion.')
             else:

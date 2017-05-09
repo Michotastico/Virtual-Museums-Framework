@@ -43,12 +43,12 @@ class OpinionHashView(TemplateView):
 
 
 @transaction.atomic
-def get_museums_data():
-    museums_list = list()
-    museums = Exhibit.objects.all()
-    for museum in museums:
-        museums_list.append({'name': museum.name, 'id': museum.id})
-    return museums_list
+def get_exhibits_data():
+    exhibits_list = list()
+    exhibits = Exhibit.objects.all()
+    for exhibit in exhibits:
+        exhibits_list.append({'name': exhibit.name, 'id': exhibit.id})
+    return exhibits_list
 
 
 @transaction.atomic
@@ -65,14 +65,14 @@ def reverse_opinion_status(opinion_id):
 
 
 @transaction.atomic
-def query_opinion(museum_id, approved, pending):
+def query_opinion(exhibit_id, approved, pending):
     opinion_list = list()
 
     if not approved and not pending:
         return opinion_list
 
-    selected_museum = Exhibit.objects.get(id=museum_id)
-    opinions = Opinion.objects.filter(validated=True).filter(museum=selected_museum)
+    selected_exhibit = Exhibit.objects.get(id=exhibit_id)
+    opinions = Opinion.objects.filter(validated=True).filter(exhibit=selected_exhibit)
     if approved and not pending:
         opinions = opinions.exclude(status=False)
     elif pending and not approved:
@@ -93,7 +93,7 @@ def query_opinion(museum_id, approved, pending):
 
 class OpinionsView(TemplateView):
     template_name = 'curator/opinions.html'
-    selector = {'header': {'display': 'Select a Museum from the list:',
+    selector = {'header': {'display': 'Select a Exhibit from the list:',
                            'selected': 'selected'},
                 'options': [],
                 'approved': '',
@@ -101,10 +101,10 @@ class OpinionsView(TemplateView):
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.selector)
-        museums = get_museums_data()
-        for museum in museums:
-            museum_template = {'id': museum['id'], 'display': museum['name'], 'selected': ''}
-            current_selector['options'].append(museum_template)
+        exhibits = get_exhibits_data()
+        for exhibit in exhibits:
+            exhibit_template = {'id': exhibit['id'], 'display': exhibit['name'], 'selected': ''}
+            current_selector['options'].append(exhibit_template)
         return current_selector
 
     @method_decorator(group_required('Opinion_team'))
@@ -118,7 +118,7 @@ class OpinionsView(TemplateView):
     def post(self, request, *a, **ka):
         current_selector = self.get_current_selector()
 
-        current_museum = request.POST.get('museum', None)
+        current_exhibit = request.POST.get('exhibit', None)
         checkbox_approved = request.POST.get('approved', None)
         checkbox_pending = request.POST.get('pending', None)
         opinion_id = request.POST.get('id_opinion', None)
@@ -142,15 +142,15 @@ class OpinionsView(TemplateView):
             current_selector['pending'] = 'checked'
             pending = True
 
-        if current_museum is not None:
-            current_selector['current_museum'] = current_museum
+        if current_exhibit is not None:
+            current_selector['current_exhibit'] = current_exhibit
             current_selector['header']['selected'] = ''
             for option in current_selector['options']:
-                if option['id'] == int(current_museum):
+                if option['id'] == int(current_exhibit):
                     option['selected'] = 'selected'
                     break
 
-            opinions = query_opinion(current_museum, approved, pending)
+            opinions = query_opinion(current_exhibit, approved, pending)
             current_selector['opinions'] = opinions
 
         return render(request, self.template_name, current_selector)
