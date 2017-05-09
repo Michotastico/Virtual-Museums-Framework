@@ -9,7 +9,7 @@ from Apps.Curator.upload_manager import file_extension_validation, file_rename
 
 
 class MuseumType(models.Model):
-    museum_type = models.CharField(max_length=30, blank=False, unique=True)
+    name = models.CharField(max_length=30, blank=False, unique=True)
 
 
 class Museum(models.Model):
@@ -37,7 +37,7 @@ class UnityMuseum(Museum):
     memory = models.FileField(upload_to=rename_unity_files, validators=[validator_memory])
 
     def save(self, *args, **kwargs):
-        self.museum_type = MuseumType.objects.get(id=1)
+        self.museum_type = MuseumType.objects.get(name='Unity')
         super(UnityMuseum, self).save(*args, **kwargs)
 
 

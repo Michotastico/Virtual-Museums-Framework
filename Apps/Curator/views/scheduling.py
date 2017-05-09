@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
 from Apps.Curator.models.museums import Museum
-from Apps.Curator.models.scheduling import Exposition
+from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.opinions import get_museums_data
 
 
@@ -17,7 +17,7 @@ from Apps.Curator.views.opinions import get_museums_data
 def get_expositions():
     data = dict()
     exposition_list = list()
-    expositions = Exposition.objects.all()
+    expositions = Exhibition.objects.all()
 
     for exposition in expositions:
         exposition_template = dict()
@@ -56,7 +56,7 @@ class SchedulingView(TemplateView):
             return redirect('/curator/scheduling-exposition?id=' + exposition_id)
 
         if change_status in ['1'] and exposition_id is not None:
-            exposition = Exposition.objects.get(id=exposition_id)
+            exposition = Exhibition.objects.get(id=exposition_id)
             exposition.status = not exposition.status
             exposition.save()
 
@@ -84,7 +84,7 @@ class SchedulingExpositionView(TemplateView):
         editing_id = request.GET.get('id', None)
 
         if editing_id is not None:
-            exposition = Exposition.objects.get(id=editing_id)
+            exposition = Exhibition.objects.get(id=editing_id)
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
                                               'museum': exposition.museum.id,
@@ -120,9 +120,9 @@ class SchedulingExpositionView(TemplateView):
                 and start_date is not None \
                 and end_date is not None:
             if id_editing is not None:
-                exposition = Exposition.objects.get(id=id_editing)
+                exposition = Exhibition.objects.get(id=id_editing)
             else:
-                exposition = Exposition()
+                exposition = Exhibition()
             exposition.name = name
             exposition.start_date = start_date
             exposition.end_date = end_date

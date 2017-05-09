@@ -1,0 +1,9 @@
+[
+{
+  "model": "Curator.museumtype",
+  "pk": 1,
+  "fields": {
+    "name": "Unity"
+  }
+}
+]

@@ -11,7 +11,7 @@ from Apps.Curator.decorators import group_required
 from Apps.Curator.forms import UnityMuseumForm, NewMuseumForm
 from Apps.Curator.models.museums import Museum, UnityMuseum
 from Apps.Curator.models.opinions import Opinion
-from Apps.Curator.models.scheduling import Exposition
+from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.resources import parse_inner_url
 
 
@@ -45,7 +45,7 @@ def get_unity_data(museum):
 
 
 MUSEUM_TYPES = {
-    'unity': {'delete': delete_unity_files, 'get': get_unity_data,
+    'Unity': {'delete': delete_unity_files, 'get': get_unity_data,
               'template': 'curator/preview_unity.html'}
 }
 
@@ -57,7 +57,7 @@ def get_museums():
     museums = Museum.objects.all()
 
     for museum in museums:
-        expositions = Exposition.objects.filter(museum=museum).filter(status=True)
+        expositions = Exhibition.objects.filter(museum=museum).filter(status=True)
         published = True if len(expositions) > 0 else False
         rating_object = Opinion.objects.filter(museum=museum).filter(validated=True).aggregate(Avg('rating'))
         rating = rating_object['rating__avg']
@@ -75,7 +75,7 @@ def get_museums():
 def delete_museum(museum_id):
     museum = Museum.objects.get(id=museum_id)
 
-    delete_function = MUSEUM_TYPES[museum.museum_type.museum_type]['delete'](museum_id)
+    delete_function = MUSEUM_TYPES[museum.museum_type.name]['delete'](museum_id)
 
     museum.delete()
     delete_function()
@@ -146,7 +146,7 @@ class AddUnityView(AddMuseumView):
 @transaction.atomic
 def get_museum_data(museum_id):
     museum = Museum.objects.get(id=museum_id)
-    data = MUSEUM_TYPES[museum.museum_type.museum_type]['get'](museum)
+    data = MUSEUM_TYPES[museum.museum_type.name]['get'](museum)
     return data
 
 
@@ -166,7 +166,7 @@ class PreviewMuseumView(TemplateView):
             return redirect('/curator')
 
         museum = get_museum_model(museum_id)
-        template = MUSEUM_TYPES[museum.museum_type.museum_type]['template']
+        template = MUSEUM_TYPES[museum.museum_type.name]['template']
 
         args = get_museum_data(museum_id)
 

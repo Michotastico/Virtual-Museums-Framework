@@ -15,7 +15,7 @@ from django.views.generic import TemplateView
 
 from Apps.Curator.models.museums import UnityMuseum, Museum
 from Apps.Curator.models.opinions import Opinion
-from Apps.Curator.models.scheduling import Exposition
+from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.resources import parse_inner_url
 from VirtualMuseumsFramework.settings import WEBSITE_BASE_URL, WEBSITE_AUTOMATIC_RESPONSE_EMAIL, WEBSITE_SMTP_SERVER
 
@@ -23,7 +23,7 @@ from VirtualMuseumsFramework.settings import WEBSITE_BASE_URL, WEBSITE_AUTOMATIC
 @transaction.atomic
 def get_current_expositions():
     today = datetime.today().date()
-    expositions = Exposition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
+    expositions = Exhibition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
 
     arguments = {'expositions': []}
 
@@ -40,7 +40,7 @@ def get_current_expositions():
 
 @transaction.atomic
 def increase_visitor(exposition_id):
-    exposition = Exposition.objects.get(id=exposition_id)
+    exposition = Exhibition.objects.get(id=exposition_id)
     museum = exposition.museum
     museum.visitors += 1
     museum.save()
@@ -74,7 +74,7 @@ class IndexView(TemplateView):
 
 
 MUSEUM_TYPES = {
-    'unity': {'get': get_unity_museum,
+    'Unity': {'get': get_unity_museum,
               'template': 'visitor/visualizations/unity-visualization.html'}
 }
 
@@ -90,13 +90,13 @@ class VisualizationView(TemplateView):
         if len(exposition_id) < 1:
             return redirect('/visitor/error')
 
-        exposition = Exposition.objects.filter(id=exposition_id).filter(status=True)
+        exposition = Exhibition.objects.filter(id=exposition_id).filter(status=True)
 
         if len(exposition) < 1:
             return redirect('/visitor/error')
 
         museum = exposition[0].museum
-        museum_type = museum.museum_type.museum_type
+        museum_type = museum.museum_type.name
 
         arguments = MUSEUM_TYPES[museum_type]['get'](museum)
         template = MUSEUM_TYPES[museum_type]['template']
@@ -112,7 +112,7 @@ class VisualizationView(TemplateView):
 @transaction.atomic
 def get_next_exposition():
     today = datetime.today().date()
-    exposition = Exposition.objects.filter(status=True).filter(start_date__gte=today).order_by('start_date')
+    exposition = Exhibition.objects.filter(status=True).filter(start_date__gte=today).order_by('start_date')
 
     if len(exposition) < 1:
         return None
