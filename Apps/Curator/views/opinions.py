@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.models.museums import Room, Museum
+from Apps.Curator.models.museums import Room, Exhibit
 from Apps.Curator.models.opinions import Opinion
 
 
@@ -45,7 +45,7 @@ class OpinionHashView(TemplateView):
 @transaction.atomic
 def get_museums_data():
     museums_list = list()
-    museums = Museum.objects.all()
+    museums = Exhibit.objects.all()
     for museum in museums:
         museums_list.append({'name': museum.name, 'id': museum.id})
     return museums_list
@@ -71,7 +71,7 @@ def query_opinion(museum_id, approved, pending):
     if not approved and not pending:
         return opinion_list
 
-    selected_museum = Museum.objects.get(id=museum_id)
+    selected_museum = Exhibit.objects.get(id=museum_id)
     opinions = Opinion.objects.filter(validated=True).filter(museum=selected_museum)
     if approved and not pending:
         opinions = opinions.exclude(status=False)

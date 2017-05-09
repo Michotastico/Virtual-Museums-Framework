@@ -12,7 +12,7 @@ class MuseumType(models.Model):
     name = models.CharField(max_length=30, blank=False, unique=True)
 
 
-class Museum(models.Model):
+class Exhibit(models.Model):
     name = models.CharField(max_length=30, blank=False, unique=True)
     visitors = models.PositiveIntegerField(default=0)
     museum_type = models.ForeignKey("MuseumType", null=True)
@@ -30,7 +30,7 @@ def validator_javascript(external_file): file_extension_validation(external_file
 def validator_memory(external_file): file_extension_validation(external_file, ['.mem'])
 
 
-class UnityMuseum(Museum):
+class UnityExhibit(Exhibit):
     memory_to_allocate = models.IntegerField(default=0)
     data = models.FileField(upload_to=rename_unity_files, validators=[validator_data])
     javascript = models.FileField(upload_to=rename_unity_files, validators=[validator_javascript])
@@ -38,7 +38,7 @@ class UnityMuseum(Museum):
 
     def save(self, *args, **kwargs):
         self.museum_type = MuseumType.objects.get(name='Unity')
-        super(UnityMuseum, self).save(*args, **kwargs)
+        super(UnityExhibit, self).save(*args, **kwargs)
 
 
 class Room(models.Model):

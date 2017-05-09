@@ -9,4 +9,4 @@ class Exhibition(models.Model):
     start_date = models.DateField(blank=False)
     end_date = models.DateField(blank=False)
 
-    museum = models.ForeignKey("Museum", null=True)
+    museum = models.ForeignKey("Exhibit", null=True)

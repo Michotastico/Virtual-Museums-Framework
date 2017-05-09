@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.models.museums import Museum
+from Apps.Curator.models.museums import Exhibit
 from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.opinions import get_museums_data
 
@@ -127,7 +127,7 @@ class SchedulingExpositionView(TemplateView):
             exposition.start_date = start_date
             exposition.end_date = end_date
 
-            museum = Museum.objects.get(id=museum)
+            museum = Exhibit.objects.get(id=museum)
             exposition.museum = museum
 
             try:

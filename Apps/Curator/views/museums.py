@@ -9,14 +9,14 @@ from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
 from Apps.Curator.forms import UnityMuseumForm, NewMuseumForm
-from Apps.Curator.models.museums import Museum, UnityMuseum
+from Apps.Curator.models.museums import Exhibit, UnityExhibit
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.resources import parse_inner_url
 
 
 def delete_unity_files(museum_id):
-    unity_museum = UnityMuseum.objects.get(id=museum_id)
+    unity_museum = UnityExhibit.objects.get(id=museum_id)
 
     memory = unity_museum.memory.path
     javascript = unity_museum.javascript.path
@@ -35,7 +35,7 @@ def get_unity_data(museum):
     data = dict()
 
     data['title'] = museum.name
-    museum = UnityMuseum.objects.get(id=museum.id)
+    museum = UnityExhibit.objects.get(id=museum.id)
     data['data'] = parse_inner_url(museum.data.url)
     data['js'] = parse_inner_url(museum.javascript.url)
     data['mem'] = parse_inner_url(museum.memory.url)
@@ -54,7 +54,7 @@ MUSEUM_TYPES = {
 def get_museums():
     museums_dict = {'museums': []}
 
-    museums = Museum.objects.all()
+    museums = Exhibit.objects.all()
 
     for museum in museums:
         expositions = Exhibition.objects.filter(museum=museum).filter(status=True)
@@ -73,7 +73,7 @@ def get_museums():
 
 @transaction.atomic
 def delete_museum(museum_id):
-    museum = Museum.objects.get(id=museum_id)
+    museum = Exhibit.objects.get(id=museum_id)
 
     delete_function = MUSEUM_TYPES[museum.museum_type.name]['delete'](museum_id)
 
@@ -145,14 +145,14 @@ class AddUnityView(AddMuseumView):
 
 @transaction.atomic
 def get_museum_data(museum_id):
-    museum = Museum.objects.get(id=museum_id)
+    museum = Exhibit.objects.get(id=museum_id)
     data = MUSEUM_TYPES[museum.museum_type.name]['get'](museum)
     return data
 
 
 @transaction.atomic
 def get_museum_model(museum_id):
-    return Museum.objects.get(id=museum_id)
+    return Exhibit.objects.get(id=museum_id)
 
 
 class PreviewMuseumView(TemplateView):

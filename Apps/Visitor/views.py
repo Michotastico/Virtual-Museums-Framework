@@ -13,7 +13,7 @@ from django.shortcuts import render, redirect
 from django.utils.html import escapejs
 from django.views.generic import TemplateView
 
-from Apps.Curator.models.museums import UnityMuseum, Museum
+from Apps.Curator.models.museums import UnityExhibit, Exhibit
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.resources import parse_inner_url
@@ -54,7 +54,7 @@ def get_unity_museum(museum):
     arguments['title'] = museum.name
     arguments['id'] = museum.id
 
-    museum = UnityMuseum.objects.get(id=museum.id)
+    museum = UnityExhibit.objects.get(id=museum.id)
     arguments['data'] = parse_inner_url(museum.data.url)
     arguments['js'] = parse_inner_url(museum.javascript.url)
     arguments['mem'] = parse_inner_url(museum.memory.url)
@@ -202,7 +202,7 @@ class OpinionsView(TemplateView):
         try:
             if len(museum_id) < 1:
                 raise ObjectDoesNotExist()
-            museum = Museum.objects.get(id=museum_id)
+            museum = Exhibit.objects.get(id=museum_id)
         except ObjectDoesNotExist:
             arguments['error'].append('Invalid form. Please send your opinion from the exposition interface.')
 
