@@ -29,7 +29,6 @@ def get_expositions():
             exposition_template['status'] = 'Inactive'
         exposition_template['start_time'] = exposition.start_date
         exposition_template['end_time'] = exposition.end_date
-        exposition_template['exhibit'] = exposition.museum.name
 
         exposition_list.append(exposition_template)
 
