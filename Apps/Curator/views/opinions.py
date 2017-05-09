@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.models.museums import Room, Exhibit
+from Apps.Curator.models.museums import Exhibit
 from Apps.Curator.models.opinions import Opinion
 
 

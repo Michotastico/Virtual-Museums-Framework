@@ -4,7 +4,6 @@ from Apps.Curator.views.general import IndexView, CuratorAccount
 from Apps.Curator.views.museums import MuseumsView, AddUnityView, PreviewMuseumView
 from Apps.Curator.views.opinions import OpinionsView, OpinionDeleterView
 from Apps.Curator.views.resources import ResourcesView, NewResourcesView
-from Apps.Curator.views.rooms import RoomsView, NewRoomsView
 from Apps.Curator.views.scheduling import SchedulingView, SchedulingExpositionView
 
 __author__ = "Michel Llorens"
@@ -18,7 +17,6 @@ urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^opinions$', OpinionsView.as_view(), name='opinions'),
     url(r'^resources$', ResourcesView.as_view(), name='resources'),
-    url(r'^new-rooms$', NewRoomsView.as_view(), name='new-rooms'),
     url(r'^scheduling$', SchedulingView.as_view(), name='scheduling'),
     url(r'^scheduling-exposition$', SchedulingExpositionView.as_view(), name='scheduling'),
     url(r'^account$', CuratorAccount.as_view(), name='account'),
@@ -28,7 +26,6 @@ urlpatterns = [
     url(r'^museum-preview$', PreviewMuseumView.as_view(), name='museum-preview'),
 
     url(r'^new-resources$', NewResourcesView.as_view(), name='resources'),
-    url(r'^rooms$', RoomsView.as_view(), name='rooms'),
 
     url(r'^timeout_opinions_deleter$', OpinionDeleterView.as_view(), name='deleter'),
 ]
