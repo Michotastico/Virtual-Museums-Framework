@@ -75,7 +75,7 @@ def get_museums():
 def delete_museum(museum_id):
     museum = Exhibit.objects.get(id=museum_id)
 
-    delete_function = MUSEUM_TYPES[museum.museum_type.name]['delete'](museum_id)
+    delete_function = MUSEUM_TYPES[museum.exhibit_type.name]['delete'](museum_id)
 
     museum.delete()
     delete_function()
@@ -112,13 +112,13 @@ class MuseumsView(TemplateView):
 class AddMuseumView(TemplateView):
     template_name = 'curator/add-museum.html'
     form = NewMuseumForm
-    museum_type = ''
+    exhibit_type = ''
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         form = self.form()
-        parameters = {'form': form, 'museum_type': self.museum_type}
+        parameters = {'form': form, 'exhibit_type': self.exhibit_type}
 
         return render(request, self.template_name, parameters)
 
@@ -126,7 +126,7 @@ class AddMuseumView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         request_form = self.form(request.POST, request.FILES)
-        args = {'museum_type': self.museum_type}
+        args = {'exhibit_type': self.exhibit_type}
 
         if request_form.is_valid():
             request_form.save()
@@ -140,13 +140,13 @@ class AddMuseumView(TemplateView):
 
 class AddUnityView(AddMuseumView):
     form = UnityMuseumForm
-    museum_type = 'Unity'
+    exhibit_type = 'Unity'
 
 
 @transaction.atomic
 def get_museum_data(museum_id):
     museum = Exhibit.objects.get(id=museum_id)
-    data = MUSEUM_TYPES[museum.museum_type.name]['get'](museum)
+    data = MUSEUM_TYPES[museum.exhibit_type.name]['get'](museum)
     return data
 
 
@@ -166,7 +166,7 @@ class PreviewMuseumView(TemplateView):
             return redirect('/curator')
 
         museum = get_museum_model(museum_id)
-        template = MUSEUM_TYPES[museum.museum_type.name]['template']
+        template = MUSEUM_TYPES[museum.exhibit_type.name]['template']
 
         args = get_museum_data(museum_id)
 

@@ -96,10 +96,10 @@ class VisualizationView(TemplateView):
             return redirect('/visitor/error')
 
         museum = exposition[0].museum
-        museum_type = museum.museum_type.name
+        exhibit_type = museum.exhibit_type.name
 
-        arguments = MUSEUM_TYPES[museum_type]['get'](museum)
-        template = MUSEUM_TYPES[museum_type]['template']
+        arguments = MUSEUM_TYPES[exhibit_type]['get'](museum)
+        template = MUSEUM_TYPES[exhibit_type]['template']
 
         if arguments is None:
             return redirect('/visitor/error')
@@ -149,6 +149,8 @@ def generate_hash_key(email):
 
 
 def send_email(name, museum_name, opinion, hash_key, email):
+    # TODO develop process
+    return True
     from_email = WEBSITE_AUTOMATIC_RESPONSE_EMAIL
     to_email = email
 
