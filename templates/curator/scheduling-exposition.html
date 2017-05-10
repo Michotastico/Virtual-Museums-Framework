@@ -52,7 +52,7 @@
                             {% if not current_exposition %}selected{% endif %}>{{ header }}</option>
                     {% for element in options %}
                         <option label="{{ element.display }}" value="{{ element.value }}"
-                                {% if element.value == current_exposition.museum %} selected {% endif %}></option>
+                                {% if element.value == current_exposition.exhibit %} selected {% endif %}></option>
                     {% endfor %}
                 </select>
                 <div class="row">

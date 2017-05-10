@@ -86,7 +86,7 @@ class SchedulingExpositionView(TemplateView):
             exposition = Exhibition.objects.get(id=editing_id)
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'exhibit': exposition.museum.all()[0].id,
+                                              'exhibit': exposition.exhibits.all()[0].id,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
         return render(request, self.template_name, selector)
@@ -133,7 +133,7 @@ class SchedulingExpositionView(TemplateView):
             exposition.save()
 
             try:
-                exposition.museum.add(exhibit)
+                exposition.exhibits.add(exhibit)
                 exposition.save()
                 transaction.savepoint_commit(sid)
                 selector['success'] = True
