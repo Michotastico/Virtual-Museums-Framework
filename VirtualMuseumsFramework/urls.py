@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^contact/', ContactView.as_view(), name='contact'),
     url(r'^auth/login', LoginView.as_view(), name='login'),
+    url(r'^accounts/login', LoginView.as_view(), name='login'),
     url(r'^auth/logout', LogoutView.as_view(), name='logout'),
     url(r'^confirmation/', OpinionHashView.as_view(), name='opinion_confirmation'),
     url(r'^curator/', include('Apps.Curator.urls')),
