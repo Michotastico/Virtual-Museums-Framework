@@ -84,9 +84,14 @@ class SchedulingExpositionView(TemplateView):
 
         if editing_id is not None:
             exposition = Exhibition.objects.get(id=editing_id)
+            exhibits = exposition.exhibits.all()
+            if len(exhibits) < 1:
+                exhibit = None
+            else:
+                exhibit = exhibits[0].id
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'exhibit': exposition.exhibits.all()[0].id,
+                                              'exhibit': exhibit,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
         return render(request, self.template_name, selector)
