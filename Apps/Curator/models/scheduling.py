@@ -11,4 +11,4 @@ class Exhibition(models.Model):
     start_date = models.DateField(blank=False)
     end_date = models.DateField(blank=False)
 
-    museum = models.ForeignKey(Exhibit, on_delete=models.SET_NULL)
+    museum = models.ManyToManyField(Exhibit)
