@@ -41,7 +41,7 @@ def get_current_expositions():
 @transaction.atomic
 def increase_visitor(exposition_id):
     exposition = Exhibition.objects.get(id=exposition_id)
-    exhibit = exposition.museum
+    exhibit = exposition.exhibits.all()[0]
     exhibit.visitors += 1
     exhibit.save()
 
@@ -95,7 +95,7 @@ class VisualizationView(TemplateView):
         if len(exposition) < 1:
             return redirect('/visitor/error')
 
-        exhibit = exposition[0].museum
+        exhibit = exposition[0].exhibits.all()[0]
         exhibit_type = exhibit.exhibit_type.name
 
         arguments = MUSEUM_TYPES[exhibit_type]['get'](exhibit)

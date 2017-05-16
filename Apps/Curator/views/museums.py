@@ -57,7 +57,7 @@ def get_exhibit():
     exhibits = Exhibit.objects.all()
 
     for exhibit in exhibits:
-        expositions = Exhibition.objects.filter(museum=exhibit).filter(status=True)
+        expositions = Exhibition.objects.filter(exhibits=exhibit).filter(status=True)
         published = True if len(expositions) > 0 else False
         rating_object = Opinion.objects.filter(exhibit=exhibit).filter(validated=True).aggregate(Avg('rating'))
         rating = rating_object['rating__avg']

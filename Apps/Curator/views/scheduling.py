@@ -84,9 +84,14 @@ class SchedulingExpositionView(TemplateView):
 
         if editing_id is not None:
             exposition = Exhibition.objects.get(id=editing_id)
+            exhibits = exposition.exhibits.all()
+            if len(exhibits) < 1:
+                exhibit = None
+            else:
+                exhibit = exhibits[0].id
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'exhibit': exposition.museum.id,
+                                              'exhibit': exhibit,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
         return render(request, self.template_name, selector)
@@ -127,12 +132,18 @@ class SchedulingExpositionView(TemplateView):
             exposition.end_date = end_date
 
             exhibit = Exhibit.objects.get(id=exhibit)
-            exposition.museum = exhibit
+
+            sid = transaction.savepoint()
+
+            exposition.save()
 
             try:
+                exposition.exhibits.add(exhibit)
                 exposition.save()
+                transaction.savepoint_commit(sid)
                 selector['success'] = True
             except IntegrityError:
+                transaction.savepoint_rollback(sid)
                 selector['failure'] = True
         else:
             selector['failure'] = True

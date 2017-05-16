@@ -15,7 +15,7 @@ class ExhibitType(models.Model):
 class Exhibit(models.Model):
     name = models.CharField(max_length=30, blank=False, unique=True)
     visitors = models.PositiveIntegerField(default=0)
-    exhibit_type = models.ForeignKey("ExhibitType", null=True)
+    exhibit_type = models.ForeignKey(ExhibitType, null=True)
 
 
 def rename_unity_files(instance, filename): return file_rename(filename, '/static/external-content/unity-files')
