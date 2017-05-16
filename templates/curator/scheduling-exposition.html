@@ -16,6 +16,20 @@
                 dateFormat: "dd/mm/yy"
             });
         } );
+
+        $(function () { function moveItems(origin, dest) {
+            $(origin).find(':selected').appendTo(dest);
+        }
+
+            $('#left').click(function () {
+                moveItems('#selected_exhibits', '#all_exhibits');
+            });
+
+            $('#right').on('click', function () {
+                moveItems('#all_exhibits', '#selected_exhibits');
+            });
+
+        });
     </script>
 {% endblock js %}
 
@@ -49,7 +63,7 @@
                 <div class="row">
                     <div class="col-md-5">
                         <h4>Available exhibits</h4>
-                        <select multiple name="exhibit" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                        <select multiple id="all_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
                             {% for element in options %}
                                 <option label="{{ element.display }}" value="{{ element.value }}"
                                         {% if element.value == current_exposition.exhibit %} selected {% endif %}></option>
@@ -59,17 +73,17 @@
                     <div class="col-md-2">
                         <br><br>
                         <div class="row">
-                            <div class="row-md-6" style="display: table; margin: auto;">
+                            <div class="row-md-6" id="right" style="display: table; margin: auto;">
                                 <button type="button" class="btn btn-success glyphicon glyphicon-circle-arrow-right"></button>
                             </div>
                             <div class="row-md-6" style="display: table; margin: auto;">
-                                <button type="button" class="btn btn-success glyphicon glyphicon-circle-arrow-left"></button>
+                                <button type="button" id="left" class="btn btn-success glyphicon glyphicon-circle-arrow-left"></button>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-5">
                         <h4>Selected exhibits</h4>
-                        <select multiple name="exhibit" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                        <select multiple name="exhibit" id="selected_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
                             {% for element in selected_options %}
                                 <option label="{{ element.display }}" value="{{ element.value }}"
                                         {% if element.value == current_exposition.exhibit %} selected {% endif %}></option>

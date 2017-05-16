@@ -27,7 +27,7 @@
                 <tbody>
                 {% for exposition in expositions %}
                     <form method="POST" action="/visitor/visualization">
-                        <tr onclick="form.submit();">
+                        <tr>
                             {% csrf_token %}
                             <input type="hidden" id="exposition_{{ exposition.id }}"
                                    name="exposition" value="{{ exposition.id }}" />
