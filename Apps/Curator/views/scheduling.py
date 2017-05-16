@@ -66,7 +66,7 @@ class SchedulingView(TemplateView):
 
 class SchedulingExpositionView(TemplateView):
     template_name = 'curator/scheduling-exposition.html'
-    default_selector = {'header': 'Select a Exhibit:', 'options': []}
+    default_selector = {'options': []}
 
     def get_current_selector(self):
         current_selector = copy.deepcopy(self.default_selector)
@@ -102,7 +102,7 @@ class SchedulingExpositionView(TemplateView):
         selector = self.get_current_selector()
 
         name = request.POST.get('name', None)
-        exhibit = request.POST.get('exhibit', None)
+        exhibits = request.POST.getlist('exhibit', None)
         start_date = request.POST.get('initial', None)
         end_date = request.POST.get('end', None)
 
@@ -120,7 +120,7 @@ class SchedulingExpositionView(TemplateView):
             return render(request, self.template_name, selector)
 
         if name is not None \
-                and exhibit is not None \
+                and exhibits is not None \
                 and start_date is not None \
                 and end_date is not None:
             if id_editing is not None:
@@ -131,14 +131,17 @@ class SchedulingExpositionView(TemplateView):
             exposition.start_date = start_date
             exposition.end_date = end_date
 
-            exhibit = Exhibit.objects.get(id=exhibit)
+            exhibits_objects = list()
+            for exhibit in exhibits:
+                exhibits_objects.append(Exhibit.objects.get(id=exhibit))
 
             sid = transaction.savepoint()
 
             exposition.save()
 
             try:
-                exposition.exhibits.add(exhibit)
+                for exhibit in exhibits_objects:
+                    exposition.exhibits.add(exhibit)
                 exposition.save()
                 transaction.savepoint_commit(sid)
                 selector['success'] = True
