@@ -65,8 +65,7 @@
                         <h4>Available exhibits</h4>
                         <select multiple id="all_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
                             {% for element in options %}
-                                <option label="{{ element.display }}" value="{{ element.value }}"
-                                        {% if element.value == current_exposition.exhibit %} selected {% endif %}></option>
+                                <option label="{{ element.display }}" value="{{ element.value }}"></option>
                             {% endfor %}
                         </select>
                     </div>
@@ -84,9 +83,8 @@
                     <div class="col-md-5">
                         <h4>Selected exhibits</h4>
                         <select multiple name="exhibit" id="selected_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                            {% for element in selected_options %}
-                                <option label="{{ element.display }}" value="{{ element.value }}"
-                                        {% if element.value == current_exposition.exhibit %} selected {% endif %}></option>
+                            {% for element in current_exposition.exhibits %}
+                                <option label="{{ element.display }}" value="{{ element.value }}"></option>
                             {% endfor %}
                         </select>
                     </div>

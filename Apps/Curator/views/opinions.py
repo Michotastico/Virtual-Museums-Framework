@@ -43,10 +43,12 @@ class OpinionHashView(TemplateView):
 
 
 @transaction.atomic
-def get_exhibits_data():
+def get_exhibits_data(exclude_elements=list()):
     exhibits_list = list()
     exhibits = Exhibit.objects.all()
     for exhibit in exhibits:
+        if exhibit in exclude_elements:
+            continue
         exhibits_list.append({'name': exhibit.name, 'id': exhibit.id})
     return exhibits_list
 

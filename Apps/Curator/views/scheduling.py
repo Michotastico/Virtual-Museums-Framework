@@ -68,9 +68,9 @@ class SchedulingExpositionView(TemplateView):
     template_name = 'curator/scheduling-exposition.html'
     default_selector = {'options': []}
 
-    def get_current_selector(self):
+    def get_current_selector(self, exclude_elements=list()):
         current_selector = copy.deepcopy(self.default_selector)
-        exhibits = get_exhibits_data()
+        exhibits = get_exhibits_data(exclude_elements)
         for exhibit in exhibits:
             exhibit_template = {'value': exhibit['id'], 'display': exhibit['name']}
             current_selector['options'].append(exhibit_template)
@@ -79,21 +79,25 @@ class SchedulingExpositionView(TemplateView):
     @method_decorator(group_required('Scheduling_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        selector = self.get_current_selector()
+        selector = {}
         editing_id = request.GET.get('id', None)
 
         if editing_id is not None:
             exposition = Exhibition.objects.get(id=editing_id)
             exhibits = exposition.exhibits.all()
-            if len(exhibits) < 1:
-                exhibit = None
-            else:
-                exhibit = exhibits[0].id
+            exhibit_array = []
+            if len(exhibits) > 0:
+                for exhibit in exhibits:
+                    exhibit_template = {'value': exhibit.id, 'display': exhibit.name}
+                    exhibit_array.append(exhibit_template)
+            selector = self.get_current_selector(exhibits)
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'exhibit': exhibit,
+                                              'exhibits': exhibit_array,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
+        else:
+            selector = self.get_current_selector()
         return render(request, self.template_name, selector)
 
     @method_decorator(group_required('Scheduling_team'))
