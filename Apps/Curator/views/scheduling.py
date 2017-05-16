@@ -36,6 +36,11 @@ def get_expositions():
     return data
 
 
+@transaction.atomic
+def delete_exhibition(exhibition):
+    exhibition.delete()
+
+
 class SchedulingView(TemplateView):
     template_name = 'curator/scheduling.html'
 
@@ -50,6 +55,7 @@ class SchedulingView(TemplateView):
         change_status = request.POST.get('changing_status', None)
         exposition_id = request.POST.get('id_exposition', None)
         editing = request.POST.get('editing', None)
+        deleting = request.POST.get('delete', None)
 
         if editing in ['1'] and exposition_id is not None:
             return redirect('/curator/scheduling-exposition?id=' + exposition_id)
@@ -58,6 +64,10 @@ class SchedulingView(TemplateView):
             exposition = Exhibition.objects.get(id=exposition_id)
             exposition.status = not exposition.status
             exposition.save()
+
+        if deleting in ['1'] and exposition_id is not None:
+            exposition = Exhibition.objects.get(id=exposition_id)
+            delete_exhibition(exposition)
 
         expositions = get_expositions()
 
