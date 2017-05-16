@@ -10,44 +10,29 @@
 
 
 {% block body %}
-<body>
-  <div class="site-wrapper">
+    <body>
+    <div class="site-wrapper">
 
-      <div class="site-wrapper-inner">
+        <div class="site-wrapper-inner">
 
-        <div class="cover-container">
+            <div class="cover-container">
 
-          <div class="masthead clearfix">
-            <div class="inner">
-              <h3 class="masthead-brand">Virtual Museums</h3>
-              <nav>
-                <ul class="nav masthead-nav">
-                  <li class="active"><a href="/">Home</a></li>
-                  <li><a href="/contact">Contact</a></li>
-                  <li><a href="/curator">Curator</a></li>
-                </ul>
-              </nav>
+                {% include "common-web/basic-navbar.html" %}
+
+                <div class="inner cover">
+                    <h1 class="cover-heading">{{ title }}</h1>
+                    <p class="lead">{{ body }}</p>
+                    <p class="lead">
+                        <a href="/visitor" class="btn btn-lg btn-default">Enter as Visitor</a>
+                    </p>
+                </div>
+
+                {% include "common-web/footer.html" %}
+
             </div>
-          </div>
-
-          <div class="inner cover">
-            <h1 class="cover-heading">{{ title }}</h1>
-            <p class="lead">{{ body }}</p>
-            <p class="lead">
-              <a href="/visitor" class="btn btn-lg btn-default">Enter as Visitor</a>
-            </p>
-          </div>
-
-          <div class="mastfoot">
-            <div class="inner">
-              <p>Framework designed by <a href="https://github.com/Michotastico">@Michotastico</a>.</p>
-            </div>
-          </div>
 
         </div>
 
-      </div>
-
     </div>
-</body>
+    </body>
 {% endblock body %}

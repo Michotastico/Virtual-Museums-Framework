@@ -128,11 +128,11 @@ class NoExpositionView(TemplateView):
 
     def get(self, request, *a, **ka):
         arguments = dict()
-        arguments['title'] = 'An error with the expositions just happened!'
+        arguments['title'] = 'Virtual Museums'
 
         next_date = get_next_exposition()
         if next_date is None:
-            arguments['body'] = 'There is no exposition active at this moment'
+            arguments['body'] = 'In this moment there is no exposition active.'
         else:
             arguments['body'] = 'The next active exposition is on ' + next_date.strftime("%B %d, %Y")
         return render(request, self.template_name, arguments)
