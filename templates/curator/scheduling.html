@@ -47,9 +47,15 @@
                                 <input type="hidden" id="id_exposition_{{ exposition.id }}"
                                        name="id_exposition" value="{{ exposition.id }}" />
                                 <input type="hidden" id="editing_{{ exposition.id }}" name="editing" value="0" />
+                                <input type="hidden" id="delete_{{ exposition.id }}" name="delete" value="0" />
                                 <input type="hidden" id="changing_status_{{ exposition.id }}"
                                        name="changing_status" value="0" />
                                 <td>
+                                    <button class= "btn btn-sm btn-info" type="button"
+                                            onclick="document.getElementById('editing_{{ exposition.id }}').value='1';form.submit();">Edit</button>
+                                    <button class= "btn btn-sm btn-danger" type="button"
+                                            onclick="if (confirm('You really want to delete this exhibition') == true) {
+                                                document.getElementById('delete_{{ exposition.id }}').value = '1'; form.submit();}">Delete</button>
                                     <button class="btn btn-sm btn-warning" type="button"
                                             onclick="document.getElementById('changing_status_{{ exposition.id }}').value='1';form.submit();">
                                         {% if exposition.status == 'Active' %}
@@ -58,8 +64,6 @@
                                             Active
                                         {% endif %}
                                     </button>
-                                    <button class= "btn btn-sm btn-info" type="button"
-                                            onclick="document.getElementById('editing_{{ exposition.id }}').value='1';form.submit();">Edit</button>
                                 </td>
                             {% endif %}
                         </form>
