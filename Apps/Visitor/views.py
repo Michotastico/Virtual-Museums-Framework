@@ -8,15 +8,14 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.validators import validate_email
 from django.db import transaction
 from django.shortcuts import render, redirect
-
 # Create your views here.
 from django.utils.html import escapejs
 from django.views.generic import TemplateView
 
-from Apps.Curator.models.museums import UnityExhibit, Exhibit
+from Apps.Curator.models.museums import Exhibit
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exhibition
-from Apps.Curator.views.resources import parse_inner_url
+from Apps.Visitor.museums_types import MUSEUM_TYPES
 from VirtualMuseumsFramework.settings import WEBSITE_BASE_URL, WEBSITE_AUTOMATIC_RESPONSE_EMAIL, WEBSITE_SMTP_SERVER
 
 
@@ -57,23 +56,6 @@ def increase_visitor(exhibit):
     exhibit.save()
 
 
-@transaction.atomic
-def get_unity_exhibit(exhibit):
-
-    arguments = dict()
-
-    arguments['title'] = exhibit.name
-    arguments['id'] = exhibit.id
-
-    exhibit = UnityExhibit.objects.get(id=exhibit.id)
-    arguments['data'] = parse_inner_url(exhibit.data.url)
-    arguments['js'] = parse_inner_url(exhibit.javascript.url)
-    arguments['mem'] = parse_inner_url(exhibit.memory.url)
-    arguments['total_memory'] = exhibit.memory_to_allocate
-
-    return arguments
-
-
 class IndexView(TemplateView):
     template_index = 'visitor/index.html'
     template_sub_index = 'visitor/exhibits.html'
@@ -100,12 +82,6 @@ class IndexView(TemplateView):
             return redirect('/visitor/error')
 
         return render(request, self.template_sub_index, arguments)
-
-
-MUSEUM_TYPES = {
-    'Unity': {'get': get_unity_exhibit,
-              'template': 'visitor/visualizations/unity-visualization.html'}
-}
 
 
 class VisualizationView(TemplateView):

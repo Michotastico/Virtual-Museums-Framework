@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Avg
@@ -9,45 +7,10 @@ from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
 from Apps.Curator.forms import UnityExhibitForm, NewExhibitForm
-from Apps.Curator.models.museums import Exhibit, UnityExhibit
+from Apps.Curator.models.museums import Exhibit
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exhibition
-from Apps.Curator.views.resources import parse_inner_url
-
-
-def delete_unity_files(exhibit_id):
-    unity_exhibit = UnityExhibit.objects.get(id=exhibit_id)
-
-    memory = unity_exhibit.memory.path
-    javascript = unity_exhibit.javascript.path
-    data = unity_exhibit.data.path
-
-    def delete():
-        os.remove(memory)
-        os.remove(javascript)
-        os.remove(data)
-
-    return delete
-
-
-@transaction.atomic
-def get_unity_data(exhibit):
-    data = dict()
-
-    data['title'] = exhibit.name
-    exhibit = UnityExhibit.objects.get(id=exhibit.id)
-    data['data'] = parse_inner_url(exhibit.data.url)
-    data['js'] = parse_inner_url(exhibit.javascript.url)
-    data['mem'] = parse_inner_url(exhibit.memory.url)
-    data['total_memory'] = exhibit.memory_to_allocate
-
-    return data
-
-
-MUSEUM_TYPES = {
-    'Unity': {'delete': delete_unity_files, 'get': get_unity_data,
-              'template': 'curator/preview_unity.html'}
-}
+from Apps.Curator.views.museums_types import MUSEUM_TYPES
 
 
 @transaction.atomic
