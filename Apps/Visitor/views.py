@@ -86,6 +86,7 @@ class IndexView(TemplateView):
 
     def post(self, request, *a, **ka):
         exhibition_id = request.POST.get('exhibition', '')
+        exhibition_name = request.POST.get('exhibition_name', '')
 
         if len(exhibition_id) < 1:
             return redirect('/visitor/error')
@@ -93,6 +94,7 @@ class IndexView(TemplateView):
         exhibition = Exhibition.objects.get(id=exhibition_id)
 
         arguments = get_exhibits(exhibition)
+        arguments['exhibition_name'] = exhibition_name
 
         if len(arguments['exhibits']) < 1:
             return redirect('/visitor/error')

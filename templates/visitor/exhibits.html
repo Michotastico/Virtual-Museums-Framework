@@ -13,7 +13,7 @@
     {% include "visitor/navbar.html" %}
     <br>
     <div class="container">
-        <h2>Current exhibits</h2>
+        <h2>Current exhibits on {{ exhibition_name }}</h2>
         <div class="jumbotron">
             <table class="table">
                 <thead>
@@ -30,7 +30,7 @@
                             <input type="hidden" id="exhibit_{{ exhibit.id }}"
                                    name="exhibit" value="{{ exhibit.id }}" />
                             <td>{{ exhibit.name }}</td>
-                            <td> <button class= "btn btn-sm btn-success" type="submit">Enter</button></td>
+                            <td> <button class= "btn btn-sm btn-success" type="submit">Display</button></td>
                         </tr>
                     </form>
                 {% endfor %}

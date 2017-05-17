@@ -31,10 +31,11 @@
                             {% csrf_token %}
                             <input type="hidden" id="exhibition_{{ exhibition.id }}"
                                    name="exhibition" value="{{ exhibition.id }}" />
+                            <input type="hidden" name="exhibition_name" value="{{ exhibition.name }}" />
                             <td>{{ exhibition.name }}</td>
                             <td>{{ exhibition.start_time }}</td>
                             <td>{{ exhibition.end_time }}</td>
-                            <td> <button class= "btn btn-sm btn-success" type="submit">Enter</button></td>
+                            <td> <button class= "btn btn-sm btn-success" type="submit">See exhibits</button></td>
                         </tr>
                     </form>
                 {% endfor %}
