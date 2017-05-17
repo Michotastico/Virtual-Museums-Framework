@@ -13,7 +13,7 @@ class Opinion(models.Model):
     timeout = models.DateField(blank=False)
     rating = models.IntegerField(default=0)
 
-    museum = models.ForeignKey("Museum")
+    exhibit = models.ForeignKey("Exhibit")
 
     @property
     def avatar(self):

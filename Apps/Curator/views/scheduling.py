@@ -8,16 +8,16 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.models.museums import Museum
-from Apps.Curator.models.scheduling import Exposition
-from Apps.Curator.views.opinions import get_museums_data
+from Apps.Curator.models.museums import Exhibit
+from Apps.Curator.models.scheduling import Exhibition
+from Apps.Curator.views.opinions import get_exhibits_data
 
 
 @transaction.atomic
 def get_expositions():
     data = dict()
     exposition_list = list()
-    expositions = Exposition.objects.all()
+    expositions = Exhibition.objects.all()
 
     for exposition in expositions:
         exposition_template = dict()
@@ -29,12 +29,16 @@ def get_expositions():
             exposition_template['status'] = 'Inactive'
         exposition_template['start_time'] = exposition.start_date
         exposition_template['end_time'] = exposition.end_date
-        exposition_template['museum'] = exposition.museum.name
 
         exposition_list.append(exposition_template)
 
         data['expositions'] = exposition_list
     return data
+
+
+@transaction.atomic
+def delete_exhibition(exhibition):
+    exhibition.delete()
 
 
 class SchedulingView(TemplateView):
@@ -51,14 +55,19 @@ class SchedulingView(TemplateView):
         change_status = request.POST.get('changing_status', None)
         exposition_id = request.POST.get('id_exposition', None)
         editing = request.POST.get('editing', None)
+        deleting = request.POST.get('delete', None)
 
         if editing in ['1'] and exposition_id is not None:
             return redirect('/curator/scheduling-exposition?id=' + exposition_id)
 
         if change_status in ['1'] and exposition_id is not None:
-            exposition = Exposition.objects.get(id=exposition_id)
+            exposition = Exhibition.objects.get(id=exposition_id)
             exposition.status = not exposition.status
             exposition.save()
+
+        if deleting in ['1'] and exposition_id is not None:
+            exposition = Exhibition.objects.get(id=exposition_id)
+            delete_exhibition(exposition)
 
         expositions = get_expositions()
 
@@ -67,29 +76,38 @@ class SchedulingView(TemplateView):
 
 class SchedulingExpositionView(TemplateView):
     template_name = 'curator/scheduling-exposition.html'
-    default_selector = {'header': 'Select a Museum:', 'options': []}
+    default_selector = {'options': []}
 
-    def get_current_selector(self):
+    def get_current_selector(self, exclude_elements=list()):
         current_selector = copy.deepcopy(self.default_selector)
-        museums = get_museums_data()
-        for museum in museums:
-            museum_template = {'value': museum['id'], 'display': museum['name']}
-            current_selector['options'].append(museum_template)
+        exhibits = get_exhibits_data(exclude_elements)
+        for exhibit in exhibits:
+            exhibit_template = {'value': exhibit['id'], 'display': exhibit['name']}
+            current_selector['options'].append(exhibit_template)
         return current_selector
 
     @method_decorator(group_required('Scheduling_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        selector = self.get_current_selector()
+        selector = {}
         editing_id = request.GET.get('id', None)
 
         if editing_id is not None:
-            exposition = Exposition.objects.get(id=editing_id)
+            exposition = Exhibition.objects.get(id=editing_id)
+            exhibits = exposition.exhibits.all()
+            exhibit_array = []
+            if len(exhibits) > 0:
+                for exhibit in exhibits:
+                    exhibit_template = {'value': exhibit.id, 'display': exhibit.name}
+                    exhibit_array.append(exhibit_template)
+            selector = self.get_current_selector(exhibits)
             selector['current_exposition'] = {'id': editing_id,
                                               'name': exposition.name,
-                                              'museum': exposition.museum.id,
+                                              'exhibits': exhibit_array,
                                               'initial': exposition.start_date,
                                               'end': exposition.end_date}
+        else:
+            selector = self.get_current_selector()
         return render(request, self.template_name, selector)
 
     @method_decorator(group_required('Scheduling_team'))
@@ -98,7 +116,7 @@ class SchedulingExpositionView(TemplateView):
         selector = self.get_current_selector()
 
         name = request.POST.get('name', None)
-        museum = request.POST.get('museum', None)
+        exhibits = request.POST.getlist('exhibit', None)
         start_date = request.POST.get('initial', None)
         end_date = request.POST.get('end', None)
 
@@ -116,24 +134,33 @@ class SchedulingExpositionView(TemplateView):
             return render(request, self.template_name, selector)
 
         if name is not None \
-                and museum is not None \
+                and exhibits is not None \
                 and start_date is not None \
                 and end_date is not None:
             if id_editing is not None:
-                exposition = Exposition.objects.get(id=id_editing)
+                exposition = Exhibition.objects.get(id=id_editing)
             else:
-                exposition = Exposition()
+                exposition = Exhibition()
             exposition.name = name
             exposition.start_date = start_date
             exposition.end_date = end_date
 
-            museum = Museum.objects.get(id=museum)
-            exposition.museum = museum
+            exhibits_objects = list()
+            for exhibit in exhibits:
+                exhibits_objects.append(Exhibit.objects.get(id=exhibit))
+
+            sid = transaction.savepoint()
+
+            exposition.save()
 
             try:
+                for exhibit in exhibits_objects:
+                    exposition.exhibits.add(exhibit)
                 exposition.save()
+                transaction.savepoint_commit(sid)
                 selector['success'] = True
             except IntegrityError:
+                transaction.savepoint_rollback(sid)
                 selector['failure'] = True
         else:
             selector['failure'] = True

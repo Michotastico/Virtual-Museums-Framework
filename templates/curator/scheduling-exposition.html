@@ -16,6 +16,20 @@
                 dateFormat: "dd/mm/yy"
             });
         } );
+
+        $(function () { function moveItems(origin, dest) {
+            $(origin).find(':selected').appendTo(dest);
+        }
+
+            $('#left').click(function () {
+                moveItems('#selected_exhibits', '#all_exhibits');
+            });
+
+            $('#right').on('click', function () {
+                moveItems('#all_exhibits', '#selected_exhibits');
+            });
+
+        });
     </script>
 {% endblock js %}
 
@@ -46,15 +60,35 @@
                 <h4>Exposition name:</h4>
                 <input type="text" name="name" placeholder="Ex: Grand opening" class="form-control" maxlength="30"
                         {% if current_exposition %} value="{{ current_exposition.name }}" {% endif %}>
-                <h4>Museum:</h4>
-                <select name="museum" class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                    <option value="" disabled="" class=""
-                            {% if not current_exposition %}selected{% endif %}>{{ header }}</option>
-                    {% for element in options %}
-                        <option label="{{ element.display }}" value="{{ element.value }}"
-                                {% if element.value == current_exposition.museum %} selected {% endif %}></option>
-                    {% endfor %}
-                </select>
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Available exhibits</h4>
+                        <select multiple id="all_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                            {% for element in options %}
+                                <option label="{{ element.display }}" value="{{ element.value }}"></option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <br><br>
+                        <div class="row">
+                            <div class="row-md-6" id="right" style="display: table; margin: auto;">
+                                <button type="button" class="btn btn-success glyphicon glyphicon-circle-arrow-right"></button>
+                            </div>
+                            <div class="row-md-6" style="display: table; margin: auto;">
+                                <button type="button" id="left" class="btn btn-success glyphicon glyphicon-circle-arrow-left"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <h4>Selected exhibits</h4>
+                        <select multiple name="exhibit" id="selected_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
+                            {% for element in current_exposition.exhibits %}
+                                <option label="{{ element.display }}" value="{{ element.value }}"></option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <h4>Initial date:</h4>

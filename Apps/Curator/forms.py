@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import Textarea
 
-from Apps.Curator.models.museums import UnityMuseum
+from Apps.Curator.models.museums import UnityExhibit
 from Apps.Curator.models.resources import ExternalImage, ExternalTemplate, ExternalMusic, ExternalModel, ExternalVideo
 
 __author__ = "Michel Llorens"
@@ -19,24 +19,24 @@ class CommonMeta:
     }
 
 
-class MuseumMeta:
+class ExhibitMeta:
     fields = {'name', 'memory_to_allocate', 'data', 'javascript', 'memory'}
-    labels = {'name': 'Name of museum',
+    labels = {'name': 'Name of exhibit',
               'memory_to_allocate': 'Unity TOTAL_MEMORY',
-              'data': 'File museum.data',
-              'javascript': 'File museum.js',
-              'memory': 'File museum.mem'}
+              'data': 'File exhibit.data',
+              'javascript': 'File exhibit.js',
+              'memory': 'File exhibit.mem'}
 
 
-class NewMuseumForm(forms.ModelForm):
+class NewExhibitForm(forms.ModelForm):
     field_order = ['name']
 
 
-class UnityMuseumForm(forms.ModelForm):
+class UnityExhibitForm(forms.ModelForm):
     field_order = ['name', 'memory_to_allocate', 'data', 'javascript', 'memory']
 
-    class Meta(MuseumMeta):
-        model = UnityMuseum
+    class Meta(ExhibitMeta):
+        model = UnityExhibit
 
 
 class TemplateForm(forms.ModelForm):

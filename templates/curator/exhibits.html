@@ -14,7 +14,7 @@
     <body>
     {% include "curator/navbar.html" %}
     <div class="container">
-        <h2>Museums</h2>
+        <h2>Exhibits</h2>
         <br>
         <div class="jumbotron">
             <table class="table">
@@ -29,20 +29,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for museum in museums %}
+                {% for exhibit in exhibits %}
                     <tr>
-                        <form method="POST" action="/curator/museums">
+                        <form method="POST" action="/curator/exhibits">
                             {% csrf_token %}
-                            <input type="hidden" id="id_exposition_{{ museum.id }}"
-                                   name="id_museum" value="{{ museum.id }}" />
-                            <input type="hidden" id="delete_{{ museum.id }}" name="delete" value="0" />
-                            <input type="hidden" id="preview_{{ museum.id }}" name="preview" value="0" />
+                            <input type="hidden" id="id_exposition_{{ exhibit.id }}"
+                                   name="id_exhibit" value="{{ exhibit.id }}" />
+                            <input type="hidden" id="delete_{{ exhibit.id }}" name="delete" value="0" />
+                            <input type="hidden" id="preview_{{ exhibit.id }}" name="preview" value="0" />
                             <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ museum.name }}</td>
-                            <td>{{ museum.published }}</td>
-                            <td>{{ museum.visitors }}</td>
+                            <td>{{ exhibit.name }}</td>
+                            <td>{{ exhibit.published }}</td>
+                            <td>{{ exhibit.visitors }}</td>
                             <td>
-                                <select id="rating_{{ museum.id }}">
+                                <select id="rating_{{ exhibit.id }}">
                                     <option value=""></option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -59,23 +59,23 @@
                             <td>
 
                                 <button class= "btn btn-sm btn-info" type="button"
-                                        onclick="document.getElementById('preview_{{ museum.id }}').value='1';
+                                        onclick="document.getElementById('preview_{{ exhibit.id }}').value='1';
                                                 form.submit();">Preview</button>
                                 <button class= "btn btn-sm btn-danger" type="button"
-                                        onclick="if (confirm('You really want to delete this museum') == true) {
-                                                document.getElementById('delete_{{ museum.id }}').value='1';
+                                        onclick="if (confirm('You really want to delete this exhibit') == true) {
+                                                document.getElementById('delete_{{ exhibit.id }}').value='1';
                                                 form.submit();}">Delete</button>
                             </td>
                         </form>
 
                         <script type="text/javascript">
                             $(function() {
-                                $('#rating_{{ museum.id }}').barrating({
+                                $('#rating_{{ exhibit.id }}').barrating({
                                     theme: 'bars-square',
                                     showValues:true,
                                     readonly:true,
                                     allowEmpty:true,
-                                    initialRating: {{ museum.rating }},
+                                    initialRating: {{ exhibit.rating }},
                                     showSelectedRating:false
                                 });
                             });

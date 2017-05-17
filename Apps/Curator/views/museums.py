@@ -8,19 +8,19 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.forms import UnityMuseumForm, NewMuseumForm
-from Apps.Curator.models.museums import Museum, UnityMuseum
+from Apps.Curator.forms import UnityExhibitForm, NewExhibitForm
+from Apps.Curator.models.museums import Exhibit, UnityExhibit
 from Apps.Curator.models.opinions import Opinion
-from Apps.Curator.models.scheduling import Exposition
+from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.resources import parse_inner_url
 
 
-def delete_unity_files(museum_id):
-    unity_museum = UnityMuseum.objects.get(id=museum_id)
+def delete_unity_files(exhibit_id):
+    unity_exhibit = UnityExhibit.objects.get(id=exhibit_id)
 
-    memory = unity_museum.memory.path
-    javascript = unity_museum.javascript.path
-    data = unity_museum.data.path
+    memory = unity_exhibit.memory.path
+    javascript = unity_exhibit.javascript.path
+    data = unity_exhibit.data.path
 
     def delete():
         os.remove(memory)
@@ -31,94 +31,94 @@ def delete_unity_files(museum_id):
 
 
 @transaction.atomic
-def get_unity_data(museum):
+def get_unity_data(exhibit):
     data = dict()
 
-    data['title'] = museum.name
-    museum = UnityMuseum.objects.get(id=museum.id)
-    data['data'] = parse_inner_url(museum.data.url)
-    data['js'] = parse_inner_url(museum.javascript.url)
-    data['mem'] = parse_inner_url(museum.memory.url)
-    data['total_memory'] = museum.memory_to_allocate
+    data['title'] = exhibit.name
+    exhibit = UnityExhibit.objects.get(id=exhibit.id)
+    data['data'] = parse_inner_url(exhibit.data.url)
+    data['js'] = parse_inner_url(exhibit.javascript.url)
+    data['mem'] = parse_inner_url(exhibit.memory.url)
+    data['total_memory'] = exhibit.memory_to_allocate
 
     return data
 
 
 MUSEUM_TYPES = {
-    'unity': {'delete': delete_unity_files, 'get': get_unity_data,
+    'Unity': {'delete': delete_unity_files, 'get': get_unity_data,
               'template': 'curator/preview_unity.html'}
 }
 
 
 @transaction.atomic
-def get_museums():
-    museums_dict = {'museums': []}
+def get_exhibit():
+    exhibit_dict = {'exhibits': []}
 
-    museums = Museum.objects.all()
+    exhibits = Exhibit.objects.all()
 
-    for museum in museums:
-        expositions = Exposition.objects.filter(museum=museum).filter(status=True)
+    for exhibit in exhibits:
+        expositions = Exhibition.objects.filter(exhibits=exhibit).filter(status=True)
         published = True if len(expositions) > 0 else False
-        rating_object = Opinion.objects.filter(museum=museum).filter(validated=True).aggregate(Avg('rating'))
+        rating_object = Opinion.objects.filter(exhibit=exhibit).filter(validated=True).aggregate(Avg('rating'))
         rating = rating_object['rating__avg']
         if rating is None:
             rating = 0
-        museums_dict['museums'].append({'id': museum.id,
-                                        'name': museum.name,
+        exhibit_dict['exhibits'].append({'id': exhibit.id,
+                                        'name': exhibit.name,
                                         'published': published,
-                                        'visitors': museum.visitors,
+                                        'visitors': exhibit.visitors,
                                         'rating': rating})
-    return museums_dict
+    return exhibit_dict
 
 
 @transaction.atomic
-def delete_museum(museum_id):
-    museum = Museum.objects.get(id=museum_id)
+def delete_exhibit(exhibit_id):
+    exhibit = Exhibit.objects.get(id=exhibit_id)
 
-    delete_function = MUSEUM_TYPES[museum.museum_type.museum_type]['delete'](museum_id)
+    delete_function = MUSEUM_TYPES[exhibit.exhibit_type.name]['delete'](exhibit_id)
 
-    museum.delete()
+    exhibit.delete()
     delete_function()
 
 
-class MuseumsView(TemplateView):
-    template_name = 'curator/museums.html'
+class ExhibitView(TemplateView):
+    template_name = 'curator/exhibits.html'
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        museums = get_museums()
-        return render(request, self.template_name, museums)
+        exhibits = get_exhibit()
+        return render(request, self.template_name, exhibits)
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
-        museum_id = request.POST.get('id_museum', None)
+        exhibit_id = request.POST.get('id_exhibit', None)
         delete = request.POST.get('delete', None)
         preview = request.POST.get('preview', None)
 
-        if museum_id is not None:
+        if exhibit_id is not None:
             if delete in ['1']:
-                delete_museum(museum_id)
+                delete_exhibit(exhibit_id)
             elif preview in ['1']:
-                url = '/curator/museum-preview?id=' + museum_id
+                url = '/curator/exhibit-preview?id=' + exhibit_id
                 return redirect(url)
 
-        expositions = get_museums()
+        expositions = get_exhibit()
 
         return render(request, self.template_name, expositions)
 
 
-class AddMuseumView(TemplateView):
-    template_name = 'curator/add-museum.html'
-    form = NewMuseumForm
-    museum_type = ''
+class AddExhibitView(TemplateView):
+    template_name = 'curator/add-exhibit.html'
+    form = NewExhibitForm
+    exhibit_type = ''
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
         form = self.form()
-        parameters = {'form': form, 'museum_type': self.museum_type}
+        parameters = {'form': form, 'exhibit_type': self.exhibit_type}
 
         return render(request, self.template_name, parameters)
 
@@ -126,7 +126,7 @@ class AddMuseumView(TemplateView):
     @method_decorator(login_required(login_url='/auth/login'))
     def post(self, request, *a, **ka):
         request_form = self.form(request.POST, request.FILES)
-        args = {'museum_type': self.museum_type}
+        args = {'exhibit_type': self.exhibit_type}
 
         if request_form.is_valid():
             request_form.save()
@@ -138,36 +138,36 @@ class AddMuseumView(TemplateView):
         return render(request, self.template_name, args)
 
 
-class AddUnityView(AddMuseumView):
-    form = UnityMuseumForm
-    museum_type = 'Unity'
+class AddUnityView(AddExhibitView):
+    form = UnityExhibitForm
+    exhibit_type = 'Unity'
 
 
 @transaction.atomic
-def get_museum_data(museum_id):
-    museum = Museum.objects.get(id=museum_id)
-    data = MUSEUM_TYPES[museum.museum_type.museum_type]['get'](museum)
+def get_exhibit_data(exhibit_id):
+    exhibit = Exhibit.objects.get(id=exhibit_id)
+    data = MUSEUM_TYPES[exhibit.exhibit_type.name]['get'](exhibit)
     return data
 
 
 @transaction.atomic
-def get_museum_model(museum_id):
-    return Museum.objects.get(id=museum_id)
+def get_exhibit_model(exhibit_id):
+    return Exhibit.objects.get(id=exhibit_id)
 
 
-class PreviewMuseumView(TemplateView):
+class PreviewExhibitView(TemplateView):
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
     def get(self, request, *a, **ka):
-        museum_id = request.GET.get('id', None)
+        exhibit_id = request.GET.get('id', None)
 
-        if museum_id is None:
+        if exhibit_id is None:
             return redirect('/curator')
 
-        museum = get_museum_model(museum_id)
-        template = MUSEUM_TYPES[museum.museum_type.museum_type]['template']
+        exhibit = get_exhibit_model(exhibit_id)
+        template = MUSEUM_TYPES[exhibit.exhibit_type.name]['template']
 
-        args = get_museum_data(museum_id)
+        args = get_exhibit_data(exhibit_id)
 
         return render(request, template, args)

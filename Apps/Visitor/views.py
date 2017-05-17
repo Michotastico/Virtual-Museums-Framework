@@ -13,68 +13,97 @@ from django.shortcuts import render, redirect
 from django.utils.html import escapejs
 from django.views.generic import TemplateView
 
-from Apps.Curator.models.museums import UnityMuseum, Museum
+from Apps.Curator.models.museums import UnityExhibit, Exhibit
 from Apps.Curator.models.opinions import Opinion
-from Apps.Curator.models.scheduling import Exposition
+from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.resources import parse_inner_url
 from VirtualMuseumsFramework.settings import WEBSITE_BASE_URL, WEBSITE_AUTOMATIC_RESPONSE_EMAIL, WEBSITE_SMTP_SERVER
 
 
 @transaction.atomic
-def get_current_expositions():
+def get_current_exhibitions():
     today = datetime.today().date()
-    expositions = Exposition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
+    exhibitions = Exhibition.objects.filter(status=True).filter(start_date__lte=today).filter(end_date__gte=today)
 
-    arguments = {'expositions': []}
+    arguments = {'exhibitions': []}
 
-    for exposition in expositions:
-        expo = dict()
-        expo['id'] = exposition.id
-        expo['name'] = exposition.name
-        expo['start_time'] = exposition.start_date.strftime("%B %d, %Y")
-        expo['end_time'] = exposition.end_date.strftime("%B %d, %Y")
-        arguments['expositions'].append(expo)
+    for exhibition in exhibitions:
+        exhibition_dict = dict()
+        exhibition_dict['id'] = exhibition.id
+        exhibition_dict['name'] = exhibition.name
+        exhibition_dict['start_time'] = exhibition.start_date.strftime("%B %d, %Y")
+        exhibition_dict['end_time'] = exhibition.end_date.strftime("%B %d, %Y")
+        arguments['exhibitions'].append(exhibition_dict)
 
     return arguments
 
 
 @transaction.atomic
-def increase_visitor(exposition_id):
-    exposition = Exposition.objects.get(id=exposition_id)
-    museum = exposition.museum
-    museum.visitors += 1
-    museum.save()
+def get_exhibits(exhibition):
+    exhibits = exhibition.exhibits.all()
+    arguments = {'exhibits': []}
+
+    for exhibit in exhibits:
+        exhibit_dict = dict()
+        exhibit_dict['id'] = exhibit.id
+        exhibit_dict['name'] = exhibit.name
+        arguments['exhibits'].append(exhibit_dict)
+    return arguments
 
 
 @transaction.atomic
-def get_unity_museum(museum):
+def increase_visitor(exhibit):
+    exhibit.visitors += 1
+    exhibit.save()
+
+
+@transaction.atomic
+def get_unity_exhibit(exhibit):
 
     arguments = dict()
 
-    arguments['title'] = museum.name
-    arguments['id'] = museum.id
+    arguments['title'] = exhibit.name
+    arguments['id'] = exhibit.id
 
-    museum = UnityMuseum.objects.get(id=museum.id)
-    arguments['data'] = parse_inner_url(museum.data.url)
-    arguments['js'] = parse_inner_url(museum.javascript.url)
-    arguments['mem'] = parse_inner_url(museum.memory.url)
-    arguments['total_memory'] = museum.memory_to_allocate
+    exhibit = UnityExhibit.objects.get(id=exhibit.id)
+    arguments['data'] = parse_inner_url(exhibit.data.url)
+    arguments['js'] = parse_inner_url(exhibit.javascript.url)
+    arguments['mem'] = parse_inner_url(exhibit.memory.url)
+    arguments['total_memory'] = exhibit.memory_to_allocate
 
     return arguments
 
 
 class IndexView(TemplateView):
-    template_name = 'visitor/index.html'
+    template_index = 'visitor/index.html'
+    template_sub_index = 'visitor/exhibits.html'
 
     def get(self, request, *a, **ka):
-        arguments = get_current_expositions()
-        if len(arguments['expositions']) < 1:
+        arguments = get_current_exhibitions()
+        if len(arguments['exhibitions']) < 1:
             return redirect('/visitor/error')
-        return render(request, self.template_name, arguments)
+        return render(request, self.template_index, arguments)
+
+    def post(self, request, *a, **ka):
+        exhibition_id = request.POST.get('exhibition', '')
+        exhibition_name = request.POST.get('exhibition_name', '')
+
+        if len(exhibition_id) < 1:
+            return redirect('/visitor/error')
+
+        exhibition = Exhibition.objects.get(id=exhibition_id)
+
+        arguments = get_exhibits(exhibition)
+        arguments['exhibition_name'] = exhibition_name
+
+        if len(arguments['exhibits']) < 1:
+            return redirect('/visitor/error')
+
+        return render(request, self.template_sub_index, arguments)
 
 
 MUSEUM_TYPES = {
-    'unity': {'get': get_unity_museum,
+    'Unity': {'get': get_unity_exhibit,
               'template': 'visitor/visualizations/unity-visualization.html'}
 }
 
@@ -85,56 +114,52 @@ class VisualizationView(TemplateView):
         return redirect('/visitor/error')
 
     def post(self, request, *a, **ka):
-        exposition_id = request.POST.get('exposition', '')
+        exhibit_id = request.POST.get('exhibit', '')
 
-        if len(exposition_id) < 1:
+        if len(exhibit_id) < 1:
             return redirect('/visitor/error')
 
-        exposition = Exposition.objects.filter(id=exposition_id).filter(status=True)
+        exhibit = Exhibit.objects.get(id=exhibit_id)
 
-        if len(exposition) < 1:
-            return redirect('/visitor/error')
+        exhibit_type = exhibit.exhibit_type.name
 
-        museum = exposition[0].museum
-        museum_type = museum.museum_type.museum_type
-
-        arguments = MUSEUM_TYPES[museum_type]['get'](museum)
-        template = MUSEUM_TYPES[museum_type]['template']
+        arguments = MUSEUM_TYPES[exhibit_type]['get'](exhibit)
+        template = MUSEUM_TYPES[exhibit_type]['template']
 
         if arguments is None:
             return redirect('/visitor/error')
 
-        increase_visitor(exposition_id)
+        increase_visitor(exhibit)
 
         return render(request, template, arguments)
 
 
 @transaction.atomic
-def get_next_exposition():
+def get_next_exhibition():
     today = datetime.today().date()
-    exposition = Exposition.objects.filter(status=True).filter(start_date__gte=today).order_by('start_date')
+    exhibition = Exhibition.objects.filter(status=True).filter(start_date__gte=today).order_by('start_date')
 
-    if len(exposition) < 1:
+    if len(exhibition) < 1:
         return None
 
-    exposition = exposition[0]
-    next_date = exposition.start_date
+    exhibition = exhibition[0]
+    next_date = exhibition.start_date
 
     return next_date
 
 
-class NoExpositionView(TemplateView):
-    template_name = 'visitor/no_expositions.html'
+class NoExhibitionView(TemplateView):
+    template_name = 'visitor/no_exhibitions.html'
 
     def get(self, request, *a, **ka):
         arguments = dict()
-        arguments['title'] = 'An error with the expositions just happened!'
+        arguments['title'] = 'Virtual Museums'
 
-        next_date = get_next_exposition()
+        next_date = get_next_exhibition()
         if next_date is None:
-            arguments['body'] = 'There is no exposition active at this moment'
+            arguments['body'] = 'In this moment there is no exhibitions active.'
         else:
-            arguments['body'] = 'The next active exposition is on ' + next_date.strftime("%B %d, %Y")
+            arguments['body'] = 'The next active exhibition is on ' + next_date.strftime("%B %d, %Y")
         return render(request, self.template_name, arguments)
 
 
@@ -148,13 +173,15 @@ def generate_hash_key(email):
     return hash_key
 
 
-def send_email(name, museum_name, opinion, hash_key, email):
+def send_email(name, exhibit_name, opinion, hash_key, email):
+    # TODO develop process
+    return True
     from_email = WEBSITE_AUTOMATIC_RESPONSE_EMAIL
     to_email = email
 
     message = "Good day " + name + ",\n\n" + \
               "This is an information email to validate the opinion you had sent to our museum.\n\n" + \
-              "The specific exposition: " + museum_name + "\n" + \
+              "The specific exhibit: " + exhibit_name + "\n" + \
               "Your opinion: " + opinion + "\n\n" + \
               "To validate this, please click the next url or copy-paste it into your browser. \n\n" + \
               "<a href=http://" + WEBSITE_BASE_URL + "/confirmation?key?=" + hash_key + ">" + \
@@ -188,25 +215,25 @@ class OpinionsView(TemplateView):
 
     def get(self, request, *a, **ka):
         arguments = dict()
-        museum_id = request.GET.get('id', None)
-        if museum_id is not None:
-            arguments['museum_id'] = museum_id
+        exhibit_id = request.GET.get('id', None)
+        if exhibit_id is not None:
+            arguments['exhibit_id'] = exhibit_id
         return render(request, self.template_name, arguments)
 
     def post(self, request, *a, **ka):
         arguments = {'error': [], 'success': []}
 
-        museum_id = request.POST.get('museum', '')
-        museum = None
+        exhibit_id = request.POST.get('exhibit', '')
+        exhibit = None
 
         try:
-            if len(museum_id) < 1:
+            if len(exhibit_id) < 1:
                 raise ObjectDoesNotExist()
-            museum = Museum.objects.get(id=museum_id)
+            exhibit = Exhibit.objects.get(id=exhibit_id)
         except ObjectDoesNotExist:
-            arguments['error'].append('Invalid form. Please send your opinion from the exposition interface.')
+            arguments['error'].append('Invalid form. Please send your opinion from the exhibit interface.')
 
-        arguments['museum_id'] = museum_id
+        arguments['exhibit_id'] = exhibit_id
 
         name = request.POST.get('name', '')
         email = request.POST.get('email', '')
@@ -239,14 +266,14 @@ class OpinionsView(TemplateView):
             new_opinion.rating = int(rating)
             hash_key = generate_hash_key(email)
             new_opinion.hash_key = hash_key
-            new_opinion.museum = museum
+            new_opinion.exhibit = exhibit
 
             one_day_after = datetime.today() + timedelta(days=1)
             one_day_after = one_day_after.date()
 
             new_opinion.timeout = one_day_after
 
-            if send_email(name, museum.name, opinion, hash_key, email):
+            if send_email(name, exhibit.name, opinion, hash_key, email):
                 new_opinion.save()
                 arguments['success'].append('A confirmation email was sent to your address to validated your opinion.')
             else:
