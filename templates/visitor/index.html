@@ -13,7 +13,7 @@
     {% include "visitor/navbar.html" %}
     <br>
     <div class="container">
-        <h2>Current expositions</h2>
+        <h2>Current exhibitions</h2>
         <div class="jumbotron">
             <table class="table">
                 <thead>
@@ -25,15 +25,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for exposition in expositions %}
+                {% for exhibition in exhibitions %}
                     <form method="POST" action="/visitor/visualization">
                         <tr>
                             {% csrf_token %}
-                            <input type="hidden" id="exposition_{{ exposition.id }}"
-                                   name="exposition" value="{{ exposition.id }}" />
-                            <td>{{ exposition.name }}</td>
-                            <td>{{ exposition.start_time }}</td>
-                            <td>{{ exposition.end_time }}</td>
+                            <input type="hidden" id="exhibition_{{ exhibition.id }}"
+                                   name="exhibition" value="{{ exhibition.id }}" />
+                            <td>{{ exhibition.name }}</td>
+                            <td>{{ exhibition.start_time }}</td>
+                            <td>{{ exhibition.end_time }}</td>
                             <td> <button class= "btn btn-sm btn-success" type="submit">Enter</button></td>
                         </tr>
                     </form>
