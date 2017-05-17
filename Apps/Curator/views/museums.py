@@ -57,8 +57,8 @@ def get_exhibit():
     exhibits = Exhibit.objects.all()
 
     for exhibit in exhibits:
-        expositions = Exhibition.objects.filter(exhibits=exhibit).filter(status=True)
-        published = True if len(expositions) > 0 else False
+        exhibition = Exhibition.objects.filter(exhibits=exhibit).filter(status=True)
+        published = True if len(exhibition) > 0 else False
         rating_object = Opinion.objects.filter(exhibit=exhibit).filter(validated=True).aggregate(Avg('rating'))
         rating = rating_object['rating__avg']
         if rating is None:
@@ -104,9 +104,9 @@ class ExhibitView(TemplateView):
                 url = '/curator/exhibit-preview?id=' + exhibit_id
                 return redirect(url)
 
-        expositions = get_exhibit()
+        exhibitions = get_exhibit()
 
-        return render(request, self.template_name, expositions)
+        return render(request, self.template_name, exhibitions)
 
 
 class AddExhibitView(TemplateView):

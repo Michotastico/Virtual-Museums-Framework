@@ -4,7 +4,7 @@ from Apps.Curator.views.general import IndexView, CuratorAccount
 from Apps.Curator.views.museums import ExhibitView, AddUnityView, PreviewExhibitView
 from Apps.Curator.views.opinions import OpinionsView, OpinionDeleterView
 from Apps.Curator.views.resources import ResourcesView, NewResourcesView
-from Apps.Curator.views.scheduling import SchedulingView, SchedulingExpositionView
+from Apps.Curator.views.scheduling import SchedulingView, SchedulingExhibitionView
 
 __author__ = "Michel Llorens"
 __license__ = "GPL"
@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^opinions$', OpinionsView.as_view(), name='opinions'),
     url(r'^resources$', ResourcesView.as_view(), name='resources'),
     url(r'^scheduling$', SchedulingView.as_view(), name='scheduling'),
-    url(r'^scheduling-exposition$', SchedulingExpositionView.as_view(), name='scheduling'),
+    url(r'^scheduling-exhibition', SchedulingExhibitionView.as_view(), name='scheduling'),
     url(r'^account$', CuratorAccount.as_view(), name='account'),
 
     url(r'^add-unity-exhibit', AddUnityView.as_view(), name='new-unity'),

@@ -53,14 +53,14 @@
         <a href="/curator/scheduling" class="btn btn-sm btn-info">Back to scheduling</a>
         <br><br>
         <div class="jumbotron">
-            <form method="POST" action="/curator/scheduling-exposition">
+            <form method="POST" action="/curator/scheduling-exhibition">
                 {% csrf_token %}
-                {% if  current_exposition%}
-                    <input type="hidden" name="id_exposition" value="{{ current_exposition.id }}" />
+                {% if  current_exhibition%}
+                    <input type="hidden" name="id_exhibition" value="{{ current_exhibition.id }}" />
                 {% endif %}
-                <h4>Exposition name:</h4>
+                <h4>Exhibition name:</h4>
                 <input type="text" name="name" placeholder="Ex: Grand opening" class="form-control" maxlength="30"
-                        {% if current_exposition %} value="{{ current_exposition.name }}" {% endif %}>
+                        {% if current_exhibition %} value="{{ current_exhibition.name }}" {% endif %}>
                 <div class="row">
                     <div class="col-md-5">
                         <h4>Available exhibits</h4>
@@ -84,7 +84,7 @@
                     <div class="col-md-5">
                         <h4>Selected exhibits</h4>
                         <select multiple name="exhibit" id="selected_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
-                            {% for element in current_exposition.exhibits %}
+                            {% for element in current_exhibition.exhibits %}
                                 <option label="{{ element.display }}" value="{{ element.value }}" selected></option>
                             {% endfor %}
                         </select>
@@ -94,20 +94,20 @@
                     <div class="col-md-6">
                         <h4>Initial date:</h4>
                         <input type="text" class="form-control" name="initial" id="datepicker_initial"
-                                {% if current_exposition %}
-                               value="{{ current_exposition.initial|date:"d/m/Y" }}"
+                                {% if current_exhibition %}
+                               value="{{ current_exhibition.initial|date:"d/m/Y" }}"
                                 {% endif %}>
                     </div>
                     <div class="col-md-6">
                         <h4>End date:</h4>
                         <input type="text" class="form-control" name="end" id="datepicker_end"
-                                {% if current_exposition %}
-                               value="{{ current_exposition.end|date:"d/m/Y" }}"
+                                {% if current_exhibition %}
+                               value="{{ current_exhibition.end|date:"d/m/Y" }}"
                                 {% endif %}>
                     </div>
                 </div>
                 <br>
-                <button class= "btn btn-sm btn-success btn-block" type="submit">Save exposition</button>
+                <button class= "btn btn-sm btn-success btn-block" type="submit">Save exhibition</button>
             </form>
         </div>
     </div>

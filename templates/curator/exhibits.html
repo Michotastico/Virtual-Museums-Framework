@@ -22,7 +22,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>In active exposition</th>
+                    <th>In active exhibitions</th>
                     <th>Visitors</th>
                     <th>Rating</th>
                     <th>Actions</th>
@@ -33,7 +33,7 @@
                     <tr>
                         <form method="POST" action="/curator/exhibits">
                             {% csrf_token %}
-                            <input type="hidden" id="id_exposition_{{ exhibit.id }}"
+                            <input type="hidden" id="id_exhibition_{{ exhibit.id }}"
                                    name="id_exhibit" value="{{ exhibit.id }}" />
                             <input type="hidden" id="delete_{{ exhibit.id }}" name="delete" value="0" />
                             <input type="hidden" id="preview_{{ exhibit.id }}" name="preview" value="0" />
