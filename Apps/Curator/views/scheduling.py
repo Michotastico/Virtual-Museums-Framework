@@ -139,6 +139,9 @@ class SchedulingExpositionView(TemplateView):
                 and end_date is not None:
             if id_editing is not None:
                 exposition = Exhibition.objects.get(id=id_editing)
+                exhibition_exhibits = exposition.exhibits.all()
+                for old_exhibit in exhibition_exhibits:
+                    exposition.exhibits.remove(old_exhibit)
             else:
                 exposition = Exhibition()
             exposition.name = name
@@ -158,7 +161,10 @@ class SchedulingExpositionView(TemplateView):
                     exposition.exhibits.add(exhibit)
                 exposition.save()
                 transaction.savepoint_commit(sid)
-                selector['success'] = True
+                if id_editing is not None:
+                    selector['success'] = 'The exhibition was correctly edited.'
+                else:
+                    selector['success'] = 'The new exhibition was added.'
             except IntegrityError:
                 transaction.savepoint_rollback(sid)
                 selector['failure'] = True

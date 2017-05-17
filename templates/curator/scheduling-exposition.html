@@ -19,6 +19,7 @@
 
         $(function () { function moveItems(origin, dest) {
             $(origin).find(':selected').appendTo(dest);
+            $('#selected_exhibits option').prop('selected', true);
         }
 
             $('#left').click(function () {
@@ -41,12 +42,12 @@
         <h2>Scheduling</h2>
         {% if success %}
             <div class="alert alert-success">
-                <strong>Success!</strong> The new exposition was added.
+                <strong>Success!</strong> {{ success }}
             </div>
         {% endif %}
         {% if failure %}
             <div class="alert alert-danger">
-                <strong>Error!</strong> The new exposition form has an error or it cannot be saved.
+                <strong>Error!</strong> The exhibition form has an error or it cannot be saved.
             </div>
         {% endif %}
         <a href="/curator/scheduling" class="btn btn-sm btn-info">Back to scheduling</a>
@@ -84,7 +85,7 @@
                         <h4>Selected exhibits</h4>
                         <select multiple name="exhibit" id="selected_exhibits" class="form-control ng-pristine ng-valid ng-empty ng-touched">
                             {% for element in current_exposition.exhibits %}
-                                <option label="{{ element.display }}" value="{{ element.value }}"></option>
+                                <option label="{{ element.display }}" value="{{ element.value }}" selected></option>
                             {% endfor %}
                         </select>
                     </div>
