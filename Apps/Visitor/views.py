@@ -39,9 +39,20 @@ def get_current_exhibitions():
 
 
 @transaction.atomic
-def increase_visitor(exhibition_id):
-    exhibition = Exhibition.objects.get(id=exhibition_id)
-    exhibit = exhibition.exhibits.all()[0]
+def get_exhibits(exhibition):
+    exhibits = exhibition.exhibits.all()
+    arguments = {'exhibits': []}
+
+    for exhibit in exhibits:
+        exhibit_dict = dict()
+        exhibit_dict['id'] = exhibit.id
+        exhibit_dict['name'] = exhibit.name
+        arguments['exhibits'].append(exhibit_dict)
+    return arguments
+
+
+@transaction.atomic
+def increase_visitor(exhibit):
     exhibit.visitors += 1
     exhibit.save()
 
@@ -64,13 +75,29 @@ def get_unity_exhibit(exhibit):
 
 
 class IndexView(TemplateView):
-    template_name = 'visitor/index.html'
+    template_index = 'visitor/index.html'
+    template_sub_index = 'visitor/exhibits.html'
 
     def get(self, request, *a, **ka):
         arguments = get_current_exhibitions()
         if len(arguments['exhibitions']) < 1:
             return redirect('/visitor/error')
-        return render(request, self.template_name, arguments)
+        return render(request, self.template_index, arguments)
+
+    def post(self, request, *a, **ka):
+        exhibition_id = request.POST.get('exhibition', '')
+
+        if len(exhibition_id) < 1:
+            return redirect('/visitor/error')
+
+        exhibition = Exhibition.objects.get(id=exhibition_id)
+
+        arguments = get_exhibits(exhibition)
+
+        if len(arguments['exhibits']) < 1:
+            return redirect('/visitor/error')
+
+        return render(request, self.template_sub_index, arguments)
 
 
 MUSEUM_TYPES = {
@@ -85,17 +112,13 @@ class VisualizationView(TemplateView):
         return redirect('/visitor/error')
 
     def post(self, request, *a, **ka):
-        exhibition_id = request.POST.get('exhibition', '')
+        exhibit_id = request.POST.get('exhibit', '')
 
-        if len(exhibition_id) < 1:
+        if len(exhibit_id) < 1:
             return redirect('/visitor/error')
 
-        exhibition = Exhibition.objects.filter(id=exhibition_id).filter(status=True)
+        exhibit = Exhibit.objects.get(id=exhibit_id)
 
-        if len(exhibition) < 1:
-            return redirect('/visitor/error')
-
-        exhibit = exhibition[0].exhibits.all()[0]
         exhibit_type = exhibit.exhibit_type.name
 
         arguments = MUSEUM_TYPES[exhibit_type]['get'](exhibit)
@@ -104,7 +127,7 @@ class VisualizationView(TemplateView):
         if arguments is None:
             return redirect('/visitor/error')
 
-        increase_visitor(exhibition_id)
+        increase_visitor(exhibit)
 
         return render(request, template, arguments)
 
