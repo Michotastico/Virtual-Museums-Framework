@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.forms import UnityExhibitForm, NewExhibitForm
+from Apps.Curator.forms import UnityExhibitForm, NewExhibitForm, VideoExhibitForm
 from Apps.Curator.models.museums import Exhibit
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exhibition
@@ -104,6 +104,11 @@ class AddExhibitView(TemplateView):
 class AddUnityView(AddExhibitView):
     form = UnityExhibitForm
     exhibit_type = 'Unity'
+
+
+class AddVideoView(AddExhibitView):
+    form = VideoExhibitForm
+    exhibit_type = 'Video'
 
 
 @transaction.atomic

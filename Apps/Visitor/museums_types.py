@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
+
 from django.db import transaction
 
-from Apps.Curator.models.museums import UnityExhibit
+from Apps.Curator.models.museums import UnityExhibit, VideoExhibit
 from Apps.Curator.views.resources_types import parse_inner_url
 
 __author__ = "Michel Llorens"
@@ -28,7 +30,25 @@ def get_unity_exhibit(exhibit):
     return arguments
 
 
+@transaction.atomic
+def get_video_exhibit(exhibit):
+
+    arguments = dict()
+
+    arguments['title'] = exhibit.name
+    arguments['id'] = exhibit.id
+
+    exhibit = VideoExhibit.objects.get(id=exhibit.id)
+    arguments['video'] = parse_inner_url(exhibit.video.url)
+    extension = os.path.splitext(arguments['video'])[1].replace(".", "")
+    arguments['type'] = extension
+
+    return arguments
+
+
 MUSEUM_TYPES = {
     'Unity': {'get': get_unity_exhibit,
-              'template': 'visitor/visualizations/unity-visualization.html'}
+              'template': 'visitor/visualizations/unity-visualization.html'},
+    'Video': {'get': get_video_exhibit,
+              'template': 'visitor/visualizations/video-visualization.html'}
 }

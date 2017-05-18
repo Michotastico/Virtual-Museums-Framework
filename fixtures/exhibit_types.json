@@ -5,5 +5,12 @@
   "fields": {
     "name": "Unity"
   }
+},
+{
+  "model": "Curator.exhibittype",
+  "pk": 2,
+  "fields": {
+    "name": "Video"
+  }
 }
 ]

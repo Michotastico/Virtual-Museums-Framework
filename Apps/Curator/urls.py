@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from Apps.Curator.views.general import IndexView, CuratorAccount
-from Apps.Curator.views.museums import ExhibitView, AddUnityView, PreviewExhibitView
+from Apps.Curator.views.museums import ExhibitView, AddUnityView, PreviewExhibitView, AddVideoView
 from Apps.Curator.views.opinions import OpinionsView, OpinionDeleterView
 from Apps.Curator.views.resources import ResourcesView, NewResourcesView
 from Apps.Curator.views.scheduling import SchedulingView, SchedulingExhibitionView
@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^account$', CuratorAccount.as_view(), name='account'),
 
     url(r'^add-unity-exhibit', AddUnityView.as_view(), name='new-unity'),
+    url(r'^add-video-exhibit', AddVideoView.as_view(), name='new-video'),
+
     url(r'^exhibits', ExhibitView.as_view(), name='exhibits'),
     url(r'^exhibit-preview$', PreviewExhibitView.as_view(), name='exhibit-preview'),
 

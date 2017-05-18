@@ -1,10 +1,5 @@
 from __future__ import unicode_literals
-
-import json
-
 from django.db import models
-
-from Apps.Curator.models.resources import ExternalMusic
 from Apps.Curator.upload_manager import file_extension_validation, file_rename
 
 
@@ -39,3 +34,17 @@ class UnityExhibit(Exhibit):
     def save(self, *args, **kwargs):
         self.exhibit_type = ExhibitType.objects.get(name='Unity')
         super(UnityExhibit, self).save(*args, **kwargs)
+
+
+def rename_video_files(instance, filename): return file_rename(filename, '/static/external-content/video-files')
+
+
+def validator_video(external_file): file_extension_validation(external_file, ['.mp4', '.webm', '.ogg'])
+
+
+class VideoExhibit(Exhibit):
+    video = models.FileField(upload_to=rename_video_files, validators=[validator_video])
+
+    def save(self, *args, **kwargs):
+        self.exhibit_type = ExhibitType.objects.get(name='Video')
+        super(VideoExhibit, self).save(*args, **kwargs)
