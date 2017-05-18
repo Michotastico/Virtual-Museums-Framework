@@ -48,3 +48,17 @@ class VideoExhibit(Exhibit):
     def save(self, *args, **kwargs):
         self.exhibit_type = ExhibitType.objects.get(name='Video')
         super(VideoExhibit, self).save(*args, **kwargs)
+
+
+def rename_pdf_files(instance, filename): return file_rename(filename, '/static/external-content/pdf-files')
+
+
+def validator_pdf(external_file): file_extension_validation(external_file, ['.pdf'])
+
+
+class PDFExhibit(Exhibit):
+    pdf = models.FileField(upload_to=rename_pdf_files, validators=[validator_pdf])
+
+    def save(self, *args, **kwargs):
+        self.exhibit_type = ExhibitType.objects.get(name='Pdf')
+        super(PDFExhibit, self).save(*args, **kwargs)

@@ -12,5 +12,12 @@
   "fields": {
     "name": "Video"
   }
+},
+{
+  "model": "Curator.exhibittype",
+  "pk": 3,
+  "fields": {
+    "name": "Pdf"
+  }
 }
 ]

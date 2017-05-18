@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import Textarea
 
-from Apps.Curator.models.museums import UnityExhibit, VideoExhibit
+from Apps.Curator.models.museums import UnityExhibit, VideoExhibit, PDFExhibit
 from Apps.Curator.models.resources import ExternalImage, ExternalTemplate, ExternalMusic, ExternalModel, ExternalVideo
 
 __author__ = "Michel Llorens"
@@ -34,6 +34,12 @@ class VideoExhibitMeta:
               'video': 'Video exhibit.(mp4/webm/ogg)'}
 
 
+class PDFExhibitMeta:
+    fields = {'name', 'pdf'}
+    labels = {'name': 'Name of exhibit',
+              'pdf': 'PDF File'}
+
+
 class NewExhibitForm(forms.ModelForm):
     field_order = ['name']
 
@@ -50,6 +56,13 @@ class VideoExhibitForm(forms.ModelForm):
 
     class Meta(VideoExhibitMeta):
         model = VideoExhibit
+
+
+class PDFExhibitForm(forms.ModelForm):
+    field_order = ['name', 'pdf']
+
+    class Meta(PDFExhibitMeta):
+        model = PDFExhibit
 
 
 class TemplateForm(forms.ModelForm):

@@ -14,7 +14,7 @@
                     <li{% if request.resolver_match.url_name == 'opinions' %} class="active"{% endif %}><a href="/curator/opinions">Opinions</a></li>
                 {% endif %}
                 {% if request.user|has_group:"Museum_team" %}
-                    {% with 'exhibits new-unity new-video' as list%}
+                    {% with 'exhibits new-unity new-video new-pdf' as list%}
                         <li{% if request.resolver_match.url_name in list.split%} class="active dropdown"{% else %} class="dropdown"{% endif %}>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Exhibits <span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -22,6 +22,7 @@
                                 <li role="separator" class="divider"></li>
                                 <li{% if request.resolver_match.url_name == 'new-unity' %} class="active"{% endif %}><a href="/curator/add-unity-exhibit">Add Unity Exhibit</a></li>
                                 <li{% if request.resolver_match.url_name == 'new-video' %} class="active"{% endif %}><a href="/curator/add-video-exhibit">Add Video Exhibit</a></li>
+                                <li{% if request.resolver_match.url_name == 'new-pdf' %} class="active"{% endif %}><a href="/curator/add-pdf-exhibit">Add PDF Exhibit</a></li>
                             </ul>
                         </li>
                     {% endwith %}
