@@ -1,5 +1,57 @@
-<div class="mastfoot">
-    <div class="inner">
-        <p>Framework designed by <a href="https://github.com/Michotastico">@Michotastico</a>.</p>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1 text-center">
+                <h4><strong>PRASEDEC</strong>
+                </h4>
+                <p>Beaucheff 851 - 3rd floor West Building
+                    <br>Santiago, Chile</p>
+                <ul class="list-unstyled">
+                    <li><i class="fa fa-phone fa-fw"></i>(+562) 2 978 0652</li>
+                    <li><i class="fa fa-envelope-o fa-fw"></i> <a href="mailto:nbaloian@dcc.uchile.cl">nbaloian@dcc.uchile.cl</a>
+                    </li>
+                </ul>
+                <hr class="small">
+                <p class="text-muted">Framework designed by <a href="https://github.com/Michotastico">Michel Llorens</a>.</p>
+            </div>
+        </div>
     </div>
-</div>
+    <a id="to-top" href="#top" class="btn btn-dark btn-lg"><i class="fa fa-chevron-up fa-fw fa-1x"></i></a>
+</footer>
+<script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    //#to-top button appears after scrolling
+    var fixed = false;
+    $(document).scroll(function() {
+        if ($(this).scrollTop() > 250) {
+            if (!fixed) {
+                fixed = true;
+                // $('#to-top').css({position:'fixed', display:'block'});
+                $('#to-top').show("slow", function() {
+                    $('#to-top').css({
+                        position: 'fixed',
+                        display: 'block'
+                    });
+                });
+            }
+        } else {
+            if (fixed) {
+                fixed = false;
+                $('#to-top').hide("slow", function() {
+                    $('#to-top').css({
+                        display: 'none'
+                    });
+                });
+            }
+        }
+    });
+</script>

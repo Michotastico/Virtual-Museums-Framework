@@ -2,6 +2,7 @@
 
 {% block css %}
     <link href="/static/common-web/css/cover.css" rel="stylesheet">
+    <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 {% endblock css %}
 
 
@@ -11,27 +12,72 @@
 
 {% block body %}
     <body>
-    <div class="site-wrapper">
-
-        <div class="site-wrapper-inner">
-
-            <div class="cover-container">
-                {% include "common-web/basic-navbar.html" %}
-
-                <div class="inner cover">
-                    <h1 class="cover-heading">Virtual Museums</h1>
-                    <p class="lead">Welcome to the web platform built to display, organize, explore and learn about museums and all the great potential they have in smart cities!</p>
-                    <p class="lead">
-                        <a href="/visitor" class="btn btn-lg btn-default">Enter as Visitor</a>
-                    </p>
-                </div>
-
-                {% include "common-web/footer.html" %}
-
-            </div>
-
+    {% include "common-web/basic-navbar.html" %}
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1 class="btn-dark">Virtual Museums</h1>
+            <h3 class="btn-dark">Welcome to the web platform built to display, organize, explore and learn about museums and all the great potential they have in smart cities!</h3>
+            <br>
+            <a href="/visitor" class="btn btn-dark btn-lg">Enter as Visitor</a>
         </div>
+    </header>
 
-    </div>
+    <!-- About -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>PRASEDEC</h2>
+                    <p class="lead">Practice-driven Advance of Studies and Exchange between the Universities of Duisburg-Essen and Chile.</p>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </section>
+
+    <!-- Services -->
+    <!-- The circle icons use Font Awesome's stacked icon classes. For more information, visit http://fontawesome.io/examples/ -->
+    <section id="services" class="services bg-primary">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-10 col-lg-offset-1">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="service-item">
+                                <img class="img-portfolio img-responsive" src="/static/common-web/img/universidaddechile.jpg">
+                                </span>
+                                <h4>
+                                    <strong>University of Chile</strong>
+                                </h4>
+                                <p>The University of Chile is the largest and oldest institution of higher education in Chile and one of the oldest in Latin America.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="service-item">
+                                <img class="img-portfolio img-responsive" src="/static/common-web/img/universitatduisburgessen.jpg">
+                                </span>
+                                <h4>
+                                    <strong>University of Duisburg-Essen</strong>
+                                </h4>
+                                <p>The University of Duisburg-Essen is a public university in Germany and a member of the University Alliance Metropolis Ruhr.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- /.row (nested) -->
+                </div>
+                <!-- /.col-lg-10 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </section>
+
+    <!-- Map -->
+    <section id="contact" class="map">
+        <iframe src="https://www.google.com/maps/d/embed?mid=13NP4h_aMwq2mFee-3tNZDFBkapg" width="100%" height="100%"></iframe>
+    </section>
+    {% include "common-web/footer.html" %}
     </body>
 {% endblock body %}

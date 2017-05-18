@@ -2,6 +2,7 @@
 
 {% block css %}
     <link href="/static/common-web/css/cover.css" rel="stylesheet">
+    <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 {% endblock css %}
 
 
@@ -11,28 +12,17 @@
 
 {% block body %}
     <body>
-    <div class="site-wrapper">
-
-        <div class="site-wrapper-inner">
-
-            <div class="cover-container">
-
-                {% include "common-web/basic-navbar.html" %}
-
-                <div class="inner cover">
-                    <h1 class="cover-heading">{{ title }}</h1>
-                    <p class="lead">{{ body }}</p>
-                    <p class="lead">
-                        <a href="/visitor" class="btn btn-lg btn-default">Enter as Visitor</a>
-                    </p>
-                </div>
-
-                {% include "common-web/footer.html" %}
-
-            </div>
-
+    {% include "common-web/basic-navbar.html" %}
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1 class="btn-dark">{{ title }}</h1>
+            <h3 class="btn-dark">{{ body }}</h3>
+            <br>
+            <a href="/visitor" class="btn btn-dark btn-lg">Enter as Visitor</a>
         </div>
+    </header>
 
-    </div>
+    {% include "common-web/footer.html" %}
+
     </body>
 {% endblock body %}
