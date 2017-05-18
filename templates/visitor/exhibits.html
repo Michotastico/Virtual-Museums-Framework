@@ -1,6 +1,8 @@
 {% extends "base/base.html" %}
 
 {% block css %}
+    <link href="/static/common-web/css/cover.css" rel="stylesheet">
+    <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 {% endblock css %}
 
 
@@ -10,7 +12,7 @@
 
 {% block body %}
     <body>
-    {% include "visitor/navbar.html" %}
+    {% include "common-web/basic-navbar.html" %}
     <br>
     <div class="container">
         <h2>Current exhibits on {{ exhibition_name }}</h2>
@@ -37,6 +39,7 @@
                 </tbody>
             </table>
         </div>
+        {% include "common-web/footer.html" %}
     </div>
     </body>
 {% endblock body %}

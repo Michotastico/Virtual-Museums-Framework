@@ -2,6 +2,8 @@
 
 {% block css %}
     <link rel="stylesheet" href="/static/bower_components/jquery-bar-rating/dist/themes/bars-square.css">
+    <link href="/static/common-web/css/cover.css" rel="stylesheet">
+    <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 {% endblock css %}
 
 
@@ -21,7 +23,7 @@
 
 {% block body %}
     <body>
-    {% include "visitor/navbar.html" %}
+    {% include "common-web/basic-navbar.html" %}
     <div class="container">
         <h2>Opinion's form</h2>
         {% for failure in error %}
@@ -70,6 +72,7 @@
                 </div>
             </form>
         </div>
+        {% include "common-web/footer.html" %}
     </div>
     </body>
 {% endblock body %}

@@ -1,16 +1,26 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">Virtual Museums</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-            <ul class="nav navbar-nav navbar-right">
-                {% if id %}<li><a href="/visitor/send-opinion?id={{ id }}" target="_blank">Send Opinion</a></li>{% endif %}
-                <li><a href="/visitor">Back to exhibitions</a></li>
-            </ul>
-        </div>
-    </div>
+<a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+<nav id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+        <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+        <li class="sidebar-brand">
+            <a href="/">Virtual Museums</a>
+        </li>
+        {% if id %}
+            <li>
+                <a href="/visitor/send-opinion?id={{ id }}" target="_blank">Send Opinion</a>
+            </li>
+        {% endif %}
+        <li>
+            <a href="/visitor">Exhibitions</a>
+        </li>
+        <li>
+            <a href="/contact">Contact</a>
+        </li>
+        <li>
+            <a href="/curator">Curator</a>
+        </li>
+        <li>
+            <a href="http://prasedec.dcc.uchile.cl/">PRASEDEC</a>
+        </li>
+    </ul>
 </nav>
