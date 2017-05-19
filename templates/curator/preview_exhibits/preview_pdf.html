@@ -13,9 +13,13 @@
 {% block body %}
     <body>
     {% include "curator/navbar.html" %}
-    <div class="container">
+    <div class="container" style="text-align:center;">
         <h2>{{ title }}</h2>
         <div class="jumbotron">
+            <h3>Page: <span id="page_num"></span> / <span id="page_count"></span></h3>
+            <button id="prev" class="btn btn-success">Previous</button>
+            <button id="next" class="btn btn-success">Next</button>
+            <hr>
             <div id="page">
                 <canvas id="canvas"></canvas>
             </div>
@@ -24,26 +28,6 @@
     </body>
 
     <script>
-        if (!window.requestAnimationFrame) {
-            window.requestAnimationFrame = (function() {
-                return window.webkitRequestAnimationFrame ||
-                    window.mozRequestAnimationFrame ||
-                    window.oRequestAnimationFrame ||
-                    window.msRequestAnimationFrame ||
-                    function(callback, element) {
-                        window.setTimeout(callback, 1000 / 60);
-                    };
-            })();
-        }
-
-        document.addEventListener('tizenhwkey', function(e) {
-            if (e.keyName === 'back') {
-                try {
-                    tizen.application.getCurrentApplication().exit();
-                } catch (error) {}
-            }
-        });
-
         var canvas = document.getElementById('canvas');
         var context = canvas.getContext('2d');
         var pageElement = document.getElementById('page');
@@ -109,6 +93,8 @@
             }
         };
 
+        document.getElementById('next').addEventListener('click', openNextPage);
+
         var openPrevPage = function() {
             var pageNumber = Math.max(1, currPageNumber - 1);
             if (pageNumber !== currPageNumber) {
@@ -116,6 +102,8 @@
                 openPage(pdfFile, currPageNumber);
             }
         };
+
+        document.getElementById('prev').addEventListener('click', openPrevPage);
 
         var zoomed = false;
         var toggleZoom = function () {
@@ -145,11 +133,14 @@
 
                 page.render(renderContext);
             });
+
+            document.getElementById('page_num').textContent = currPageNumber;
         };
 
         PDFJS.disableStream = true;
         PDFJS.getDocument('{{ pdf }}').then(function(pdf) {
             pdfFile = pdf;
+            document.getElementById('page_count').textContent = pdfFile.numPages;
 
             openPage(pdf, currPageNumber, 1);
         });
