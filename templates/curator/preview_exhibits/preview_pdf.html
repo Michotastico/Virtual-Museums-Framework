@@ -7,6 +7,7 @@
 {% block js %}
     <script src="/static/common-web/pdf/pdf.js"></script>
     <script src="/static/common-web/pdf/pdf.worker.js"></script>
+    <script src="/static/common-web/pdf/displayPDF.js"></script>
 {% endblock js %}
 
 
@@ -17,8 +18,10 @@
         <h2>{{ title }}</h2>
         <div class="jumbotron">
             <h3>Page: <span id="page_num"></span> / <span id="page_count"></span></h3>
+            <button id="first" class="btn btn-success">First</button>
             <button id="prev" class="btn btn-success">Previous</button>
             <button id="next" class="btn btn-success">Next</button>
+            <button id="last" class="btn btn-success">Last</button>
             <hr>
             <div id="page">
                 <canvas id="canvas"></canvas>
@@ -28,121 +31,6 @@
     </body>
 
     <script>
-        var canvas = document.getElementById('canvas');
-        var context = canvas.getContext('2d');
-        var pageElement = document.getElementById('page');
-
-        var reachedEdge = false;
-        var touchStart = null;
-        var touchDown = false;
-
-        var lastTouchTime = 0;
-        pageElement.addEventListener('touchstart', function(e) {
-            touchDown = true;
-
-            if (e.timeStamp - lastTouchTime < 500) {
-                lastTouchTime = 0;
-                toggleZoom();
-            } else {
-                lastTouchTime = e.timeStamp;
-            }
-        });
-
-        pageElement.addEventListener('touchmove', function(e) {
-            if (pageElement.scrollLeft === 0 ||
-                pageElement.scrollLeft === pageElement.scrollWidth - page.clientWidth) {
-                reachedEdge = true;
-            } else {
-                reachedEdge = false;
-                touchStart = null;
-            }
-
-            if (reachedEdge && touchDown) {
-                if (touchStart === null) {
-                    touchStart = e.changedTouches[0].clientX;
-                } else {
-                    var distance = e.changedTouches[0].clientX - touchStart;
-                    if (distance < -100) {
-                        touchStart = null;
-                        reachedEdge = false;
-                        touchDown = false;
-                        openNextPage();
-                    } else if (distance > 100) {
-                        touchStart = null;
-                        reachedEdge = false;
-                        touchDown = false;
-                        openPrevPage();
-                    }
-                }
-            }
-        });
-
-        pageElement.addEventListener('touchend', function(e) {
-            touchStart = null;
-            touchDown = false;
-        });
-
-        var pdfFile;
-        var currPageNumber = 1;
-
-        var openNextPage = function() {
-            var pageNumber = Math.min(pdfFile.numPages, currPageNumber + 1);
-            if (pageNumber !== currPageNumber) {
-                currPageNumber = pageNumber;
-                openPage(pdfFile, currPageNumber);
-            }
-        };
-
-        document.getElementById('next').addEventListener('click', openNextPage);
-
-        var openPrevPage = function() {
-            var pageNumber = Math.max(1, currPageNumber - 1);
-            if (pageNumber !== currPageNumber) {
-                currPageNumber = pageNumber;
-                openPage(pdfFile, currPageNumber);
-            }
-        };
-
-        document.getElementById('prev').addEventListener('click', openPrevPage);
-
-        var zoomed = false;
-        var toggleZoom = function () {
-            zoomed = !zoomed;
-            openPage(pdfFile, currPageNumber);
-        };
-
-        var fitScale = 1;
-        var openPage = function(pdfFile, pageNumber) {
-            var scale = zoomed ? fitScale : 1;
-
-            pdfFile.getPage(pageNumber).then(function(page) {
-                viewport = page.getViewport(1);
-
-                if (zoomed) {
-                    var scale = pageElement.clientWidth / viewport.width;
-                    viewport = page.getViewport(scale);
-                }
-
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                var renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
-
-                page.render(renderContext);
-            });
-
-            document.getElementById('page_num').textContent = currPageNumber;
-        };
-
-        PDFJS.disableStream = true;
-        PDFJS.getDocument('{{ pdf }}').then(function(pdf) {
-            pdfFile = pdf;
-            document.getElementById('page_count').textContent = pdfFile.numPages;
-
-            openPage(pdf, currPageNumber, 1);
-        });
+        displayPDF('{{ pdf }}', 'canvas', 'page', 'first', 'last', 'prev', 'next');
     </script>
 {% endblock body %}
