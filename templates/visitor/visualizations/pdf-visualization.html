@@ -1,0 +1,74 @@
+{% extends "base/base.html" %}
+
+{% block css %}
+    <link href="/static/common-web/css/cover.css" rel="stylesheet">
+    <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+{% endblock css %}
+
+
+{% block js %}
+    <script src="/static/common-web/pdf/pdf.js"></script>
+    <script src="/static/common-web/pdf/pdf.worker.js"></script>
+    <script src="/static/common-web/pdf/displayPDF.js"></script>
+{% endblock js %}
+
+
+{% block body %}
+    <body>
+    {% include "visitor/navbar.html" %}
+    <br>
+    <div class="container" style="text-align:center;">
+        <h2>{{ title }}</h2>
+        <h3>Page: <span id="page_num"></span> / <span id="page_count"></span></h3>
+        <button id="first" class="btn btn-success">First</button>
+        <button id="prev" class="btn btn-success">Previous</button>
+        <button id="next" class="btn btn-success">Next</button>
+        <button id="last" class="btn btn-success">Last</button>
+        <hr>
+        <div class="jumbotron">
+            <div id="page">
+                <canvas id="canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        displayPDF('{{ pdf }}', 'canvas', 'page', 'first', 'last', 'prev', 'next');
+        // Closes the sidebar menu
+        $("#menu-close").click(function(e) {
+            e.preventDefault();
+            $("#sidebar-wrapper").toggleClass("active");
+        });
+        // Opens the sidebar menu
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#sidebar-wrapper").toggleClass("active");
+        });
+        //#to-top button appears after scrolling
+        var fixed = false;
+        $(document).scroll(function() {
+            if ($(this).scrollTop() > 250) {
+                if (!fixed) {
+                    fixed = true;
+                    // $('#to-top').css({position:'fixed', display:'block'});
+                    $('#to-top').show("slow", function() {
+                        $('#to-top').css({
+                            position: 'fixed',
+                            display: 'block'
+                        });
+                    });
+                }
+            } else {
+                if (fixed) {
+                    fixed = false;
+                    $('#to-top').hide("slow", function() {
+                        $('#to-top').css({
+                            display: 'none'
+                        });
+                    });
+                }
+            }
+        });
+    </script>
+    </body>
+{% endblock body %}
