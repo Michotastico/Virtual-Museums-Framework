@@ -69,7 +69,7 @@ def get_video_data(exhibit):
 def delete_pdf_files(exhibit_id):
     pdf_exhibit = PDFExhibit.objects.get(id=exhibit_id)
 
-    pdf = pdf_exhibit.video.path
+    pdf = pdf_exhibit.pdf.path
 
     def delete():
         os.remove(pdf)
