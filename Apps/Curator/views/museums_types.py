@@ -4,7 +4,7 @@ import os
 
 from django.db import transaction
 
-from Apps.Curator.models.museums import UnityExhibit, VideoExhibit, PDFExhibit
+from Apps.Curator.models.museums import UnityExhibit, VideoExhibit, PDFExhibit, URLExhibit
 from Apps.Curator.views.resources_types import parse_inner_url
 
 __author__ = "Michel Llorens"
@@ -88,11 +88,32 @@ def get_pdf_data(exhibit):
     return data
 
 
+def delete_url_files(exhibit_id):
+
+    def delete():
+        pass
+
+    return delete
+
+
+@transaction.atomic
+def get_url_data(exhibit):
+    data = dict()
+
+    data['title'] = exhibit.name
+    exhibit = URLExhibit.objects.get(id=exhibit.id)
+    data['uuid'] = exhibit.uuid
+
+    return data
+
+
 MUSEUM_TYPES = {
     'Unity': {'delete': delete_unity_files, 'get': get_unity_data,
               'template': 'curator/preview_exhibits/preview_unity.html'},
     'Video': {'delete': delete_video_files, 'get': get_video_data,
               'template': 'curator/preview_exhibits/preview_video.html'},
     'Pdf': {'delete': delete_pdf_files, 'get': get_pdf_data,
-            'template': 'curator/preview_exhibits/preview_pdf.html'}
+            'template': 'curator/preview_exhibits/preview_pdf.html'},
+    'Url': {'delete': delete_url_files, 'get': get_url_data,
+            'template': 'curator/preview_exhibits/preview_url.html'}
 }

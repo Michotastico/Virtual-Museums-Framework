@@ -23,6 +23,7 @@
                                 <li{% if request.resolver_match.url_name == 'new-unity' %} class="active"{% endif %}><a href="/curator/add-unity-exhibit">Add Unity Exhibit</a></li>
                                 <li{% if request.resolver_match.url_name == 'new-video' %} class="active"{% endif %}><a href="/curator/add-video-exhibit">Add Video Exhibit</a></li>
                                 <li{% if request.resolver_match.url_name == 'new-pdf' %} class="active"{% endif %}><a href="/curator/add-pdf-exhibit">Add PDF Exhibit</a></li>
+                                <li{% if request.resolver_match.url_name == 'new-url' %} class="active"{% endif %}><a href="/curator/add-url-exhibit">Add URL Exhibit</a></li>
                             </ul>
                         </li>
                     {% endwith %}

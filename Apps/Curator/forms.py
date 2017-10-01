@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import Textarea
 
-from Apps.Curator.models.museums import UnityExhibit, VideoExhibit, PDFExhibit
+from Apps.Curator.models.museums import UnityExhibit, VideoExhibit, PDFExhibit, URLExhibit
 from Apps.Curator.models.resources import ExternalImage, ExternalTemplate, ExternalMusic, ExternalModel, ExternalVideo
 
 __author__ = "Michel Llorens"
@@ -40,6 +40,12 @@ class PDFExhibitMeta:
               'pdf': 'PDF File'}
 
 
+class URLExhibitMeta:
+    fields = {'name', 'url'}
+    labels = {'name': 'Name of exhibit',
+              'url': 'URL to be displayed'}
+
+
 class NewExhibitForm(forms.ModelForm):
     field_order = ['name']
 
@@ -63,6 +69,13 @@ class PDFExhibitForm(forms.ModelForm):
 
     class Meta(PDFExhibitMeta):
         model = PDFExhibit
+
+
+class URLExhibitForm(forms.ModelForm):
+    field_order = ['name', 'url']
+
+    class Meta(URLExhibitMeta):
+        model = URLExhibit
 
 
 class TemplateForm(forms.ModelForm):

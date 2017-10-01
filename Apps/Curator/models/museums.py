@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+
+import uuid as uuid
 from django.db import models
 from Apps.Curator.upload_manager import file_extension_validation, file_rename
 
@@ -62,3 +64,12 @@ class PDFExhibit(Exhibit):
     def save(self, *args, **kwargs):
         self.exhibit_type = ExhibitType.objects.get(name='Pdf')
         super(PDFExhibit, self).save(*args, **kwargs)
+
+
+class URLExhibit(Exhibit):
+    url = models.CharField(max_length=255, blank=False, unique=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+    def save(self, *args, **kwargs):
+        self.exhibit_type = ExhibitType.objects.get(name='Url')
+        super(URLExhibit, self).save(*args, **kwargs)

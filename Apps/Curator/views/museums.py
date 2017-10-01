@@ -3,11 +3,12 @@ from django.db import transaction
 from django.db.models import Avg
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import TemplateView
 
 from Apps.Curator.decorators import group_required
-from Apps.Curator.forms import UnityExhibitForm, NewExhibitForm, VideoExhibitForm, PDFExhibitForm
-from Apps.Curator.models.museums import Exhibit
+from Apps.Curator.forms import UnityExhibitForm, NewExhibitForm, VideoExhibitForm, PDFExhibitForm, URLExhibitForm
+from Apps.Curator.models.museums import Exhibit, URLExhibit
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exhibition
 from Apps.Curator.views.museums_types import MUSEUM_TYPES
@@ -116,6 +117,11 @@ class AddPDFView(AddExhibitView):
     exhibit_type = 'Pdf'
 
 
+class AddURLView(AddExhibitView):
+    form = URLExhibitForm
+    exhibit_type = 'Url'
+
+
 @transaction.atomic
 def get_exhibit_data(exhibit_id):
     exhibit = Exhibit.objects.get(id=exhibit_id)
@@ -132,6 +138,7 @@ class PreviewExhibitView(TemplateView):
 
     @method_decorator(group_required('Museum_team'))
     @method_decorator(login_required(login_url='/auth/login'))
+    @xframe_options_exempt
     def get(self, request, *a, **ka):
         exhibit_id = request.GET.get('id', None)
 
@@ -144,3 +151,22 @@ class PreviewExhibitView(TemplateView):
         args = get_exhibit_data(exhibit_id)
 
         return render(request, template, args)
+
+
+class RenderHTTPonHTTPSView(TemplateView):
+
+    @method_decorator(group_required('Museum_team'))
+    @method_decorator(login_required(login_url='/auth/login'))
+    @xframe_options_exempt
+    def get(self, request, *a, **ka):
+        url_uuid = request.GET.get('uuid', None)
+
+        if url_uuid is None:
+            return redirect('/curator')
+
+        exhibit = URLExhibit.objects.filter(uuid=url_uuid).first()
+
+        if exhibit is None:
+            return redirect('/curator')
+
+        return redirect(exhibit.url)
