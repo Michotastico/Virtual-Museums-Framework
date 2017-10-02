@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+
+{% block css %}
+    <link href="/static/common-web/css/cover.css" rel="stylesheet">
+    <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <style type="text/css">
+        iframe {
+            display: block;
+            width: 100%;
+            height: calc(100vh - 30px);;
+            border: none;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block js %}
+{% endblock js %}
+
+
+{% block body %}
+    <body>
+    {% include "visitor/navbar.html" %}
+    <br>
+    <div class="container" style="text-align:center;">
+        <h2>{{ title }}</h2>
+        <div class="jumbotron">
+            <iframe src="/visitor/iframe-safe?uuid={{ uuid }}" allowfullscreen>
+                <p>Your browser does not support iframes.</p>
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        // Closes the sidebar menu
+        $("#menu-close").click(function(e) {
+            e.preventDefault();
+            $("#sidebar-wrapper").toggleClass("active");
+        });
+        // Opens the sidebar menu
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#sidebar-wrapper").toggleClass("active");
+        });
+        //#to-top button appears after scrolling
+        var fixed = false;
+        $(document).scroll(function() {
+            if ($(this).scrollTop() > 250) {
+                if (!fixed) {
+                    fixed = true;
+                    // $('#to-top').css({position:'fixed', display:'block'});
+                    $('#to-top').show("slow", function() {
+                        $('#to-top').css({
+                            position: 'fixed',
+                            display: 'block'
+                        });
+                    });
+                }
+            } else {
+                if (fixed) {
+                    fixed = false;
+                    $('#to-top').hide("slow", function() {
+                        $('#to-top').css({
+                            display: 'none'
+                        });
+                    });
+                }
+            }
+        });
+    </script>
+    </body>
+{% endblock body %}

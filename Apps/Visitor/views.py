@@ -10,9 +10,10 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 # Create your views here.
 from django.utils.html import escapejs
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import TemplateView
 
-from Apps.Curator.models.museums import Exhibit
+from Apps.Curator.models.museums import Exhibit, URLExhibit
 from Apps.Curator.models.opinions import Opinion
 from Apps.Curator.models.scheduling import Exhibition
 from Apps.Visitor.museums_types import MUSEUM_TYPES
@@ -89,6 +90,7 @@ class VisualizationView(TemplateView):
     def get(self, request, *a, **ka):
         return redirect('/visitor/error')
 
+    @xframe_options_exempt
     def post(self, request, *a, **ka):
         exhibit_id = request.POST.get('exhibit', '')
 
@@ -256,3 +258,19 @@ class OpinionsView(TemplateView):
                 arguments['error'].append('A problem occurred sending the verification email. Please try again later.')
 
         return render(request, self.template_name, arguments)
+
+
+class IframeRedirectView(TemplateView):
+    @xframe_options_exempt
+    def get(self, request, *a, **ka):
+        url_uuid = request.GET.get('uuid', None)
+
+        if url_uuid is None:
+            return redirect('/')
+
+        exhibit = URLExhibit.objects.filter(uuid=url_uuid).first()
+
+        if exhibit is None:
+            return redirect('/')
+
+        return redirect(exhibit.url)

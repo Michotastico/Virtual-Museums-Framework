@@ -4,7 +4,7 @@ import os
 
 from django.db import transaction
 
-from Apps.Curator.models.museums import UnityExhibit, VideoExhibit, PDFExhibit
+from Apps.Curator.models.museums import UnityExhibit, VideoExhibit, PDFExhibit, URLExhibit
 from Apps.Curator.views.resources_types import parse_inner_url
 
 __author__ = "Michel Llorens"
@@ -60,11 +60,26 @@ def get_pdf_exhibit(exhibit):
     return arguments
 
 
+@transaction.atomic
+def get_url_exhibit(exhibit):
+
+    arguments = dict()
+
+    arguments['title'] = exhibit.name
+
+    exhibit = URLExhibit.objects.get(id=exhibit.id)
+    arguments['uuid'] = exhibit.uuid
+
+    return arguments
+
+
 MUSEUM_TYPES = {
     'Unity': {'get': get_unity_exhibit,
               'template': 'visitor/visualizations/unity-visualization.html'},
     'Video': {'get': get_video_exhibit,
               'template': 'visitor/visualizations/video-visualization.html'},
     'Pdf': {'get': get_pdf_exhibit,
-              'template': 'visitor/visualizations/pdf-visualization.html'}
+            'template': 'visitor/visualizations/pdf-visualization.html'},
+    'Url': {'get': get_url_exhibit,
+            'template': 'visitor/visualizations/url-visualization.html'}
 }

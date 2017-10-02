@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
 
-from Apps.Visitor.views import IndexView, NoExhibitionView, OpinionsView, VisualizationView
+from Apps.Visitor.views import IndexView, NoExhibitionView, OpinionsView, VisualizationView, IframeRedirectView
 
 __author__ = "Michel Llorens"
 __license__ = "GPL"
@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'^visualization', VisualizationView.as_view(), name='visualization'),
     url(r'^error', NoExhibitionView.as_view(), name='error'),
     url(r'^send-opinion', OpinionsView.as_view(), name='send-opinion'),
+
+    url(r'^iframe-safe', IframeRedirectView.as_view(), name='iframe-safe'),
 ]
